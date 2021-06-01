@@ -1,0 +1,39 @@
+.mw-100>* {
+    min-width: 100px;
+}
+
+.mw-150>* {
+    min-width: 150px;
+}
+
+.mw-200>* {
+    min-width: 200px;
+}
+
+.mw-300>* {
+    min-width: 300px;
+}
+
+.mw-400>* {
+    min-width: 400px;
+}
+
+.mw-500>* {
+    min-width: 500px;
+}
+
+.mw-600>* {
+    min-width: 600px;
+}
+
+.mw-700>* {
+    min-width: 700px;
+}
+
+.mw-800>* {
+    min-width: 800px;
+}
+
+.mw-900>* {
+    min-width: 900px;
+}

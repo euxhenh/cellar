@@ -1,0 +1,162 @@
+:root {
+    --dark-blue: #003f5c;
+    --light-blue: #7D8C8F;
+    --white: #ffffff;
+    --green: #43aa8b;
+    --dark-font: #212529;
+    --selected-red: #d9230f;
+    --light-purple: #efeffc;
+}
+
+* {
+    border-radius: 0 !important;
+}
+
+* {
+    font-family: Helvetica;
+}
+
+.vline {
+    border-left: 1px solid var(--secondary);
+    width: 5px;
+    height: 30px;
+    margin-right: 5px;
+}
+
+.light-text {
+    color: var(--secondary);
+}
+
+#greeting-welcome {
+    /* margin-top: 200px; */
+    font-size: 60px;
+    color: var(--dark-font);
+}
+
+#greeting-load {
+    font-size: 20px;
+    color: var(--dark-font);
+}
+
+#greeting-page {
+    margin-top: 200px;
+}
+
+#modes-nav .nav-link:hover {
+    cursor: pointer;
+}
+
+.long-dropdown .dropdown-toggle, .long-dropdown .dropdown-menu {
+    width: 100%;
+}
+
+#modes-nav .btn {
+    color: var(--dark-font);
+    background-color: var(--light);
+}
+
+#modes-nav .btn:hover {
+    color: white;
+    background-color: var(--primary);
+}
+
+#modes-nav .btn, #modes-nav .btn:hover, #modes-nav .btn:focus, #modes-nav .btn.focus {
+    border: none;
+}
+
+.shape-text {
+    background-color: white;
+    width: 50%;
+    font-family: monospace;
+    /* font-weight: 600; */
+    font-size: 14px;
+}
+
+.card-header {
+    font-weight: 500;
+    background-color: var(--primary);
+    color: white;
+}
+
+.sidebar .panel {
+    width: 27rem;
+}
+
+.sidebar .list-group-item-text {
+    margin-bottom: 0;
+}
+
+.sidebar .card-body {
+    color: var(--light-blue);
+    font-weight: 500;
+}
+
+.sidebar .card-body:hover {
+    color: var(--dark-font);
+    cursor: pointer;
+}
+
+.fas.input-group-text, .fab.input-group-text, .far.input-group-text, .fa.input-group-text, .fal.input-group-text {
+    display: flex;
+}
+
+.popover {
+    width: 400px;
+    max-width: 600px;
+}
+
+.no-display {
+    display: none;
+}
+
+.block-display {
+    display: block;
+}
+
+.active-style {
+    color: var(--success);
+    font-size: 15px;
+}
+
+.disabled-style {
+    color: var(--warning);
+    font-size: 15px;
+}
+
+.active-plot-bg {
+    /* background-color: powderblue; */
+}
+
+.non-active-plot-bg {
+    background-color: white;
+    color: var(--primary);
+}
+
+button.export {
+    font-size: 11px;
+    line-height: 22px;
+    font-weight: 500;
+    text-transform: uppercase;
+    color: #fff;
+    background-color: #8e8c84;
+    border-color: #8e8c84;
+}
+
+button.export:hover {
+    color: #fff;
+    background-color: #7b7971;
+    border-color: #74726b;
+    border-color: transparent;
+}
+
+/* #clusters-body {
+    min-height: 50px;
+    max-height: 300px;
+    overflow-y: auto;
+    margin-right: 0;
+} */
+
+.analysis-container {
+    min-height: 400px;
+    height: 100%;
+}
