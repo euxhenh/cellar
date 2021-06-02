@@ -33,6 +33,31 @@ def get_de_card(prefix):
                                 ),
                                 className="mb-2",
                                 no_gutters=True
+                            ),
+                            dbc.Row(
+                                dbc.Col(
+                                    [
+                                        dcc.Loading(
+                                            [
+                                                html.H6(
+                                                    "",
+                                                    id=prefix + "-de-analysis-title",
+                                                    className="card-subtitle m-2"
+                                                ),
+                                                dash_table.DataTable(
+                                                    id=prefix + "-de-table",
+                                                    page_size=10,
+                                                    export_format='none',
+                                                    style_table={
+                                                        'overflowX': 'auto'}
+                                                ),
+                                            ],
+                                            type="circle"
+                                        )
+                                    ],
+                                    width=12
+                                ),
+                                no_gutters=True
                             )
                         ]
                     )

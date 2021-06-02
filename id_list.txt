@@ -44,7 +44,9 @@ sidebar:
         session-collapse (Collapse)
         import-session-btn (Button)
         export-session-btn (Button)
+        export-session-d (Download)
         export-annotations-btn (Button)
+        export-annotations-d (Download)
 
 plots:
     main-activate-btn (Button)
@@ -57,6 +59,8 @@ analysis:
     de_card:
         main-de-cluster-select (Select)
         main-find-de-genes-btn (Button)
+        main-de-analysis-title (H6)
+        main-de-table (DataTable)
     feature_card:
         main-feature-list (Dropdown)
         main-expression (DropdownMenuItem)

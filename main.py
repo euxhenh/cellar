@@ -9,6 +9,9 @@ from controller.operations import *
 from controller.update_plot import *
 from controller.cluster_controller import *
 from controller.annotations import *
+from controller.analysis_controller import *
+from controller.session import *
+from controller.preprocessing_controller import *
 
 app.layout = dbc.Container(
     [

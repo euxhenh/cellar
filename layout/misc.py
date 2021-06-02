@@ -22,6 +22,30 @@ empty_figure = {
 }
 
 
+empty_prep_figure = {
+    "layout": {
+        "xaxis": {
+            "visible": False
+        },
+        "yaxis": {
+            "visible": False
+        },
+        "annotations": [
+            {
+                "text": "Nothing to show.",
+                "xref": "paper",
+                "yref": "paper",
+                "showarrow": False,
+                "font": {
+                    "size": 14
+                }
+            }
+        ],
+        "height": "300"
+    }
+}
+
+
 empty_analysis_figure = {
     "layout": {
         "xaxis": {

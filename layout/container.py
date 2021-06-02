@@ -70,12 +70,6 @@ main_page = dbc.Col(
                   data=1, clear_data=True),
         dcc.Store(id="side-plot-signal-code", storage_type="memory",
                   data=1, clear_data=True),
-
-        # *[dcc.Store(id='signal-' + m['value'], storage_type='memory',
-        #             clear_data=True) for m in dim_list],
-        # *[dcc.Store(id='signal-' + m['value'], storage_type='memory',
-        #             clear_data=True) for m in clu_list],
-        # nav_bar,
         main_body
     ],
     id='main-body',

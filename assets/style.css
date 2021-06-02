@@ -100,6 +100,14 @@
     display: flex;
 }
 
+.prep-addon {
+    width: 95px;
+}
+
+.prep-addon .input-group-text {
+    width: 100%;
+}
+
 .popover {
     width: 400px;
     max-width: 600px;

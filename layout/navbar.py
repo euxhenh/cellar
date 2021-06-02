@@ -2,6 +2,7 @@ import dash_bootstrap_components as dbc
 import dash_core_components as dcc
 import dash_html_components as html
 from controller.cellar.utils.misc import get_server_dataset_dict
+from .preprocessing import prep
 
 CELLAR_LOGO = 'assets/cellar-logo-white.png'
 
@@ -151,7 +152,7 @@ modes = dbc.Nav(
             "Change Dataset", id="change-dataset-btn",
             block=True, color='primary', outline=True), className="shadow-sm")),
         dbc.NavItem(dbc.Card(dbc.Button(
-            "Preprocessing Mode", id="preprocessing-mode-btn",
+            "Preprocessing", id="preprocessing-mode-btn",
             block=True, color='primary', outline=True), className="shadow-sm")),
         dbc.NavItem(dbc.Card(dbc.Button(
             "Dual Mode", id="dual-mode-btn",
@@ -172,6 +173,10 @@ modes_bar = html.Div(
         dbc.Collapse(
             dbc.Card(dbc.CardBody(dataset_bar), className="mb-2"),
             id="collapsible-dataset-bar",
+        ),
+        dbc.Collapse(
+            prep,
+            id="collapsible-prep"
         )
     ]
 )

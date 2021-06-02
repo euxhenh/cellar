@@ -15,6 +15,7 @@ def _get_toggler(collapsible_id, button_id):
 
 for collapsible_id, button_id in [
     ("collapsible-dataset-bar", "change-dataset-btn"),
+    ("collapsible-prep", "preprocessing-mode-btn"),
     ("dim-reduce-collapse", "dim-reduce-collapse-btn"),
     ("clustering-collapse", "clustering-collapse-btn"),
     ("annotation-collapse", "annotation-collapse-btn"),

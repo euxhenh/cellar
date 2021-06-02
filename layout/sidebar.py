@@ -326,13 +326,18 @@ session_block = dbc.Card(
             [
                 dbc.CardBody(
                     [
-                        dbc.Button(
-                            "Import Session",
-                            id='import-session-btn',
-                            block=True,
-                            color='secondary',
-                            outline=True
-                        ),
+                        # dcc.Upload(
+                        #     dbc.Button(
+                        #         "Import Session",
+                        #         # id='import-session-btn',
+                        #         block=True,
+                        #         color='secondary',
+                        #         outline=True
+                        #     ),
+                        #     id='import-session-btn',
+                        #     max_size=1 * 1024**3,  # 1GB
+                        #     className="mb-2"
+                        # ),
                         dbc.Button(
                             "Export Session",
                             id='export-session-btn',
@@ -346,6 +351,14 @@ session_block = dbc.Card(
                             block=True,
                             color='secondary',
                             outline=True
+                        ),
+                        dcc.Loading(
+                            dcc.Download("export-session-d"),
+                            fullscreen=True
+                        ),
+                        dcc.Loading(
+                            dcc.Download("export-annotations-d"),
+                            fullscreen=True
                         )
                     ]
                 )
