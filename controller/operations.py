@@ -4,9 +4,10 @@ from dash.dependencies import Input, Output, State
 from dash.exceptions import PreventUpdate
 from layout.method_settings.clu_settings import clu_settings_keys
 from layout.method_settings.dim_settings import dim_settings_keys
+from layout.method_settings.vis_settings import vis_settings_keys
 
 from .cellar.utils.exceptions import InternalError
-from .methods import clu_list, dim_list, find_method
+from .methods import clu_list, dim_list, vis_list, find_method
 
 
 @app.callback(
@@ -30,6 +31,31 @@ def switch_dim_settings_button(val):
 
     styles[i]['display'] = 'block'
     return *styles, *is_opens
+
+
+@app.callback(
+    [Output(m['value'] + '-btn', 'style') for m in vis_list],
+    [Output(m['value'] + '-settings', 'is_open') for m in vis_list],
+    Input("vis-methods-select", "value")
+)
+def switch_vis_settings_button(val):
+    is_opens = [False] * len(vis_list)
+    styles = [{'display': 'none'} for _ in range(len(vis_list))]
+
+    if val is None:
+        styles[0]['display'] = 'block'
+        return *styles, *is_opens
+
+    for i, method in enumerate(vis_list):
+        if method['value'] == val:
+            break
+    else:
+        raise PreventUpdate
+
+    styles[i]['display'] = 'block'
+    return *styles, *is_opens
+
+
 
 
 @app.callback(
@@ -110,6 +136,8 @@ def _search_settings(method_settings_keys, settings):
 
     """
     kwargs = {}
+
+
     for key in method_settings_keys:
         child = next(_recur_search(settings, key))
 
@@ -136,7 +164,13 @@ def get_filter(settings_keys, m_list, key):
 
         kwargs = _search_settings(settings_keys[method], settings)
         kwargs['key'] = key
-
+        if (key=='x_emb_2d'):
+            if 'n_components' in kwargs.keys():
+                kwargs['n_components']=2
+            if 'n_evecs' in kwargs.keys():
+                kwargs['n_evecs']=2
+            if 'n_clusters' in kwargs.keys():
+                kwargs['n_clusters']=2
         return find_method(m_list, method)['func'](adata, **kwargs)
     return _func
 
@@ -145,6 +179,5 @@ def get_filter(settings_keys, m_list, key):
 dim_reduce_filter = get_filter(dim_settings_keys, dim_list, 'x_emb')
 clu_filter = get_filter(clu_settings_keys, clu_list, 'labels')
 
+vis_reduce_filter = get_filter(vis_settings_keys, vis_list, 'x_emb_2d')
 
-def vis_reduce_filter(a, b, c):
-    pass

@@ -22,13 +22,18 @@ dim_list = [
 
 
 vis_list = [
-    {'label': 'UMAP', 'value': 'vis-UMAP'},
-    {'label': 'TSNE', 'value': 'vis-TSNE'},
-    {'label': 'PCA', 'value': 'vis-PCA'},
-    {'label': 'Truncated SVD', 'value': 'vis-Truncated-SVD'},
-    {'label': 'Diffusion Map', 'value': 'vis-Diffusion-Map'},
-    {'label': 'MDS', 'value': 'vis-MDS'},
-    {'label': 'Isomap', 'value': 'vis-Isomap'},
+    {'label': 'UMAP', 'value': 'vis-UMAP','func':cl_umap},
+    {'label': 'TSNE', 'value': 'vis-TSNE', 'func':cl_TSNE},
+    {'label': 'PCA', 'value': 'vis-PCA', 'func':cl_PCA},
+    {'label': 'Truncated SVD', 'value': 'vis-Truncated-SVD','func':cl_TruncatedSVD},
+    {'label': 'Diffusion Map', 'value': 'vis-Diffusion-Map' ,'func':cl_dm},
+    {'label': 'MDS', 'value': 'vis-MDS' ,'func':cl_MDS},
+    {'label': 'Isomap', 'value': 'vis-Isomap', 'func':cl_Isomap},
+    {'label': 'Increamental PCA', 'value': 'vis-IPCA', 'func': cl_IncrementalPCA},
+    {'label': 'Kernel PCA', 'value': 'vis-KPCA', 'func': cl_KernelPCA},
+    {'label': 'Spectral Embedding', 'value': 'vis-Spectral-Embedding', 'func': cl_SpectralEmbedding},
+    {'label': 'Feature Agglomeration', 'value': 'vis-Feature-Agglomeration', 'func': cl_FeatureAgglomeration}
+    
 ]
 
 clu_list = [

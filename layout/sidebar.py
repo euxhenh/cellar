@@ -6,7 +6,7 @@ from controller.methods import (clu_list, dim_list, lbt_list, ssclu_list,
 
 from .method_settings.dim_settings import dim_settings
 from .method_settings.clu_settings import clu_settings
-
+from .method_settings.vis_settings import vis_settings
 
 def get_cog_btn(id, display='none'):
     return dbc.Button(
@@ -95,15 +95,24 @@ dim_block = dbc.Card(
                                 dbc.InputGroup(
                                     [
                                         dbc.Select(
-                                            options=vis_list,
+                                            options=[
+                                            {
+                                                'label': m['label'],
+                                                'value': m['value']
+                                            } for m in vis_list],
                                             required=True,
                                             id="vis-methods-select",
                                             value=vis_list[0]['value']
                                         ),
                                         dbc.InputGroupAddon(
-                                            get_cog_btn('vis-settings-btn'),
+                                            [
+                                                get_cog_btn(
+                                                    i['value'] + '-btn')
+                                                for i in vis_list
+                                            ],
                                             addon_type="append"
-                                        )
+                                        ),
+                                        *vis_settings
                                     ]
                                 )
                             ]
