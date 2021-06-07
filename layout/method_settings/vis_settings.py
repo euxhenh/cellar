@@ -12,7 +12,7 @@ import dash_html_components as html
 # Isomap
 # Spectral Embedding
 
-dim_pca_settings = dbc.Popover(
+vis_pca_settings = dbc.Popover(
     [
         dbc.PopoverHeader("PCA Settings"),
         dbc.PopoverBody(
@@ -21,7 +21,7 @@ dim_pca_settings = dbc.Popover(
                     [
                         dbc.Label("No. of components", html_for="slider"),
                         dcc.Slider(
-                            id="dim-PCA-n-components",
+                            id="vis-PCA-n-components",
                             min=2, max=100, step=1,
                             value=40,
                             marks={i: str(i) for i in range(10, 101, 10)},
@@ -38,7 +38,7 @@ dim_pca_settings = dbc.Popover(
                                 {"label": "False", "value": False},
                             ],
                             value=False,
-                            id="dim-PCA-whiten",
+                            id="vis-PCA-whiten",
                             inline=True
                         )
                     ]
@@ -47,7 +47,7 @@ dim_pca_settings = dbc.Popover(
                     [
                         dbc.Label("SVD Solver"),
                         dbc.Select(
-                            id="dim-PCA-solver",
+                            id="vis-PCA-solver",
                             options=[
                                 {"label": "auto", "value": "auto"},
                                 {"label": "full", "value": "full"},
@@ -62,7 +62,7 @@ dim_pca_settings = dbc.Popover(
                     [
                         dbc.Label("Random State"),
                         dbc.Input(
-                            id="dim-PCA-random-state",
+                            id="vis-PCA-random-state",
                             placeholder="Leave empty if None",
                             type="number",
                             value=""
@@ -81,20 +81,20 @@ dim_pca_settings = dbc.Popover(
             ]
         )
     ],
-    id="dim-PCA-settings",
-    target="dim-PCA-btn",
+    id="vis-PCA-settings",
+    target="vis-PCA-btn",
     trigger="click"
 )
 
-dim_pca_settings_keys = {
-    'dim-PCA-n-components': 'n_components',
-    'dim-PCA-whiten': 'whiten',
-    'dim-PCA-solver': 'svd_solver',
-    'dim-PCA-random-state': 'random_state'
+vis_pca_settings_keys = {
+    'vis-PCA-n-components': 'n_components',
+    'vis-PCA-whiten': 'whiten',
+    'vis-PCA-solver': 'svd_solver',
+    'vis-PCA-random-state': 'random_state'
 }
 
 
-dim_tsvd_settings = dbc.Popover(
+vis_tsvd_settings = dbc.Popover(
     [
         dbc.PopoverHeader("Truncated SVD Settings"),
         dbc.PopoverBody(
@@ -103,7 +103,7 @@ dim_tsvd_settings = dbc.Popover(
                     [
                         dbc.Label("No. of components", html_for="slider"),
                         dcc.Slider(
-                            id="dim-Truncated-SVD-n-components",
+                            id="vis-Truncated-SVD-n-components",
                             min=2, max=100, step=1,
                             value=40,
                             marks={i: str(i) for i in range(10, 101, 10)},
@@ -115,7 +115,7 @@ dim_tsvd_settings = dbc.Popover(
                     [
                         dbc.Label("Algorithm"),
                         dbc.Select(
-                            id="dim-Truncated-SVD-solver",
+                            id="vis-Truncated-SVD-solver",
                             options=[
                                 {"label": "arpack", "value": "arpack"},
                                 {"label": "randomized", "value": "randomized"}
@@ -128,7 +128,7 @@ dim_tsvd_settings = dbc.Popover(
                     [
                         dbc.Label("Number of Iterations"),
                         dbc.Input(
-                            id="dim-Truncated-SVD-n-iter",
+                            id="vis-Truncated-SVD-n-iter",
                             type="number",
                             value=5
                         )
@@ -138,7 +138,7 @@ dim_tsvd_settings = dbc.Popover(
                     [
                         dbc.Label("Random State"),
                         dbc.Input(
-                            id="dim-Truncated-SVD-random-state",
+                            id="vis-Truncated-SVD-random-state",
                             placeholder="Leave empty if None",
                             type="number",
                             value=""
@@ -157,16 +157,16 @@ dim_tsvd_settings = dbc.Popover(
             ]
         )
     ],
-    id="dim-Truncated-SVD-settings",
-    target="dim-Truncated-SVD-btn",
+    id="vis-Truncated-SVD-settings",
+    target="vis-Truncated-SVD-btn",
     trigger="click"
 )
 
-dim_tsvd_settings_keys = {
-    'dim-Truncated-SVD-n-components': 'n_components',
-    'dim-Truncated-SVD-solver': 'algorithm',
-    'dim-Truncated-SVD-n-iter': 'n_iter',
-    'dim-Truncated-SVD-random-state': 'random_state'
+vis_tsvd_settings_keys = {
+    'vis-Truncated-SVD-n-components': 'n_components',
+    'vis-Truncated-SVD-solver': 'algorithm',
+    'vis-Truncated-SVD-n-iter': 'n_iter',
+    'vis-Truncated-SVD-random-state': 'random_state'
 }
 
 
@@ -174,7 +174,7 @@ dim_tsvd_settings_keys = {
 
 # Incremental PCA
 
-dim_ipca_settings = dbc.Popover(
+vis_ipca_settings = dbc.Popover(
     [
         dbc.PopoverHeader("Incremental PCA Settings"),
         dbc.PopoverBody(
@@ -183,7 +183,7 @@ dim_ipca_settings = dbc.Popover(
                     [
                         dbc.Label("No. of components", html_for="slider"),
                         dcc.Slider(
-                            id="dim-IPCA-n-components",
+                            id="vis-IPCA-n-components",
                             min=2, max=100, step=1,
                             value=40,
                             marks={i: str(i) for i in range(10, 101, 10)},
@@ -200,7 +200,7 @@ dim_ipca_settings = dbc.Popover(
                                 {"label": "False", "value": False},
                             ],
                             value=False,
-                            id="dim-IPCA-whiten",
+                            id="vis-IPCA-whiten",
                             inline=True
                         )
                     ]
@@ -217,20 +217,20 @@ dim_ipca_settings = dbc.Popover(
             ]
         )
     ],
-    id="dim-IPCA-settings",
-    target="dim-IPCA-btn",
+    id="vis-IPCA-settings",
+    target="vis-IPCA-btn",
     trigger="click"
 )
 
-dim_ipca_settings_keys = {
-    'dim-IPCA-n-components': 'n_components',
-    'dim-IPCA-whiten': 'whiten'
+vis_ipca_settings_keys = {
+    'vis-IPCA-n-components': 'n_components',
+    'vis-IPCA-whiten': 'whiten'
 }
 
 
 # Kernel PCA
 
-dim_kpca_settings = dbc.Popover(
+vis_kpca_settings = dbc.Popover(
     [
         dbc.PopoverHeader("Kernel PCA Settings"),
         dbc.PopoverBody(
@@ -239,7 +239,7 @@ dim_kpca_settings = dbc.Popover(
                     [
                         dbc.Label("No. of components", html_for="slider"),
                         dcc.Slider(
-                            id="dim-KPCA-n-components",
+                            id="vis-KPCA-n-components",
                             min=2, max=100, step=1,
                             value=40,
                             marks={i: str(i) for i in range(10, 101, 10)},
@@ -251,7 +251,7 @@ dim_kpca_settings = dbc.Popover(
                     [
                         dbc.Label("Random State"),
                         dbc.Input(
-                            id="dim-KPCA-random-state",
+                            id="vis-KPCA-random-state",
                             placeholder="Leave empty if None",
                             type="number",
                             value=""
@@ -270,20 +270,20 @@ dim_kpca_settings = dbc.Popover(
             ]
         )
     ],
-    id="dim-KPCA-settings",
-    target="dim-KPCA-btn",
+    id="vis-KPCA-settings",
+    target="vis-KPCA-btn",
     trigger="click"
 )
 
-dim_kpca_settings_keys = {
-    'dim-KPCA-n-components': 'n_components',
-    'dim-KPCA-random-state': 'random_state'
+vis_kpca_settings_keys = {
+    'vis-KPCA-n-components': 'n_components',
+    'vis-KPCA-random-state': 'random_state'
 }
 
 
 # TSNE
 
-dim_TSNE_settings = dbc.Popover(
+vis_TSNE_settings = dbc.Popover(
     [
         dbc.PopoverHeader("TSNE Settings"),
         dbc.PopoverBody(
@@ -292,7 +292,7 @@ dim_TSNE_settings = dbc.Popover(
                     [
                         dbc.Label("No. of components", html_for="slider"),
                         dcc.Slider(
-                            id="dim-TSNE-n-components",
+                            id="vis-TSNE-n-components",
                             min=2, max=100, step=1,
                             value=40,
                             marks={i: str(i) for i in range(10, 101, 10)},
@@ -304,7 +304,7 @@ dim_TSNE_settings = dbc.Popover(
                     [
                         dbc.Label("Learning Rate", html_for="slider"),
                         dcc.Slider(
-                            id="dim-TSNE-learning_rate",
+                            id="vis-TSNE-learning_rate",
                             min=10, max=1000, step=1,
                             value=200,
                             marks={i: str(i) for i in range(10, 1001, 100)},
@@ -316,7 +316,7 @@ dim_TSNE_settings = dbc.Popover(
                     [
                         dbc.Label("Random State"),
                         dbc.Input(
-                            id="dim-TSNE-random-state",
+                            id="vis-TSNE-random-state",
                             placeholder="Leave empty if None",
                             type="number",
                             value=""
@@ -335,21 +335,21 @@ dim_TSNE_settings = dbc.Popover(
             ]
         )
     ],
-    id="dim-TSNE-settings",
-    target="dim-TSNE-btn",
+    id="vis-TSNE-settings",
+    target="vis-TSNE-btn",
     trigger="click"
 )
 
-dim_tsne_settings_keys = {
-    'dim-TSNE-n-components': 'n_components',
-    'dim-TSNE-n-components': 'learning_rate',
-    'dim-TSNE-random-state': 'random_state'
+vis_tsne_settings_keys = {
+    'vis-TSNE-n-components': 'n_components',
+    'vis-TSNE-n-components': 'learning_rate',
+    'vis-TSNE-random-state': 'random_state'
 }
 
 
 # MDS
 
-dim_MDS_settings = dbc.Popover(
+vis_MDS_settings = dbc.Popover(
     [
         dbc.PopoverHeader("MDS Settings"),
         dbc.PopoverBody(
@@ -358,7 +358,7 @@ dim_MDS_settings = dbc.Popover(
                     [
                         dbc.Label("No. of components", html_for="slider"),
                         dcc.Slider(
-                            id="dim-MDS-n-components",
+                            id="vis-MDS-n-components",
                             min=2, max=100, step=1,
                             value=40,
                             marks={i: str(i) for i in range(10, 101, 10)},
@@ -371,7 +371,7 @@ dim_MDS_settings = dbc.Popover(
                     [
                         dbc.Label("Random State"),
                         dbc.Input(
-                            id="dim-MDS-random-state",
+                            id="vis-MDS-random-state",
                             placeholder="Leave empty if None",
                             type="number",
                             value=""
@@ -390,18 +390,18 @@ dim_MDS_settings = dbc.Popover(
             ]
         )
     ],
-    id="dim-MDS-settings",
-    target="dim-MDS-btn",
+    id="vis-MDS-settings",
+    target="vis-MDS-btn",
     trigger="click"
 )
 
-dim_mds_settings_keys = {
-    'dim-MDS-n-components': 'n_components',
-    'dim-MDS-random-state': 'random_state'
+vis_mds_settings_keys = {
+    'vis-MDS-n-components': 'n_components',
+    'vis-MDS-random-state': 'random_state'
 }
 
 
-dim_isomap_settings = dbc.Popover(
+vis_isomap_settings = dbc.Popover(
     [
         dbc.PopoverHeader("Isomap Settings"),
         dbc.PopoverBody(
@@ -410,7 +410,7 @@ dim_isomap_settings = dbc.Popover(
                     [
                         dbc.Label("No. of components", html_for="slider"),
                         dcc.Slider(
-                            id="dim-Isomap-n-components",
+                            id="vis-Isomap-n-components",
                             min=2, max=100, step=1,
                             value=40,
                             marks={i: str(i) for i in range(10, 101, 10)},
@@ -422,7 +422,7 @@ dim_isomap_settings = dbc.Popover(
                     [
                         dbc.Label("Eigen Solver"),
                         dbc.Select(
-                            id="dim-Isomap-eigen-solver",
+                            id="vis-Isomap-eigen-solver",
                             options=[
                                 {"label": "auto", "value": "auto"},
                                 {"label": "arpack", "value": "arpack"},
@@ -444,18 +444,18 @@ dim_isomap_settings = dbc.Popover(
             ]
         )
     ],
-    id="dim-Isomap-settings",
-    target="dim-Isomap-btn",
+    id="vis-Isomap-settings",
+    target="vis-Isomap-btn",
     trigger="click"
 )
 
-dim_isomap_settings_keys = {
-    'dim-Isomap-n-components': 'n_components',
-    'dim-Isomap-eigen-solver': 'eigen_solver'
+vis_isomap_settings_keys = {
+    'vis-Isomap-n-components': 'n_components',
+    'vis-Isomap-eigen-solver': 'eigen_solver'
 }
 
 
-dim_spectral_embedding_settings = dbc.Popover(
+vis_spectral_embedding_settings = dbc.Popover(
     [
         dbc.PopoverHeader("Spectral Embedding Settings"),
         dbc.PopoverBody(
@@ -464,7 +464,7 @@ dim_spectral_embedding_settings = dbc.Popover(
                     [
                         dbc.Label("No. of components", html_for="slider"),
                         dcc.Slider(
-                            id="dim-Spectral-Embedding-n-components",
+                            id="vis-Spectral-Embedding-n-components",
                             min=2, max=100, step=1,
                             value=40,
                             marks={i: str(i) for i in range(10, 101, 10)},
@@ -476,7 +476,7 @@ dim_spectral_embedding_settings = dbc.Popover(
                     [
                         dbc.Label("Eigen Solver"),
                         dbc.Select(
-                            id="dim-Spectral-Embedding-eigen-solver",
+                            id="vis-Spectral-Embedding-eigen-solver",
                             options=[
                                 {"label": "arpack", "value": "arpack"},
                                 {"label": "lobpcg", "value": "lobpcg"},
@@ -491,7 +491,7 @@ dim_spectral_embedding_settings = dbc.Popover(
                     [
                         dbc.Label("Random State"),
                         dbc.Input(
-                            id="dim-Spectral-Embedding-random-state",
+                            id="vis-Spectral-Embedding-random-state",
                             placeholder="Leave empty if None",
                             type="number",
                             value=""
@@ -510,20 +510,20 @@ dim_spectral_embedding_settings = dbc.Popover(
             ]
         )
     ],
-    id="dim-Spectral-Embedding-settings",
-    target="dim-Spectral-Embedding-btn",
+    id="vis-Spectral-Embedding-settings",
+    target="vis-Spectral-Embedding-btn",
     trigger="click"
 )
 
-dim_spectral_embedding_settings_keys = {
-    'dim-Spectral-Embedding-n-components': 'n_components',
-    'dim-Spectral-Embedding-eigen-solver': 'eigen_solver',
-    'dim-Spectral-Embedding-random-state': 'random_state'
+vis_spectral_embedding_settings_keys = {
+    'vis-Spectral-Embedding-n-components': 'n_components',
+    'vis-Spectral-Embedding-eigen-solver': 'eigen_solver',
+    'vis-Spectral-Embedding-random-state': 'random_state'
 }
 
 
 
-dim_feature_agglomeration_settings = dbc.Popover(
+vis_feature_agglomeration_settings = dbc.Popover(
     [
         dbc.PopoverHeader("Feature Agglomeration Settings"),
         dbc.PopoverBody(
@@ -532,7 +532,7 @@ dim_feature_agglomeration_settings = dbc.Popover(
                     [
                         dbc.Label("No. of components", html_for="slider"),
                         dcc.Slider(
-                            id="dim-Feature-Agglomeration-n-components",
+                            id="vis-Feature-Agglomeration-n-components",
                             min=2, max=100, step=1,
                             value=40,
                             marks={i: str(i) for i in range(10, 101, 10)},
@@ -552,17 +552,17 @@ dim_feature_agglomeration_settings = dbc.Popover(
             ]
         )
     ],
-    id="dim-Feature-Agglomeration-settings",
-    target="dim-Feature-Agglomeration-btn",
+    id="vis-Feature-Agglomeration-settings",
+    target="vis-Feature-Agglomeration-btn",
     trigger="click"
 )
 
-dim_feature_agglomeration_settings_keys = {
-    'dim-Feature-Agglomeration-n-components': 'n_clusters'
+vis_feature_agglomeration_settings_keys = {
+    'vis-Feature-Agglomeration-n-components': 'n_clusters'
 }
 
 
-dim_diffusion_map_settings = dbc.Popover(
+vis_diffusion_map_settings = dbc.Popover(
     [
         dbc.PopoverHeader("Diffusion Map Settings"),
         dbc.PopoverBody(
@@ -571,7 +571,7 @@ dim_diffusion_map_settings = dbc.Popover(
                     [
                         dbc.Label("No. of components", html_for="slider"),
                         dcc.Slider(
-                            id="dim-Diffusion-Map-n-components",
+                            id="vis-Diffusion-Map-n-components",
                             min=2, max=100, step=1,
                             value=40,
                             marks={i: str(i) for i in range(10, 101, 10)},
@@ -591,17 +591,17 @@ dim_diffusion_map_settings = dbc.Popover(
             ]
         )
     ],
-    id="dim-Diffusion-Map-settings",
-    target="dim-Diffusion-Map-btn",
+    id="vis-Diffusion-Map-settings",
+    target="vis-Diffusion-Map-btn",
     trigger="click"
 )
 
-dim_diffusion_map_settings_keys = {
-    'dim-Diffusion-Map-n-components': 'n_evecs'
+vis_diffusion_map_settings_keys = {
+    'vis-Diffusion-Map-n-components': 'n_evecs'
 }
 
 
-dim_umap_settings = dbc.Popover(
+vis_umap_settings = dbc.Popover(
     [
         dbc.PopoverHeader("UMAP Settings"),
         dbc.PopoverBody(
@@ -610,7 +610,7 @@ dim_umap_settings = dbc.Popover(
                     [
                         dbc.Label("No. of components", html_for="slider"),
                         dcc.Slider(
-                            id="dim-UMAP-n-components",
+                            id="vis-UMAP-n-components",
                             min=2, max=100, step=1,
                             value=40,
                             marks={i: str(i) for i in range(10, 101, 10)},
@@ -630,31 +630,31 @@ dim_umap_settings = dbc.Popover(
             ]
         )
     ],
-    id="dim-UMAP-settings",
-    target="dim-UMAP-btn",
+    id="vis-UMAP-settings",
+    target="vis-UMAP-btn",
     trigger="click"
 )
 
-dim_umap_settings_keys = {
-    'dim-UMAP-n-components': 'n_components'
+vis_umap_settings_keys = {
+    'vis-UMAP-n-components': 'n_components'
 }
 
 
-dim_settings = [dim_pca_settings, dim_tsvd_settings,dim_ipca_settings,dim_kpca_settings,dim_TSNE_settings,dim_MDS_settings, 
-                dim_isomap_settings, dim_spectral_embedding_settings, dim_feature_agglomeration_settings, dim_diffusion_map_settings,
-                dim_umap_settings]
-dim_settings_keys = {
-    'dim-PCA': dim_pca_settings_keys,
-    'dim-Truncated-SVD': dim_tsvd_settings_keys,
-    'dim-IPCA': dim_ipca_settings_keys,
-    'dim-KPCA': dim_kpca_settings_keys,
-    'dim-TSNE': dim_tsne_settings_keys,
-    'dim-MDS': dim_mds_settings_keys,
-    'dim-Isomap': dim_isomap_settings_keys,
-    'dim-Spectral-Embedding': dim_spectral_embedding_settings_keys,
-    'dim-Feature-Agglomeration': dim_feature_agglomeration_settings_keys,
-    'dim-Diffusion-Map': dim_diffusion_map_settings_keys,
-    'dim-UMAP': dim_umap_settings_keys
+vis_settings = [vis_pca_settings, vis_tsvd_settings,vis_ipca_settings,vis_kpca_settings,vis_TSNE_settings,vis_MDS_settings, 
+                vis_isomap_settings, vis_spectral_embedding_settings, vis_feature_agglomeration_settings, vis_diffusion_map_settings,
+                vis_umap_settings]
+vis_settings_keys = {
+    'vis-PCA': vis_pca_settings_keys,
+    'vis-Truncated-SVD': vis_tsvd_settings_keys,
+    'vis-IPCA': vis_ipca_settings_keys,
+    'vis-KPCA': vis_kpca_settings_keys,
+    'vis-TSNE': vis_tsne_settings_keys,
+    'vis-MDS': vis_mds_settings_keys,
+    'vis-Isomap': vis_isomap_settings_keys,
+    'vis-Spectral-Embedding': vis_spectral_embedding_settings_keys,
+    'vis-Feature-Agglomeration': vis_feature_agglomeration_settings_keys,
+    'vis-Diffusion-Map': vis_diffusion_map_settings_keys,
+    'vis-UMAP': vis_umap_settings_keys
 }
 
 

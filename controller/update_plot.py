@@ -120,5 +120,6 @@ for prefix, an in zip(['main', 'side'], ['a1', 'a2']):
         State(prefix + "-feature-list", "value"),
         [State(m['value'] + '-settings', 'children') for m in dim_list],
         [State(m['value'] + '-settings', 'children') for m in clu_list],
+        [State(m['value'] + '-settings', 'children') for m in vis_list],
         prevent_initial_call=True
     )(get_update_plot_func(an))

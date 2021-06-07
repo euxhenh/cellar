@@ -13,8 +13,8 @@ def get_dim_figure(adata, title):
         raise InternalError("x_emb not found in adata.")
 
     fig = px.scatter(
-        x=adata.obsm['x_emb'][:, 0],
-        y=adata.obsm['x_emb'][:, 1],
+        x=adata.obsm['x_emb_2d'][:, 0],
+        y=adata.obsm['x_emb_2d'][:, 1],
         opacity=0.8,
         hover_name=adata.obs.index.to_numpy().astype('str'),
         render_mode='webgl')

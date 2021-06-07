@@ -25,4 +25,4 @@ def get_server_dataset_dict(root='data/server'):
 
 if __name__ == "__main__":
     print(get_server_dataset_dict(
-        '/home/zekrom/Floatzel/cellar/datasets/server'))
+        'data/server'))
