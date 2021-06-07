@@ -66,7 +66,7 @@
 
 .shape-text {
     background-color: white;
-    width: 50%;
+    /* width: 50%; */
     font-family: monospace;
     /* font-weight: 600; */
     font-size: 14px;
@@ -79,7 +79,24 @@
 }
 
 .sidebar .panel {
-    width: 27rem;
+    /* position: fixed; */
+    /* min-width: 440px; */
+    /* width: 100%; */
+    /* width: 27rem; */
+    /* width: 440px;
+    max-width: 100%; */
+    /* min-width: 440px; */
+    /* flex: 0 0 440px; */
+}
+
+.main-body {
+    /* width: 100%; */
+    /* max-width: 1500px; */
+    /* width: calc(100% - 440px); */
+    /* width: 75%; */
+    /* min-width: 700px; */
+    /* flex: 0 0 440px; */
+    /* flex: 1 0 75%; */
 }
 
 .sidebar .list-group-item-text {

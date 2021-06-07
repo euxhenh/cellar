@@ -150,6 +150,27 @@ def get_features_carddeck(prefix):
 
 
 gene_set_libraries = gseapy.get_library_name()
+to_show = [
+    "GO_Biological_Process_2018",
+    "GO_Cellular_Component_2018",
+    "GO_Molecular_Function_2018",
+    "KEGG_2019_Mouse",
+    "KEGG_2021_Human",
+    "MSigDB_Computational",
+    "MSigDB_Hallmark_2020",
+    "WikiPathway_2021_Human",
+    "WikiPathways_2019_Mouse",
+    "Elsevier_Pathway_Collection",
+    "OMIM_Disease",
+    "OMIM_Expanded",
+    "TRANSFAC_and_JASPAR_PWMs",
+    "Reactome_2016",
+    "BioPlex_2017",
+    "CORUM",
+    "huMAP",
+    "Panther_2016"
+]
+to_show = [i for i in to_show if i in gene_set_libraries]
 
 
 def get_enrich_card(prefix):
@@ -164,9 +185,9 @@ def get_enrich_card(prefix):
                                 dcc.Dropdown(
                                     options=[
                                         {'label': i, 'value': 'gene-set-' + i}
-                                        for i in gene_set_libraries
+                                        for i in to_show
                                     ],
-                                    value='gene-set-' + gene_set_libraries[0],
+                                    value='gene-set-' + to_show[0],
                                     id=prefix + '-gene-set-dropdown',
                                     className="mr-2",
                                 ),
@@ -255,8 +276,9 @@ def get_analysis_tabs(prefix):
                         dbc.Row(dbc.Col(
                             get_features_carddeck(prefix), width=12),
                             no_gutters=True),
-                        dbc.Row(dbc.Col(get_enrich_card(prefix), width=12),
-                                no_gutters=True)
+                        dbc.Row(dbc.Col(
+                            get_enrich_card(prefix), width=12),
+                            no_gutters=True)
                     ],
                     className="p-0",
                     width=12

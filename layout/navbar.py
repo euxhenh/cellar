@@ -164,7 +164,8 @@ modes = dbc.Nav(
     justified=True,
     className="mb-2 mt-2",
     # style={'margin': '5px'},
-    id="modes-nav"
+    id="modes-nav",
+    # vertical='sm'
 )
 
 modes_bar = html.Div(
