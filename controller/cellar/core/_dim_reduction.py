@@ -4,7 +4,7 @@ from sklearn.manifold import MDS
 from sklearn.manifold import Isomap
 from sklearn.manifold import SpectralEmbedding
 from sklearn.cluster import FeatureAgglomeration
-from pydiffmap import diffusion_map as dm
+from pydiffmap.diffusion_map import DiffusionMap as dm
 from umap import UMAP
 
 def cl_PCA(adata, key='x_emb', **kwargs):
@@ -94,11 +94,22 @@ def cl_SpectralEmbedding(adata, key='x_emb', **kwargs):
 
 
 
+def cl_FeatureAgglomeration(adata, key='x_emb', **kwargs):
+
+    f_a_ = FeatureAgglomeration(**kwargs)
+    adata.obsm[key] = f_a_.fit_transform(adata.X)
 
 
+def cl_dm(adata, key='x_emb', **kwargs):
+
+    adata.obsm[key] = dm.from_sklearn(**kwargs).fit_transform(adata.X)
+    
 
 
+def cl_umap(adata, key='x_emb', **kwargs):
 
+    u = UMAP(**kwargs)
+    adata.obsm[key] = u.fit_transform(adata.X)
 
 
 

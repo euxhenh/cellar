@@ -1,4 +1,6 @@
-from .cellar.core import cl_PCA, cl_TruncatedSVD, cl_IncrementalPCA, cl_KernelPCA, cl_TSNE, cl_Isomap, cl_MDS, cl_SpectralEmbedding
+from .cellar.core import cl_PCA, cl_TruncatedSVD, cl_IncrementalPCA, cl_KernelPCA 
+from .cellar.core import cl_TSNE, cl_Isomap, cl_MDS, cl_SpectralEmbedding, cl_FeatureAgglomeration
+from .cellar.core import cl_dm, cl_umap
 from .cellar.core import cl_Leiden
 
 dim_list = [
@@ -8,11 +10,14 @@ dim_list = [
     {'label': 'Increamental PCA', 'value': 'dim-IPCA', 'func': cl_IncrementalPCA},
     {'label': 'Kernel PCA', 'value': 'dim-KPCA', 'func': cl_KernelPCA},
     {'label': 'TSNE', 'value': 'dim-TSNE', 'func': cl_TSNE},
-    # {'label': 'UMAP', 'value': 'dim-UMAP'},
-    # {'label': 'Diffusion Map', 'value': 'dim-Diffusion-Map'},
+    {'label': 'UMAP', 'value': 'dim-UMAP', 'func': cl_umap},
+    {'label': 'Diffusion Map', 'value': 'dim-Diffusion-Map', 'func':cl_dm},
     {'label': 'MDS', 'value': 'dim-MDS', 'func': cl_MDS},
     {'label': 'Isomap', 'value': 'dim-Isomap', 'func': cl_Isomap},
-    {'label': 'Spectral Embedding', 'value': 'dim-Spectral-Embedding', 'func': cl_SpectralEmbedding}
+    {'label': 'Spectral Embedding', 'value': 'dim-Spectral-Embedding', 'func': cl_SpectralEmbedding},
+    {'label': 'Feature Agglomeration', 'value': 'dim-Feature-Agglomeration', 'func': cl_FeatureAgglomeration}
+    
+    
 ]
 
 
