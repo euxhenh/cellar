@@ -9,8 +9,8 @@ from ._tools import cl_add_gene_symbol, cl_get_expression
 
 
 def get_dim_figure(adata, title):
-    if 'x_emb' not in adata.obsm:
-        raise InternalError("x_emb not found in adata.")
+    if 'x_emb_2d' not in adata.obsm:
+        raise InternalError("x_emb_2d not found in adata.")
 
     fig = px.scatter(
         x=adata.obsm['x_emb_2d'][:, 0],
@@ -32,8 +32,8 @@ def get_dim_figure(adata, title):
 
 
 def get_clu_figure(adata, title):
-    if 'x_emb' not in adata.obsm or 'labels' not in adata.obs:
-        raise InternalError("x_emb or labels not found in adata.")
+    if 'x_emb_2d' not in adata.obsm or 'labels' not in adata.obs:
+        raise InternalError("x_emb_2d or labels not found in adata.")
 
     hover_data = {}
 
@@ -46,8 +46,8 @@ def get_clu_figure(adata, title):
         hover_data['Annotation'] = adata.obs['annotations'].to_numpy()
 
     fig = px.scatter(
-        x=adata.obsm['x_emb'][:, 0],
-        y=adata.obsm['x_emb'][:, 1],
+        x=adata.obsm['x_emb_2d'][:, 0],
+        y=adata.obsm['x_emb_2d'][:, 1],
         hover_name=adata.obs.index.to_numpy().astype('str'),
         hover_data=hover_data,
         color=adata.obs['labels'].astype('str'),
@@ -102,8 +102,8 @@ def get_expression_figure(adata, feature_values):
     exp_max = expression.max()
 
     fig = px.scatter(
-        x=adata.obsm['x_emb'][:, 0],
-        y=adata.obsm['x_emb'][:, 1],
+        x=adata.obsm['x_emb_2d'][:, 0],
+        y=adata.obsm['x_emb_2d'][:, 1],
         hover_name=adata.obs.index.to_numpy().astype('str'),
         hover_data=hover_data,
         color=expression,

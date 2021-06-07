@@ -1,123 +1,102 @@
-from sklearn.decomposition import PCA, TruncatedSVD, IncrementalPCA, KernelPCA
-from sklearn.manifold import TSNE
+from sklearn.decomposition import PCA, TruncatedSVD, KernelPCA
 from sklearn.manifold import MDS
-from sklearn.manifold import Isomap
-from sklearn.manifold import SpectralEmbedding
-from sklearn.cluster import FeatureAgglomeration
-from pydiffmap.diffusion_map import DiffusionMap as dm
 from umap import UMAP
 
-def cl_PCA(adata, key='x_emb', **kwargs):
-    if 'random_state' in kwargs:
-        if kwargs['random_state'] == '':
-            kwargs['random_state'] = None
+
+def cl_PCA(adata, key, x_to_use, **kwargs):
+    for k in kwargs:
+        if kwargs[k] == '':
+            kwargs[k] = None
+
+    if x_to_use == 'x':
+        x_to_use = adata.X
+    else:
+        x_to_use = adata.obsm['x_emb']
+
+    if 'n_components' not in kwargs:
+        kwargs['n_components'] = 2
 
     pca = PCA(**kwargs)
 
-    adata.obsm[key] = pca.fit_transform(adata.X)
+    adata.obsm[key] = pca.fit_transform(x_to_use)
 
 
-def cl_TruncatedSVD(adata, key='x_emb', **kwargs):
-    if 'random_state' in kwargs:
-        if kwargs['random_state'] == '':
-            kwargs['random_state'] = None
+def cl_TruncatedSVD(adata, key, x_to_use, **kwargs):
+    for k in kwargs:
+        if kwargs[k] == '':
+            kwargs[k] = None
+
+    if x_to_use == 'x':
+        x_to_use = adata.X
+    else:
+        x_to_use = adata.obsm['x_emb']
+
+    if 'n_components' not in kwargs:
+        kwargs['n_components'] = 2
 
     tsvd = TruncatedSVD(**kwargs)
 
-    adata.obsm[key] = tsvd.fit_transform(adata.X)
+    adata.obsm[key] = tsvd.fit_transform(x_to_use)
 
 
+def cl_kPCA(adata, key, x_to_use, **kwargs):
+    for k in kwargs:
+        if kwargs[k] == '':
+            kwargs[k] = None
 
-def cl_IncrementalPCA(adata, key='x_emb', **kwargs):
-    if 'random_state' in kwargs:
-        if kwargs['random_state'] == '':
-            kwargs['random_state'] = None
+    if x_to_use == 'x':
+        x_to_use = adata.X
+    else:
+        x_to_use = adata.obsm['x_emb']
 
-    ipca = IncrementalPCA(**kwargs)
-
-    adata.obsm[key] = ipca.fit_transform(adata.X)
-
-
-def cl_KernelPCA(adata, key='x_emb', **kwargs):
-    if 'random_state' in kwargs:
-        if kwargs['random_state'] == '':
-            kwargs['random_state'] = None
+    if 'n_components' not in kwargs:
+        kwargs['n_components'] = 2
 
     kpca = KernelPCA(**kwargs)
 
-    adata.obsm[key] = kpca.fit_transform(adata.X)
+    adata.obsm[key] = kpca.fit_transform(x_to_use)
 
 
-def cl_TSNE(adata, key='x_emb', **kwargs):
-    if 'random_state' in kwargs:
-        if kwargs['random_state'] == '':
-            kwargs['random_state'] = None
+def cl_MDS(adata, key, x_to_use, **kwargs):
+    for k in kwargs:
+        if kwargs[k] == '':
+            kwargs[k] = None
 
-    tsne = TSNE(**kwargs)
+    if x_to_use == 'x':
+        x_to_use = adata.X
+    else:
+        x_to_use = adata.obsm['x_emb']
 
-    adata.obsm[key] = tsne.fit_transform(adata.X)
-
-
-
-def cl_MDS(adata, key='x_emb', **kwargs):
-    if 'random_state' in kwargs:
-        if kwargs['random_state'] == '':
-            kwargs['random_state'] = None
+    if 'n_components' not in kwargs:
+        kwargs['n_components'] = 2
 
     mds = MDS(**kwargs)
 
-    adata.obsm[key] = mds.fit_transform(adata.X)
+    adata.obsm[key] = mds.fit_transform(x_to_use)
 
 
+def cl_UMAP(adata, key, x_to_use, **kwargs):
+    for k in kwargs:
+        if kwargs[k] == '':
+            kwargs[k] = None
 
-def cl_Isomap(adata, key='x_emb', **kwargs):
-    if 'random_state' in kwargs:
-        if kwargs['random_state'] == '':
-            kwargs['random_state'] = None
+    if x_to_use == 'x':
+        x_to_use = adata.X
+    else:
+        x_to_use = adata.obsm['x_emb']
 
-    isomap = Isomap(**kwargs)
+    if 'n_components' not in kwargs:
+        kwargs['n_components'] = 2
 
-    adata.obsm[key] = isomap.fit_transform(adata.X)
+    umap = UMAP(**kwargs)
 
-
-
-def cl_SpectralEmbedding(adata, key='x_emb', **kwargs):
-    if 'random_state' in kwargs:
-        if kwargs['random_state'] == '':
-            kwargs['random_state'] = None
-
-    s_e_ = SpectralEmbedding(**kwargs)
-
-    adata.obsm[key] = s_e_.fit_transform(adata.X)
-
-
-
-
-
-def cl_FeatureAgglomeration(adata, key='x_emb', **kwargs):
-
-    f_a_ = FeatureAgglomeration(**kwargs)
-    adata.obsm[key] = f_a_.fit_transform(adata.X)
-
-
-def cl_dm(adata, key='x_emb', **kwargs):
-
-    adata.obsm[key] = dm.from_sklearn(**kwargs).fit_transform(adata.X)
-    
-
-
-def cl_umap(adata, key='x_emb', **kwargs):
-
-    u = UMAP(**kwargs)
-    adata.obsm[key] = u.fit_transform(adata.X)
-
+    adata.obsm[key] = umap.fit_transform(x_to_use)
 
 
 def clear_x_emb_dependends(adata):
+    if 'x_emb_2d' in adata.obsm:
+        adata.obsm.pop('x_emb_2d')
     if 'labels' in adata.obs:
         adata.obs.pop('labels')
     if 'annotations' in adata.obs:
         adata.obs.pop('annotations')
-
-
-

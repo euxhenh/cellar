@@ -8,6 +8,7 @@ from .method_settings.dim_settings import dim_settings
 from .method_settings.clu_settings import clu_settings
 from .method_settings.vis_settings import vis_settings
 
+
 def get_cog_btn(id, display='none'):
     return dbc.Button(
         html.I(className="fas fa-cog"),
@@ -96,10 +97,10 @@ dim_block = dbc.Card(
                                     [
                                         dbc.Select(
                                             options=[
-                                            {
-                                                'label': m['label'],
-                                                'value': m['value']
-                                            } for m in vis_list],
+                                                {
+                                                    'label': m['label'],
+                                                    'value': m['value']
+                                                } for m in vis_list],
                                             required=True,
                                             id="vis-methods-select",
                                             value=vis_list[0]['value']

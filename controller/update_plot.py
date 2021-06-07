@@ -8,7 +8,7 @@ from .cellar.core import (clear_x_emb_dependends, get_clu_figure,
                           get_dim_figure, get_expression_figure,
                           get_reset_figure)
 from .methods import clu_list, dim_list, lbt_list, ssclu_list, vis_list
-from .operations import clu_filter, dim_reduce_filter, vis_reduce_filter
+from .operations import clu_filter, dim_reduce_filter, vis_filter
 
 
 class Signal(int, Enum):
@@ -76,9 +76,9 @@ def get_update_plot_func(an):
             # Reduce dimensions and prepare figure
             dim_reduce_filter(
                 dbroot.adatas[an]['adata'], dim_method, settings)
-            vis_reduce_filter(
-                dbroot.adatas[an]['adata'], vis_method, settings)
             clear_x_emb_dependends(dbroot.adatas[an]['adata'])
+            vis_filter(
+                dbroot.adatas[an]['adata'], vis_method, settings)
 
             return get_dim_figure(dbroot.adatas[an]['adata'], title),\
                 dash.no_update

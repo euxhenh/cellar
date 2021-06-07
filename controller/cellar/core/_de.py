@@ -42,6 +42,6 @@ def enrich(adata, gene_set, de_genes_list):
     res = res.drop(['Gene_set', 'Old P-value', 'Old Adjusted P-value'], axis=1)
     res = res.round(3)
     res.rename(columns={'P-value': 'pval',
-               'Adjusted P-value': 'qval'}, inplace=True)
+                        'Adjusted P-value': 'qval'}, inplace=True)
 
     return res

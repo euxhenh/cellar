@@ -10,75 +10,35 @@ from .cellar.utils.exceptions import InternalError
 from .methods import clu_list, dim_list, vis_list, find_method
 
 
-@app.callback(
-    [Output(m['value'] + '-btn', 'style') for m in dim_list],
-    [Output(m['value'] + '-settings', 'is_open') for m in dim_list],
-    Input("dim-methods-select", "value")
-)
-def switch_dim_settings_button(val):
-    is_opens = [False] * len(dim_list)
-    styles = [{'display': 'none'} for _ in range(len(dim_list))]
+def get_button_switch_func(m_list):
+    def _func(val):
+        is_opens = [False] * len(m_list)
+        styles = [{'display': 'none'} for _ in range(len(m_list))]
 
-    if val is None:
-        styles[0]['display'] = 'block'
+        if val is None:
+            styles[0]['display'] = 'block'
+            return *styles, *is_opens
+
+        for i, method in enumerate(m_list):
+            if method['value'] == val:
+                break
+        else:
+            raise PreventUpdate
+
+        styles[i]['display'] = 'block'
         return *styles, *is_opens
-
-    for i, method in enumerate(dim_list):
-        if method['value'] == val:
-            break
-    else:
-        raise PreventUpdate
-
-    styles[i]['display'] = 'block'
-    return *styles, *is_opens
+    return _func
 
 
-@app.callback(
-    [Output(m['value'] + '-btn', 'style') for m in vis_list],
-    [Output(m['value'] + '-settings', 'is_open') for m in vis_list],
-    Input("vis-methods-select", "value")
-)
-def switch_vis_settings_button(val):
-    is_opens = [False] * len(vis_list)
-    styles = [{'display': 'none'} for _ in range(len(vis_list))]
-
-    if val is None:
-        styles[0]['display'] = 'block'
-        return *styles, *is_opens
-
-    for i, method in enumerate(vis_list):
-        if method['value'] == val:
-            break
-    else:
-        raise PreventUpdate
-
-    styles[i]['display'] = 'block'
-    return *styles, *is_opens
-
-
-
-
-@app.callback(
-    [Output(m['value'] + '-btn', 'style') for m in clu_list],
-    [Output(m['value'] + '-settings', 'is_open') for m in clu_list],
-    Input("clu-methods-select", "value")
-)
-def switch_clu_settings_button(val):
-    is_opens = [False] * len(clu_list)
-    styles = [{'display': 'none'} for _ in range(len(clu_list))]
-
-    if val is None:
-        styles[0]['display'] = 'block'
-        return *styles, *is_opens
-
-    for i, method in enumerate(clu_list):
-        if method['value'] == val:
-            break
-    else:
-        raise PreventUpdate
-
-    styles[i]['display'] = 'block'
-    return *styles, *is_opens
+for m_list, m_name in zip(
+    [dim_list, clu_list, vis_list],
+    ['dim', 'clu', 'vis']
+):
+    app.callback(
+        [Output(m['value'] + '-btn', 'style') for m in m_list],
+        [Output(m['value'] + '-settings', 'is_open') for m in m_list],
+        Input(m_name + "-methods-select", "value")
+    )(get_button_switch_func(m_list))
 
 
 def _recur_search(var, key):
@@ -137,7 +97,6 @@ def _search_settings(method_settings_keys, settings):
     """
     kwargs = {}
 
-
     for key in method_settings_keys:
         child = next(_recur_search(settings, key))
 
@@ -152,7 +111,7 @@ def _search_settings(method_settings_keys, settings):
     return kwargs
 
 
-def get_filter(settings_keys, m_list, key):
+def get_filter(settings_keys, m_list, key, x_to_use):
     """
     Returns a function that searches for 'method' and its parameters
     in the popover components. That function itself returns the function
@@ -164,20 +123,15 @@ def get_filter(settings_keys, m_list, key):
 
         kwargs = _search_settings(settings_keys[method], settings)
         kwargs['key'] = key
-        if (key=='x_emb_2d'):
-            if 'n_components' in kwargs.keys():
-                kwargs['n_components']=2
-            if 'n_evecs' in kwargs.keys():
-                kwargs['n_evecs']=2
-            if 'n_clusters' in kwargs.keys():
-                kwargs['n_clusters']=2
+        kwargs['x_to_use'] = x_to_use
         return find_method(m_list, method)['func'](adata, **kwargs)
     return _func
 
 
 # functions
-dim_reduce_filter = get_filter(dim_settings_keys, dim_list, 'x_emb')
-clu_filter = get_filter(clu_settings_keys, clu_list, 'labels')
-
-vis_reduce_filter = get_filter(vis_settings_keys, vis_list, 'x_emb_2d')
-
+dim_reduce_filter = get_filter(
+    dim_settings_keys, dim_list, key='x_emb', x_to_use='x')
+clu_filter = get_filter(
+    clu_settings_keys, clu_list, key='labels', x_to_use='x_emb')
+vis_filter = get_filter(
+    vis_settings_keys, vis_list, key='x_emb_2d', x_to_use='x_emb')
