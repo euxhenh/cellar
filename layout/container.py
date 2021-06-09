@@ -16,7 +16,7 @@ main_body = dbc.Row(
         dbc.Col(
             sidebar,
             className="p-0 sidebar pr-2",
-            width=3, xs=12, sm=12, md=3, lg=3
+            width=3, xs=3, sm=3, md=3, lg=3
         ),
         dbc.Col(
             [
@@ -39,7 +39,7 @@ main_body = dbc.Row(
                 )
             ],
             className="main-body",
-            width=9, xs=12, sm=12, md=9, lg=9
+            width=9, xs=9, sm=9, md=9, lg=9
         ),
     ],
     no_gutters=True
