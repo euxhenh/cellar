@@ -51,8 +51,6 @@ def update_shape(s1, s2, actp):
     if not ctx.triggered or (s1 is None and s2 is None):
         raise PreventUpdate
 
-    button_id = ctx.triggered[0]["prop_id"].split(".")[0]
-
     an = 'a1' if actp == 1 else 'a2'
 
     if an in dbroot.adatas:

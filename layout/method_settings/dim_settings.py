@@ -382,11 +382,11 @@ dim_umap_settings = dbc.Popover(
             [
                 dbc.FormGroup(
                     [
-                        dbc.Label("No. of neighbors", html_for="slider"),
+                        dbc.Label("No. of components", html_for="slider"),
                         dcc.Slider(
-                            id="dim-UMAP-n-neighbors",
+                            id="dim-UMAP-n-components",
                             min=2, max=100, step=1,
-                            value=15,
+                            value=40,
                             marks={i: str(i) for i in range(10, 101, 10)},
                             tooltip={'always_visible': True}
                         )
@@ -394,11 +394,11 @@ dim_umap_settings = dbc.Popover(
                 ),
                 dbc.FormGroup(
                     [
-                        dbc.Label("No. of components", html_for="slider"),
+                        dbc.Label("No. of neighbors", html_for="slider"),
                         dcc.Slider(
-                            id="dim-UMAP-n-components",
+                            id="dim-UMAP-n-neighbors",
                             min=2, max=100, step=1,
-                            value=40,
+                            value=15,
                             marks={i: str(i) for i in range(10, 101, 10)},
                             tooltip={'always_visible': True}
                         )

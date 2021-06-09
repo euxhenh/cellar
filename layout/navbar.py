@@ -6,6 +6,8 @@ from .preprocessing import prep
 
 CELLAR_LOGO = 'assets/cellar-logo-white.png'
 
+dataset_dict = get_server_dataset_dict(
+    '/home/keldeo/Slowpoke/cellar/datasets/server')
 
 documentation_bar = dbc.Nav(
     [
@@ -74,7 +76,8 @@ navbar = dbc.Navbar(
                         align='center',
                         no_gutters=True
                     ),
-                    href="https://www.biorxiv.org/content/10.1101/2021.03.19.436162v1?rss=1",
+                    href="https://www.biorxiv.org/content/10.1101/"
+                    "2021.03.19.436162v1?rss=1",
                     target="_blank"
                 ),
                 html.Div(className="vline"),
@@ -91,9 +94,6 @@ navbar = dbc.Navbar(
     className='m-auto shadow-sm'
 )
 
-
-dataset_dict = get_server_dataset_dict(
-    '/home/zekrom/Floatzel/cellar/datasets/server')
 
 dataset_bar = dbc.Row(
     [
