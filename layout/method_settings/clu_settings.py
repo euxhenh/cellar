@@ -22,8 +22,6 @@ clu_leiden_settings = dbc.Popover(
                                     "value": "RBERVertexPartition"},
                                 {"label": "CPMVertexPartition",
                                     "value": "CPMVertexPartition"},
-                                {"label": "SignificanceVertexPartition",
-                                    "value": "SignificanceVertexPartition"},
                                 {"label": "SurpriseVertexPartition",
                                     "value": "SurpriseVertexPartition"}
                             ],
@@ -111,6 +109,20 @@ clu_leiden_settings = dbc.Popover(
                 ),
                 dbc.FormGroup(
                     [
+                        dbc.Label("Construct Directed Graph"),
+                        dbc.RadioItems(
+                            options=[
+                                {"label": "True", "value": True},
+                                {"label": "False", "value": False},
+                            ],
+                            value=True,
+                            id="clu-Leiden-directed",
+                            inline=True
+                        )
+                    ]
+                ),
+                dbc.FormGroup(
+                    [
                         dbc.Label("Random State"),
                         dbc.Input(
                             id="clu-Leiden-random-state",
@@ -123,8 +135,10 @@ clu_leiden_settings = dbc.Popover(
                 html.P(
                     [
                         "Details: ",
-                        html.A("leidenalg.readthedocs.io/en/stable/reference.html#reference",
-                               href="https://leidenalg.readthedocs.io/en/stable/reference.html#reference",
+                        html.A("leidenalg.readthedocs.io/en/stable/reference"
+                               ".html#reference",
+                               href="https://leidenalg.readthedocs.io/en/"
+                               "stable/reference.html#reference",
                                target="_blank")
                     ],
                     className="small"
@@ -138,7 +152,15 @@ clu_leiden_settings = dbc.Popover(
 )
 
 clu_leiden_settings_keys = {
-    'clu-Leiden-resolution': 'resolution_parameter'
+    'clu-Leiden-partition-type': 'partition_type',
+    'clu-Leiden-n-iter': 'n_iterations',
+    'clu-Leiden-resolution': 'resolution_parameter',
+    'clu-Leiden-max-comm': 'max_comm_size',
+    'clu-Leiden-graph-method': 'graph_method',
+    'clu-Leiden-nneigh': 'n_neighbors',
+    'clu-Leiden-weights': 'use_weights',
+    'clu-Leiden-directed': 'directed',
+    'clu-Leiden-random-state': 'seed'
 }
 
 
@@ -190,8 +212,8 @@ clu_kmeans_settings = dbc.Popover(
                             id="clu-KMeans-max-iter",
                             min=10, max=1000, step=10,
                             value=300,
-                            marks={i: str(i)
-                                   for i in [10] + list(range(100, 1001, 100))},
+                            marks={i: str(i) for i in
+                                   [10] + list(range(100, 1001, 100))},
                             tooltip={'always_visible': True}
                         )
                     ]
@@ -281,7 +303,8 @@ clu_kmedoids_settings = dbc.Popover(
                                  "value": "mahalanobis"},
                                 {"label": "wminkowski", "value": "wminkowski"},
                                 {"label": "seuclidean", "value": "seuclidean"},
-                                {"label": "sqeuclidean", "value": "sqeuclidean"},
+                                {"label": "sqeuclidean",
+                                 "value": "sqeuclidean"},
                                 {"label": "nan_euclidean",
                                     "value": "nan_euclidean"},
                                 {"label": "cosine", "value": "cosine"},
@@ -342,8 +365,8 @@ clu_kmedoids_settings = dbc.Popover(
                             id="clu-KMedoids-max-iter",
                             min=10, max=1000, step=10,
                             value=300,
-                            marks={i: str(i)
-                                   for i in [10] + list(range(100, 1001, 100))},
+                            marks={i: str(i) for i in
+                                   [10] + list(range(100, 1001, 100))},
                             tooltip={'always_visible': True}
                         )
                     ]
@@ -457,7 +480,8 @@ clu_spectral_clustering_settings = dbc.Popover(
                 #                 {"label": "chi2", "value": "chi2"},
                 #                 {"label": "linear", "value": "linear"},
                 #                 {"label": "poly", "value": "poly"},
-                #                 {"label": "polynomial", "value": "polynomial"},
+                #                 {"label": "polynomial",
+                #                   "value": "polynomial"},
                 #                 {"label": "laplacian", "value": "laplacian"},
                 #                 {"label": "sigmoid", "value": "sigmoid"},
                 #                 {"label": "cosine", "value": "cosine"},

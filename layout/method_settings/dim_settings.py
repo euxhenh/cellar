@@ -63,8 +63,10 @@ dim_pca_settings = dbc.Popover(
                 html.P(
                     [
                         "Details: ",
-                        html.A("scikit-learn.org/stable/modules/generated/sklearn.decomposition.PCA.html",
-                               href="https://scikit-learn.org/stable/modules/generated/sklearn.decomposition.PCA.html",
+                        html.A("scikit-learn.org/stable/modules/generated/"
+                               "sklearn.decomposition.PCA.html",
+                               href="https://scikit-learn.org/stable/modules/"
+                               "generated/sklearn.decomposition.PCA.html",
                                target="_blank")
                     ],
                     className="small"
@@ -139,8 +141,11 @@ dim_tsvd_settings = dbc.Popover(
                 html.P(
                     [
                         "Details: ",
-                        html.A("scikit-learn.org/stable/modules/generated/sklearn.decomposition.TruncatedSVD.html",
-                               href="https://scikit-learn.org/stable/modules/generated/sklearn.decomposition.TruncatedSVD.html",
+                        html.A("scikit-learn.org/stable/modules/generated/"
+                               "sklearn.decomposition.TruncatedSVD.html",
+                               href="https://scikit-learn.org/stable/modules/"
+                               "generated/sklearn.decomposition."
+                               "TruncatedSVD.html",
                                target="_blank")
                     ],
                     className="small"
@@ -257,8 +262,11 @@ dim_kpca_settings = dbc.Popover(
                 html.P(
                     [
                         "Details: ",
-                        html.A("scikit-learn.org/stable/modules/generated/sklearn.decomposition.KernelPCA.html",
-                               href="https://scikit-learn.org/stable/modules/generated/sklearn.decomposition.KernelPCA.html",
+                        html.A("scikit-learn.org/stable/modules/generated/"
+                               "sklearn.decomposition.KernelPCA.html",
+                               href="https://scikit-learn.org/stable/modules/"
+                               "generated/sklearn.decomposition."
+                               "KernelPCA.html",
                                target="_blank")
                     ],
                     className="small"
@@ -332,8 +340,8 @@ dim_mds_settings = dbc.Popover(
                             id="dim-MDS-max-iter",
                             min=10, max=1000, step=10,
                             value=300,
-                            marks={i: str(i)
-                                   for i in [10] + list(range(100, 1001, 100))},
+                            marks={i: str(i) for i in
+                                   [10] + list(range(100, 1001, 100))},
                             tooltip={'always_visible': True}
                         )
                     ]
@@ -352,8 +360,10 @@ dim_mds_settings = dbc.Popover(
                 html.P(
                     [
                         "Details: ",
-                        html.A("scikit-learn.org/stable/modules/generated/sklearn.manifold.MDS.html",
-                               href="https://scikit-learn.org/stable/modules/generated/sklearn.manifold.MDS.html",
+                        html.A("scikit-learn.org/stable/modules/generated/"
+                               "sklearn.manifold.MDS.html",
+                               href="https://scikit-learn.org/stable/modules/"
+                               "generated/sklearn.manifold.MDS.html",
                                target="_blank")
                     ],
                     className="small"
@@ -416,24 +426,28 @@ dim_umap_settings = dbc.Popover(
                                 {"label": "minkowski", "value": "minkowski"},
                                 {"label": "canberra", "value": "canberra"},
                                 {"label": "braycurtis", "value": "braycurtis"},
-                                {"label": "mahalanobis", "value": "mahalanobis"},
+                                {"label": "mahalanobis",
+                                 "value": "mahalanobis"},
                                 {"label": "wminkowski", "value": "wminkowski"},
                                 {"label": "seuclidean", "value": "seuclidean"},
                                 {"label": "cosine", "value": "cosine"},
-                                {"label": "correlation", "value": "correlation"},
+                                {"label": "correlation",
+                                 "value": "correlation"},
                                 {"label": "haversine", "value": "haversine"},
                                 {"label": "hamming", "value": "hamming"},
                                 {"label": "jaccard", "value": "jaccard"},
                                 {"label": "dice", "value": "dice"},
                                 {"label": "russelrao", "value": "russelrao"},
                                 {"label": "kulsinski", "value": "kulsinski"},
-                                {"label": "ll_dirichlet", "value": "ll_dirichlet"},
+                                {"label": "ll_dirichlet", "value":
+                                 "ll_dirichlet"},
                                 {"label": "hellinger", "value": "hellinger"},
                                 {"label": "rogerstanimoto",
                                     "value": "rogerstanimoto"},
                                 {"label": "sokalmichener",
                                     "value": "sokalmichener"},
-                                {"label": "sokalsneath", "value": "sokalsneath"},
+                                {"label": "sokalsneath",
+                                 "value": "sokalsneath"},
                                 {"label": "yule", "value": "yule"}
                             ],
                             value="euclidean"
@@ -512,7 +526,8 @@ dim_umap_settings = dbc.Popover(
                     [
                         "Details: ",
                         html.A("umap-learn.readthedocs.io/en/latest/api.html",
-                               href="https://umap-learn.readthedocs.io/en/latest/api.html",
+                               href="https://umap-learn.readthedocs.io/en/"
+                               "latest/api.html",
                                target="_blank")
                     ],
                     className="small"

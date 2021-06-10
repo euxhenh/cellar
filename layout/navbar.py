@@ -6,8 +6,10 @@ from .preprocessing import prep
 
 CELLAR_LOGO = 'assets/cellar-logo-white.png'
 
+# dataset_dict = get_server_dataset_dict(
+#     '/home/zekrom/Floatzel/cellar/datasets/server')
 dataset_dict = get_server_dataset_dict(
-    '/home/zekrom/Floatzel/cellar/datasets/server')
+    '/home/keldeo/Slowpoke/cellar/datasets/server')
 
 documentation_bar = dbc.Nav(
     [
