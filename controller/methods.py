@@ -1,5 +1,5 @@
-from .cellar.core import cl_PCA, cl_TruncatedSVD, cl_kPCA, cl_MDS, cl_UMAP,cl_Agglomerative
-from .cellar.core import cl_Leiden, cl_KMeans,cl_KMedoids,cl_SpectralClustering
+from .cellar.core import cl_PCA, cl_TruncatedSVD, cl_kPCA, cl_MDS, cl_UMAP, cl_Agglomerative
+from .cellar.core import cl_Leiden, cl_KMeans, cl_KMedoids, cl_SpectralClustering
 
 dim_list = [
     {'label': 'PCA', 'value': 'dim-PCA', 'func': cl_PCA},
@@ -23,11 +23,12 @@ vis_list = [
 clu_list = [
     {'label': 'Leiden', 'value': 'clu-Leiden', 'func': cl_Leiden},
     {'label': 'KMeans', 'value': 'clu-KMeans', 'func': cl_KMeans},
-    {'label': 'KMedoids', 'value': 'clu-KMedoids','func':cl_KMedoids},
-    {'label': 'Spectral Clustering', 'value': 'clu-SpectralClustering', 'func': cl_SpectralClustering},
+    {'label': 'KMedoids', 'value': 'clu-KMedoids', 'func': cl_KMedoids},
+    {'label': 'Spectral Clustering', 'value': 'clu-Spectral-Clustering',
+     'func': cl_SpectralClustering},
     {'label': 'Agglomerative Clustering',
-     'value': 'clu-Agglomerative','func': cl_Agglomerative }
-    #{'label': 'Cluster Ensemble', 'value': 'clu-Cluster-Ensemble','func':},
+     'value': 'clu-Agglomerative', 'func': cl_Agglomerative}
+    # {'label': 'Cluster Ensemble', 'value': 'clu-Cluster-Ensemble','func':},
 ]
 
 

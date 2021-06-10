@@ -6,12 +6,14 @@ from sklearn.cluster import (DBSCAN, AgglomerativeClustering, Birch, KMeans,
 
 from ._neighbors import knn_auto
 from ._evaluation import Eval_Silhouette
-from ..utils.validation import _validate_clu_n_clusters,_validate_ensemble_methods
+from ..utils.validation import _validate_clu_n_clusters
 from ._cluster_multiple import cluster_multiple
-from ..methods import KMedoids
-from app import  logger
+from scipy.sparse import csr_matrix
+from sklearn_extra.cluster import KMedoids
+from app import logger
 from ._unit import Unit
 default_eval_obj = Eval_Silhouette()
+
 
 def cl_Leiden(
         adata, key='labels', x_to_use='x_emb', clear_annotations=True,
@@ -40,9 +42,8 @@ def cl_Leiden(
     adata.obs[key] = np.array(part.membership, dtype=int)
 
 
-
 def _get_wrapper(x, obj_def, n_clusters=np.array([2, 4, 8, 16]),
-                 eval_obj=default_eval_obj,
+                 eval_obj=default_eval_obj, x_eval=None,
                  n_jobs=None, attribute_name='n_clusters', **kwargs):
     """
     Wrapper function for those classes which specify the number of clusters
@@ -95,7 +96,7 @@ def _get_wrapper(x, obj_def, n_clusters=np.array([2, 4, 8, 16]),
         y = obj_def(**kwargs).fit_predict(x)
         if eval_obj is None:
             eval_obj = default_eval_obj
-        score = eval_obj.get(x, y)
+        score = eval_obj.get(x if x_eval is None else x_eval, y)
         logger.info(
             "Finished clustering with k={0}. Score={1:.2f}.".format(k,
                                                                     score))
@@ -104,16 +105,13 @@ def _get_wrapper(x, obj_def, n_clusters=np.array([2, 4, 8, 16]),
     elif isinstance(k, (list, np.ndarray)):
         return cluster_multiple(
             x, obj_def=obj_def, k_list=k, attribute_name=attribute_name,
-            eval_obj=eval_obj, method_name='fit_predict',
+            eval_obj=eval_obj, x_eval=x_eval, method_name='fit_predict',
             n_jobs=n_jobs, **kwargs)
 
 
-
-
-def cl_KMeans(        
+def cl_KMeans(
         adata, key='labels', x_to_use='x_emb', clear_annotations=True,
         **kwargs):
-    
     if clear_annotations:
         if 'annotations' in adata.obs:
             adata.obs.pop('annotations')
@@ -121,25 +119,29 @@ def cl_KMeans(
         x_to_use = adata.X
     else:
         x_to_use = adata.obsm[x_to_use]
-    
-    
-    logger.info("Initializing KMeans.")
-    
-    n_clusters=kwargs.pop('n_clusters')
-    kwargs['tol']=float(kwargs['tol'])
-    
-    y,score = _get_wrapper(x_to_use, obj_def=KMeans, n_clusters=n_clusters,
-                        eval_obj= default_eval_obj, n_jobs=None, 
-                        attribute_name='n_clusters', **kwargs)
-    
+
+    x_eval = None
+    if 'x_emb_2d' in adata.obsm:
+        x_eval = adata.obsm['x_emb_2d']
+
+    for k in kwargs:
+        if kwargs[k] == '':
+            kwargs[k] = None
+
+    logger.info("Running KMeans.")
+
+    n_clusters = kwargs.pop('n_clusters')
+
+    y, score = _get_wrapper(x_to_use, obj_def=KMeans, n_clusters=n_clusters,
+                            eval_obj=default_eval_obj, x_eval=x_eval,
+                            n_jobs=None, attribute_name='n_clusters', **kwargs)
+
     adata.obs[key] = y
 
 
-
-def cl_KMedoids(        
+def cl_KMedoids(
         adata, key='labels', x_to_use='x_emb', clear_annotations=True,
         **kwargs):
-    
     if clear_annotations:
         if 'annotations' in adata.obs:
             adata.obs.pop('annotations')
@@ -147,25 +149,29 @@ def cl_KMedoids(
         x_to_use = adata.X
     else:
         x_to_use = adata.obsm[x_to_use]
-    
-    
-    logger.info("Initializing KMedoids.")
-    
-    n_clusters=kwargs.pop('n_clusters')
-    
-    y,score = _get_wrapper(x_to_use, obj_def=KMedoids, n_clusters=n_clusters,
-                        eval_obj= default_eval_obj, n_jobs=None, 
-                        attribute_name='n_clusters', **kwargs)
-    
+
+    x_eval = None
+    if 'x_emb_2d' in adata.obsm:
+        x_eval = adata.obsm['x_emb_2d']
+
+    for k in kwargs:
+        if kwargs[k] == '':
+            kwargs[k] = None
+
+    logger.info("Running KMedoids.")
+
+    n_clusters = kwargs.pop('n_clusters')
+
+    y, score = _get_wrapper(x_to_use, obj_def=KMedoids, n_clusters=n_clusters,
+                            eval_obj=default_eval_obj, x_eval=x_eval,
+                            n_jobs=None, attribute_name='n_clusters', **kwargs)
+
     adata.obs[key] = y
-    
 
 
-
-def cl_SpectralClustering(        
+def cl_SpectralClustering(
         adata, key='labels', x_to_use='x_emb', clear_annotations=True,
         **kwargs):
-    
     if clear_annotations:
         if 'annotations' in adata.obs:
             adata.obs.pop('annotations')
@@ -173,30 +179,44 @@ def cl_SpectralClustering(
         x_to_use = adata.X
     else:
         x_to_use = adata.obsm[x_to_use]
-    
-    
-    logger.info("Initializing SpectralClustering.")
-    
-    # get floats
-    n_clusters=kwargs.pop('n_clusters')
-    kwargs['gamma']=float(kwargs['gamma'])
-    kwargs['eigen_tol']=float(kwargs['eigen_tol'])
-    kwargs['coef0']=float(kwargs['coef0'])
-    kwargs['degree']=float(kwargs['degree'])
-    
-    y,score = _get_wrapper(x_to_use, obj_def=SpectralClustering, n_clusters=n_clusters,
-                        eval_obj= default_eval_obj, n_jobs=None, 
-                        attribute_name='n_clusters', **kwargs)
-    
-    adata.obs[key] = y
-    
-    
-    
 
-def cl_Agglomerative(        
+    x_eval = None
+    if 'x_emb_2d' in adata.obsm:
+        x_eval = adata.obsm['x_emb_2d']
+
+    for k in kwargs:
+        if kwargs[k] == '':
+            kwargs[k] = None
+    if 'n_components' in kwargs:
+        if kwargs['n_components'] == 0:
+            kwargs.pop('n_components')
+
+    sources, targets, weights = knn_auto(
+        x_to_use, n_neighbors=kwargs['n_neighbors'], mode='distance')
+    kwargs.pop('n_neighbors')
+
+    n_samples = x_to_use.shape[0]
+    nneighs = csr_matrix((weights, (sources, targets)),
+                         shape=(n_samples, n_samples))
+
+    logger.info("Running Spectral Clustering.")
+
+    n_clusters = kwargs.pop('n_clusters')
+
+    kwargs['affinity'] = 'precomputed_nearest_neighbors'
+
+    y, score = _get_wrapper(nneighs, obj_def=SpectralClustering,
+                            n_clusters=n_clusters, x_eval=x_eval,
+                            eval_obj=default_eval_obj, n_jobs=None,
+                            attribute_name='n_clusters', **kwargs)
+
+    adata.obs[key] = y
+
+
+def cl_Agglomerative(
         adata, key='labels', x_to_use='x_emb', clear_annotations=True,
         **kwargs):
-    
+
     if clear_annotations:
         if 'annotations' in adata.obs:
             adata.obs.pop('annotations')
@@ -204,22 +224,25 @@ def cl_Agglomerative(
         x_to_use = adata.X
     else:
         x_to_use = adata.obsm[x_to_use]
-    
-    
-    logger.info("Initializing Agglomerative.")
-    
-    # get floats
-    n_clusters=kwargs.pop('n_clusters')
-    if kwargs['distance_threshold']!=None:
-        kwargs['distance_threshold']=float(kwargs['distance_threshold'])
 
-    
-    y,score = _get_wrapper(x_to_use, obj_def=AgglomerativeClustering, n_clusters=n_clusters,
-                        eval_obj= default_eval_obj, n_jobs=None, 
-                        attribute_name='n_clusters', **kwargs)
-    
+    x_eval = None
+    if 'x_emb_2d' in adata.obsm:
+        x_eval = adata.obsm['x_emb_2d']
+
+    for k in kwargs:
+        if kwargs[k] == '':
+            kwargs[k] = None
+
+    logger.info("Running Agglomerative Clustering.")
+
+    n_clusters = kwargs.pop('n_clusters')
+
+    y, score = _get_wrapper(x_to_use, obj_def=AgglomerativeClustering,
+                            n_clusters=n_clusters,
+                            eval_obj=default_eval_obj, x_eval=x_eval,
+                            n_jobs=None, attribute_name='n_clusters', **kwargs)
+
     adata.obs[key] = y
-    
 
 
 ''' ensemble clustering'''
@@ -340,10 +363,10 @@ class Ens_HyperGraph(Unit):
         return ensemble_labels, scores
 
 
-def cl_ensemble(        
+def cl_ensemble(
         adata, key='labels', x_to_use='x_emb', clear_annotations=True,
         **kwargs):
-    
+
     if clear_annotations:
         if 'annotations' in adata.obs:
             adata.obs.pop('annotations')
@@ -351,22 +374,19 @@ def cl_ensemble(
         x_to_use = adata.X
     else:
         x_to_use = adata.obsm[x_to_use]
-    
-    
+
+
     logger.info("Initializing Agglomerative.")
-    
+
     # get floats
     n_clusters=kwargs.pop('n_clusters')
     if kwargs['distance_threshold']!=None:
         kwargs['distance_threshold']=float(kwargs['distance_threshold'])
 
-    
+
     y,score = _get_wrapper(x_to_use, obj_def=Ens_HyperGraph, n_clusters=n_clusters,
-                        eval_obj= default_eval_obj, n_jobs=None, 
+                        eval_obj= default_eval_obj, n_jobs=None,
                         attribute_name='n_clusters', **kwargs)
-    
+
     adata.obs[key] = y
 '''
-
-
-

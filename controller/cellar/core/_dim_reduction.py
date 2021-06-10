@@ -3,94 +3,37 @@ from sklearn.manifold import MDS
 from umap import UMAP
 
 
-def cl_PCA(adata, key, x_to_use, **kwargs):
-    for k in kwargs:
-        if kwargs[k] == '':
-            kwargs[k] = None
-
-    if x_to_use == 'x':
-        x_to_use = adata.X
-    else:
-        x_to_use = adata.obsm['x_emb']
-
-    if 'n_components' not in kwargs:
-        kwargs['n_components'] = 2
-
-    pca = PCA(**kwargs)
-
-    adata.obsm[key] = pca.fit_transform(x_to_use)
+func_map = {
+    'cl_PCA': PCA,
+    'cl_TruncatedSVD': TruncatedSVD,
+    'cl_kPCA': KernelPCA,
+    'cl_MDS': MDS,
+    'cl_UMAP': UMAP
+}
 
 
-def cl_TruncatedSVD(adata, key, x_to_use, **kwargs):
-    for k in kwargs:
-        if kwargs[k] == '':
-            kwargs[k] = None
+def get_func(func_name):
+    def _func(adata, key, x_to_use, **kwargs):
+        for k in kwargs:
+            if kwargs[k] == '':
+                kwargs[k] = None
 
-    if x_to_use == 'x':
-        x_to_use = adata.X
-    else:
-        x_to_use = adata.obsm['x_emb']
+        if x_to_use == 'x':
+            x_to_use = adata.X
+        else:
+            x_to_use = adata.obsm['x_emb']
 
-    if 'n_components' not in kwargs:
-        kwargs['n_components'] = 2
+        if 'n_components' not in kwargs:
+            kwargs['n_components'] = 2
 
-    tsvd = TruncatedSVD(**kwargs)
+        fitter = func_map[func_name](**kwargs)
+        adata.obsm[key] = fitter.fit_transform(x_to_use)
 
-    adata.obsm[key] = tsvd.fit_transform(x_to_use)
-
-
-def cl_kPCA(adata, key, x_to_use, **kwargs):
-    for k in kwargs:
-        if kwargs[k] == '':
-            kwargs[k] = None
-
-    if x_to_use == 'x':
-        x_to_use = adata.X
-    else:
-        x_to_use = adata.obsm['x_emb']
-
-    if 'n_components' not in kwargs:
-        kwargs['n_components'] = 2
-
-    kpca = KernelPCA(**kwargs)
-
-    adata.obsm[key] = kpca.fit_transform(x_to_use)
+    return _func
 
 
-def cl_MDS(adata, key, x_to_use, **kwargs):
-    for k in kwargs:
-        if kwargs[k] == '':
-            kwargs[k] = None
-
-    if x_to_use == 'x':
-        x_to_use = adata.X
-    else:
-        x_to_use = adata.obsm['x_emb']
-
-    if 'n_components' not in kwargs:
-        kwargs['n_components'] = 2
-
-    mds = MDS(**kwargs)
-
-    adata.obsm[key] = mds.fit_transform(x_to_use)
-
-
-def cl_UMAP(adata, key, x_to_use, **kwargs):
-    for k in kwargs:
-        if kwargs[k] == '':
-            kwargs[k] = None
-
-    if x_to_use == 'x':
-        x_to_use = adata.X
-    else:
-        x_to_use = adata.obsm['x_emb']
-
-    if 'n_components' not in kwargs:
-        kwargs['n_components'] = 2
-
-    umap = UMAP(**kwargs)
-
-    adata.obsm[key] = umap.fit_transform(x_to_use)
+for func_name in func_map.keys():
+    globals()[func_name] = get_func(func_name)
 
 
 def clear_x_emb_dependends(adata):

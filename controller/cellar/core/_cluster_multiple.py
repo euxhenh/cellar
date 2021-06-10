@@ -9,7 +9,7 @@ from ..utils.validation import _validate_n_jobs
 
 
 def cluster_multiple(x, obj_def, k_list=np.array([2, 4, 8, 16]),
-                     attribute_name='n_clusters', eval_obj=None,
+                     attribute_name='n_clusters', eval_obj=None, x_eval=None,
                      method_name='fit_predict', n_jobs=None, **kwargs):
     """
     Runs clustering for multiple n_clusters.
@@ -70,7 +70,7 @@ def cluster_multiple(x, obj_def, k_list=np.array([2, 4, 8, 16]),
             # Cluster
             y = getattr(obj_def(**kwargs), method_name)(x)
             # Evaluate
-            score = eval_obj.get(x, y)
+            score = eval_obj.get(x if x_eval is None else x_eval, y)
             score_list.append(score)
             # Update if better (higher) score (saves memory)
             if score > top_score:
@@ -93,7 +93,7 @@ def cluster_multiple(x, obj_def, k_list=np.array([2, 4, 8, 16]),
             for i in range(len(k_list)))
         # Run evaluation in parallel
         score_list = Parallel(n_jobs=n_jobs)(
-            delayed(eval_obj.get)(x, y)
+            delayed(eval_obj.get)(x if x_eval is None else x_eval, y)
             for y in y_list)
 
         # Find the best score
