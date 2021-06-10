@@ -21,11 +21,11 @@ def faiss_knn(x, n_neighbors=15):
     index = faiss.IndexHNSWFlat(n_features, 15)
     index.add(x)
 
-    D, I = index.search(x, n_neighbors)
+    weights, targets = index.search(x, n_neighbors)
 
     sources = np.repeat(np.arange(n_samples), n_neighbors)
-    targets = I.flatten()
-    weights = D.flatten()
+    targets = targets.flatten()
+    weights = weights.flatten()
 
     if -1 in targets:
         raise InternalError("Not enough neighbors were found. Please consider "

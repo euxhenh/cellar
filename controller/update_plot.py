@@ -2,11 +2,12 @@ import dash
 from app import app, dbroot, logger
 from dash.dependencies import Input, Output, State
 from dash.exceptions import PreventUpdate
-from enum import Enum, auto
+from enum import Enum
 
 from .cellar.core import (clear_x_emb_dependends, get_clu_figure,
                           get_dim_figure, get_expression_figure,
                           get_reset_figure)
+from .cellar.utils.exceptions import InternalError
 from .methods import clu_list, dim_list, lbt_list, ssclu_list, vis_list
 from .operations import clu_filter, dim_reduce_filter, vis_filter
 
@@ -69,9 +70,7 @@ def get_update_plot_func(an):
         ctx = dash.callback_context
         if not ctx.triggered or s_code is None:
             return dash.no_update
-        
 
-        
         title = dbroot.adatas[an]['name']
 
         if s_code == Signal.DIM_REDUCE:
@@ -87,7 +86,6 @@ def get_update_plot_func(an):
         elif s_code == Signal.CLUSTER:
             # Cluster and prepare figure
             clu_filter(dbroot.adatas[an]['adata'], clu_method, settings)
-            to_update_clusters = 1
 
             return get_clu_figure(dbroot.adatas[an]['adata'], title), 1
         elif s_code == Signal.FEATURE_EXP:
@@ -103,7 +101,7 @@ def get_update_plot_func(an):
             return get_clu_figure(dbroot.adatas[an]['adata'], title),\
                 dash.no_update
         else:
-            raise InternalError(f"No signal with id {button_id} found.")
+            raise InternalError(f"No signal with id {s_code} found.")
 
     return update_plot
 

@@ -110,7 +110,9 @@ def get_expression_figure(adata, feature_values):
         opacity=0.8,
         labels={'color': 'Normalized Val.'},
         range_color=[expression.min(), 1 if exp_max == 0 else exp_max],
-        render_mode='webgl')
+        render_mode='webgl',
+        color_continuous_scale=px.colors.sequential.Viridis
+    )
 
     fig.update_layout(
         title=title,
@@ -152,11 +154,11 @@ def get_heatmap(adata, feature_list):
         column_labels=list(adata[:, feature_list].var['gene_symbols']),
         row_labels=['Cluster' + str(i) for i in unq_labels],
         color_map=[
-            [0.0, '#d7191c'],
-            [0.25, '#fdae61'],
-            [0.5, '#ffffbf'],
-            [0.75, '#abdda4'],
-            [1.0, '#2b83ba']
+            [0.0, '#440154'],
+            [0.25, '#3e4989'],
+            [0.5, '#26828e'],
+            [0.75, '#35b779'],
+            [1.0, '#fde725']
         ],
         cluster=cluster,
         center_values=True,

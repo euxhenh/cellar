@@ -10,12 +10,113 @@ clu_leiden_settings = dbc.Popover(
             [
                 dbc.FormGroup(
                     [
-                        dbc.Label("Resolution", html_for="slider"),
+                        dbc.Label("Partition Type"),
+                        dbc.Select(
+                            id="clu-Leiden-partition-type",
+                            options=[
+                                {"label": "RBConfigurationVertexPartition",
+                                    "value": "RBConfigurationVertexPartition"},
+                                {"label": "ModularityVertexPartition",
+                                    "value": "ModularityVertexPartition"},
+                                {"label": "RBERVertexPartition",
+                                    "value": "RBERVertexPartition"},
+                                {"label": "CPMVertexPartition",
+                                    "value": "CPMVertexPartition"},
+                                {"label": "SignificanceVertexPartition",
+                                    "value": "SignificanceVertexPartition"},
+                                {"label": "SurpriseVertexPartition",
+                                    "value": "SurpriseVertexPartition"}
+                            ],
+                            value="RBConfigurationVertexPartition"
+                        )
+                    ]
+                ),
+                dbc.FormGroup(
+                    [
+                        dbc.Label("Number of Iterations"),
+                        dbc.Input(
+                            id="clu-Leiden-n-iter",
+                            placeholder="Set to -1 to run until convergence",
+                            type="number",
+                            value=-1
+                        )
+                    ]
+                ),
+                dbc.FormGroup(
+                    [
+                        dbc.Label(
+                            "Resolution (only for RBConfiguration, RBER, CPM)",
+                            html_for="slider"),
                         dcc.Slider(
                             id="clu-Leiden-resolution",
                             min=0.01, max=10, step=0.01,
                             value=1,
                             tooltip={'always_visible': True}
+                        )
+                    ]
+                ),
+                dbc.FormGroup(
+                    [
+                        dbc.Label("Max Community Size"),
+                        dbc.Input(
+                            id="clu-Leiden-max-comm",
+                            placeholder="Set to 0 to allow any size",
+                            type="number",
+                            value=0
+                        )
+                    ]
+                ),
+                dbc.FormGroup(
+                    [
+                        dbc.Label("Graph Construction Method"),
+                        dbc.Select(
+                            id="clu-Leiden-graph-method",
+                            options=[
+                                {"label": "auto", "value": "auto"},
+                                {"label": "approximate neighbors",
+                                 "value": "approximate"},
+                                {"label": "full (slow for large datasets)",
+                                 "value": "full"}
+                            ],
+                            value="auto"
+                        )
+                    ]
+                ),
+                dbc.FormGroup(
+                    [
+                        dbc.Label(
+                            "Number of Neighbors for the Graph",
+                            html_for="slider"),
+                        dcc.Slider(
+                            id="clu-Leiden-nneigh",
+                            min=1, max=100, step=1,
+                            value=15,
+                            tooltip={'always_visible': True}
+                        )
+                    ]
+                ),
+                dbc.FormGroup(
+                    [
+                        dbc.Label("Construct Weighted Graph"),
+                        dbc.RadioItems(
+                            options=[
+                                {"label": "True", "value": True},
+                                {"label": "False", "value": False},
+                            ],
+                            value=True,
+                            id="clu-Leiden-weights",
+                            inline=True
+                        )
+                    ]
+                ),
+                dbc.FormGroup(
+                    [
+                        dbc.Label("Random State"),
+                        dbc.Input(
+                            id="clu-Leiden-random-state",
+                            placeholder="Leave empty if None",
+                            type="number",
+                            value=""
                         )
                     ]
                 ),
@@ -63,7 +164,7 @@ clu_kmeans_settings = dbc.Popover(
                     placement='auto',
                     target="clu-KMeans-n-clusters",
                 ),
-                
+
                 dbc.FormGroup(
                     [
                         dbc.Label("Max Iter", html_for="slider"),
@@ -77,7 +178,7 @@ clu_kmeans_settings = dbc.Popover(
                         )
                     ]
                 ),
-                
+
                 dbc.FormGroup(
                     [
                         dbc.Label("Tolerance"),
@@ -88,7 +189,7 @@ clu_kmeans_settings = dbc.Popover(
                         )
                     ]
                 ),
-                
+
                 dbc.FormGroup(
                     [
                         dbc.Label("Algorithm"),
@@ -97,15 +198,15 @@ clu_kmeans_settings = dbc.Popover(
                                 {"label": "auto", "value": "auto"},
                                 {"label": "full", "value": "full"},
                                 {"label": "elkan", "value": "elkan"},
-                                ],
+                            ],
                             id="clu-KMeans-algorithm",
-                            value = 'auto'
+                            value='auto'
                         ),
                     ]
                 ),
-                
 
-                
+
+
                 dbc.FormGroup(
                     [
                         dbc.Label("Random State"),
@@ -117,7 +218,7 @@ clu_kmeans_settings = dbc.Popover(
                         )
                     ]
                 ),
-                
+
                 html.P(
                     [
                         "Details: ",
@@ -145,9 +246,6 @@ clu_kmeans_settings_keys = {
 }
 
 
-
-
-
 clu_KMedoids_settings = dbc.Popover(
     [
         dbc.PopoverHeader("KMedoids Settings"),
@@ -168,10 +266,10 @@ clu_KMedoids_settings = dbc.Popover(
                     "or a tuple specifying the range. e.g. (3,9,2) will start at 3"
                     "and end at 9 on increments of 2.",
                     placement='auto',
-                    style={"fontFamily":"courier"},
+                    style={"fontFamily": "courier"},
                     target="clu-KMedoids-n-clusters",
                 ),
-                
+
                 dbc.FormGroup(
                     [
                         dbc.Label("Max Iter", html_for="slider"),
@@ -185,12 +283,12 @@ clu_KMedoids_settings = dbc.Popover(
                         )
                     ]
                 ),
-                
+
                 dbc.FormGroup(
                     [
                         dbc.Label("Metric"),
                         dbc.Select(
-                        options=[
+                            options=[
                                 {"label": "euclidean", "value": "euclidean"},
                                 {"label": "manhattan", "value": "manhattan"},
                                 {"label": "chebyshev", "value": "chebyshev"},
@@ -211,18 +309,18 @@ clu_KMedoids_settings = dbc.Popover(
                                 {"label": "ll_dirichlet", "value": "ll_dirichlet"},
                                 {"label": "hellinger", "value": "hellinger"},
                                 {"label": "rogerstanimoto",
-                                    "value": "rogerstanimoto"},
+                                 "value": "rogerstanimoto"},
                                 {"label": "sokalmichener",
-                                    "value": "sokalmichener"},
+                                 "value": "sokalmichener"},
                                 {"label": "sokalsneath", "value": "sokalsneath"},
                                 {"label": "yule", "value": "yule"}
                             ],
                             id="clu-KMedoids-metric",
-                            value = 'euclidean'
+                            value='euclidean'
                         ),
                     ]
                 ),
-                
+
                 dbc.FormGroup(
                     [
                         dbc.Label("Initialization"),
@@ -231,9 +329,9 @@ clu_KMedoids_settings = dbc.Popover(
                                 {"label": "random", "value": "random"},
                                 {"label": "heuristic", "value": "heuristic"},
                                 {"label": "k-medoids++", "value": "k-medoids++"},
-                                ],
+                            ],
                             id="clu-KMedoids-init",
-                            value = 'heuristic'
+                            value='heuristic'
                         ),
                     ]
                 ),
@@ -244,12 +342,12 @@ clu_KMedoids_settings = dbc.Popover(
                     "follows an approach based on k-means++_, and in general, gives initial"
                     "medoids which are more separated than those generated by the other methods.",
                     placement='auto',
-                    style={"fontFamily":"courier"},
+                    style={"fontFamily": "courier"},
                     target="clu-KMedoids-init",
                 ),
-                
-                
-                
+
+
+
                 dbc.FormGroup(
                     [
                         dbc.Label("Random State"),
@@ -261,8 +359,8 @@ clu_KMedoids_settings = dbc.Popover(
                         )
                     ]
                 )
-                
-                #html.P(
+
+                # html.P(
                 #    [
                 #        "Details: ",
                 #        html.A("scikit-learn-extra.readthedocs.io/en/stable/generated/sklearn_extra.cluster.KMedoids.html",
@@ -270,8 +368,8 @@ clu_KMedoids_settings = dbc.Popover(
                 #               target="_blank")
                 #    ],
                 #    className="small"
-                #)
-                
+                # )
+
             ]
         )
     ],
@@ -288,10 +386,6 @@ clu_KMedoids_settings_keys = {
     'clu-KMedoids-init': 'init',
     'clu-KMedoids-metric': 'metric'
 }
-
-
-
-
 
 
 clu_SpectralClustering_settings = dbc.Popover(
@@ -314,10 +408,10 @@ clu_SpectralClustering_settings = dbc.Popover(
                     "or a tuple specifying the range. e.g. (3,9,2) will start at 3"
                     "and end at 9 on increments of 2.",
                     placement='auto',
-                    style={"fontFamily":"courier"},
+                    style={"fontFamily": "courier"},
                     target="clu-SpectralClustering-n-clusters",
                 ),
-                
+
                 dbc.FormGroup(
                     [
                         dbc.Label("No. of components", html_for="slider"),
@@ -330,13 +424,13 @@ clu_SpectralClustering_settings = dbc.Popover(
                         )
                     ]
                 ),
-                
-                
+
+
                 dbc.FormGroup(
                     [
                         dbc.Label("Eigen Solver"),
                         dbc.Select(
-                            
+
                             options=[
                                 {"label": "arpack", "value": "arpack"},
                                 {"label": "logpcg", "value": "logpcg"},
@@ -347,9 +441,9 @@ clu_SpectralClustering_settings = dbc.Popover(
                         )
                     ]
                 ),
-                
-                
-                                
+
+
+
 
                 dbc.FormGroup(
                     [
@@ -361,21 +455,22 @@ clu_SpectralClustering_settings = dbc.Popover(
                         )
                     ]
                 ),
-                
+
                 dbc.FormGroup(
                     [
                         dbc.Label("Affinity"),
                         dbc.Select(
                             id="clu-SpectralClustering-affinity",
                             options=[
-                                {"label": "nearest_neighbors", "value": "nearest_neighbors"},
+                                {"label": "nearest_neighbors",
+                                    "value": "nearest_neighbors"},
                                 {"label": "rbf", "value": "rbf"}
                             ],
                             value="rbf"
                         )
                     ]
                 ),
-                
+
                 dbc.FormGroup(
                     [
                         dbc.Label("No. of neighbors"),
@@ -386,7 +481,7 @@ clu_SpectralClustering_settings = dbc.Popover(
                         )
                     ]
                 ),
-                
+
                 dbc.FormGroup(
                     [
                         dbc.Label("eigen_tol"),
@@ -398,7 +493,7 @@ clu_SpectralClustering_settings = dbc.Popover(
                     ]
                 ),
 
-                
+
                 dbc.FormGroup(
                     [
                         dbc.Label("Assign Labels"),
@@ -412,8 +507,8 @@ clu_SpectralClustering_settings = dbc.Popover(
                         )
                     ]
                 ),
-                
-                
+
+
                 dbc.FormGroup(
                     [
                         dbc.Label("degree"),
@@ -424,7 +519,7 @@ clu_SpectralClustering_settings = dbc.Popover(
                         )
                     ]
                 ),
-                
+
                 dbc.FormGroup(
                     [
                         dbc.Label("coef0"),
@@ -436,8 +531,8 @@ clu_SpectralClustering_settings = dbc.Popover(
                     ]
                 ),
 
-                
-                
+
+
                 dbc.FormGroup(
                     [
                         dbc.Label("Random State"),
@@ -449,7 +544,7 @@ clu_SpectralClustering_settings = dbc.Popover(
                         )
                     ]
                 ),
-                
+
                 html.P(
                     [
                         "Details: ",
@@ -459,7 +554,7 @@ clu_SpectralClustering_settings = dbc.Popover(
                     ],
                     className="small"
                 )
-                
+
             ]
         )
     ],
@@ -471,7 +566,7 @@ clu_SpectralClustering_settings = dbc.Popover(
 
 clu_SpectralClustering_settings_keys = {
     'clu-SpectralClustering-n-clusters': 'n_clusters',
-    'clu-SpectralClustering-eigen-solver':'eigen_solver',
+    'clu-SpectralClustering-eigen-solver': 'eigen_solver',
     'clu-SpectralClustering-random-state': 'random_state',
     'clu-SpectralClustering-coef0': 'coef0',
     'clu-SpectralClustering-degree': 'degree',
@@ -480,9 +575,9 @@ clu_SpectralClustering_settings_keys = {
     'clu-SpectralClustering-n_neighbors': 'n_neighbors',
     'clu-SpectralClustering-affinity': 'affinity',
     'clu-SpectralClustering-gamma': 'gamma',
-    'clu-SpectralClustering-n-components':'n_components'
-    
-    
+    'clu-SpectralClustering-n-components': 'n_components'
+
+
 }
 
 
@@ -508,8 +603,8 @@ clu_agglomerative_settings = dbc.Popover(
                     placement='auto',
                     target="clu-Agglomerative-n-clusters",
                 ),
-                
-                
+
+
 
                 dbc.FormGroup(
                     [
@@ -521,13 +616,13 @@ clu_agglomerative_settings = dbc.Popover(
                                 {"label": "l2", "value": "l2"},
                                 {"label": "manhattan", "value": "manhattan"},
                                 {"label": "cosine", "value": "cosine"},
-                                ],
+                            ],
                             id="clu-Agglomerative-affinity",
-                            value = 'euclidean'
+                            value='euclidean'
                         ),
                     ]
                 ),
-                
+
                 dbc.FormGroup(
                     [
                         dbc.Label("Linkage"),
@@ -537,13 +632,13 @@ clu_agglomerative_settings = dbc.Popover(
                                 {"label": "complete", "value": "complete"},
                                 {"label": "average", "value": "average"},
                                 {"label": "single", "value": "single"},
-                                ],
+                            ],
                             id="clu-Agglomerative-linkage",
-                            value = 'ward'
+                            value='ward'
                         ),
                     ]
                 ),
-                
+
                 dbc.FormGroup(
                     [
                         dbc.Label("Distance Threshold"),
@@ -555,7 +650,7 @@ clu_agglomerative_settings = dbc.Popover(
                         )
                     ]
                 ),
-                
+
 
                 html.P(
                     [
@@ -583,13 +678,12 @@ clu_agglomerative_settings_keys = {
 }
 
 
-
-clu_settings = [clu_leiden_settings,clu_kmeans_settings,clu_KMedoids_settings,
-                clu_SpectralClustering_settings,clu_agglomerative_settings]
+clu_settings = [clu_leiden_settings, clu_kmeans_settings, clu_KMedoids_settings,
+                clu_SpectralClustering_settings, clu_agglomerative_settings]
 clu_settings_keys = {
     'clu-Leiden': clu_leiden_settings_keys,
     'clu-KMeans': clu_kmeans_settings_keys,
     'clu-KMedoids': clu_KMedoids_settings_keys,
     'clu-SpectralClustering': clu_SpectralClustering_settings_keys,
-    'clu-Agglomerative':clu_agglomerative_settings_keys
+    'clu-Agglomerative': clu_agglomerative_settings_keys
 }
