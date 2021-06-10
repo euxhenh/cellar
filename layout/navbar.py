@@ -93,7 +93,7 @@ navbar = dbc.Navbar(
 
 
 dataset_dict = get_server_dataset_dict(
-    '/home/zekrom/Floatzel/cellar/datasets/server')
+    'data/server')
 
 dataset_bar = dbc.Row(
     [

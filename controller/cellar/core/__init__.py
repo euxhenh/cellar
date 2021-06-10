@@ -1,4 +1,4 @@
-from ._cluster import cl_Leiden
+from ._cluster import cl_Leiden,cl_KMeans,cl_KMedoids,cl_SpectralClustering,cl_Agglomerative
 from ._de import enrich, ttest
 from ._dim_reduction import (cl_kPCA, cl_PCA, cl_TruncatedSVD, cl_MDS, cl_UMAP,
                              clear_x_emb_dependends)

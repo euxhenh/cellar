@@ -69,7 +69,9 @@ def get_update_plot_func(an):
         ctx = dash.callback_context
         if not ctx.triggered or s_code is None:
             return dash.no_update
+        
 
+        
         title = dbroot.adatas[an]['name']
 
         if s_code == Signal.DIM_REDUCE:
