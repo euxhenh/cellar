@@ -4,7 +4,7 @@ import dash_core_components as dcc
 import dash_table
 import gseapy
 
-from .misc import empty_analysis_figure
+from .misc import empty_analysis_figure, empty_spatial_figure
 
 
 def get_de_card(prefix):
@@ -266,6 +266,50 @@ def get_enrich_card(prefix):
     return enrich
 
 
+def get_spatial_card(prefix):
+    spatial = dbc.Card(
+        [
+            dbc.CardBody(
+                [
+                    html.H5("Spatial Data", className="card-title"),
+                    dbc.Col(
+                        [
+                            dbc.Row(
+                                [
+                                    dcc.Upload(
+                                        id=prefix + "-upload-spatial",
+                                        children=[
+                                            dbc.Button("Upload")
+                                        ],
+                                        className="mr-2"
+                                    ),
+                                    dbc.Button(
+                                        "Generate Tile",
+                                        id=prefix + "-generate-tile-btn"
+                                    )
+                                ],
+                                no_gutters=True
+                            ),
+                            dbc.Row(
+                                [
+                                    dcc.Loading(
+                                        children=[
+                                            html.Div(id=prefix + '-tile')
+                                        ],
+                                        type="circle"
+                                    )
+                                ]
+                            )
+                        ],
+                        width=12
+                    )
+                ]
+            )
+        ]
+    )
+    return spatial
+
+
 def get_analysis_tabs(prefix):
     analysis_tabs = dbc.Tabs(
         [
@@ -284,7 +328,8 @@ def get_analysis_tabs(prefix):
                 ),
                 label="Analysis"
             ),
-            dbc.Tab([], label="Spatial Data", style={'height': '400px'})
+            dbc.Tab(get_spatial_card(prefix),
+                    label="Spatial Data", style={'height': '400px'})
         ]
     )
 

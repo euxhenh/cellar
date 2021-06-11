@@ -12,6 +12,7 @@ from controller.annotations import *
 from controller.analysis_controller import *
 from controller.session import *
 from controller.preprocessing_controller import *
+from controller.data_uploader import *
 
 app.layout = dbc.Container(
     [

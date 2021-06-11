@@ -33,8 +33,13 @@ def faiss_knn(x, n_neighbors=15):
     return sources, targets, weights
 
 
-def knn_auto(x, n_neighbors=15, mode='distance'):
-    if x.shape[0] > 5000:
-        print("Dataset is too large. Finding approximate neighbors.")
-        return faiss_knn(x, n_neighbors=n_neighbors)
-    return full_knn(x, n_neighbors=n_neighbors, mode=mode)
+def knn_auto(x, n_neighbors=15, mode='distance', method='auto'):
+    if method == 'auto':
+        if x.shape[0] > 5000:
+            print("Dataset is too large. Finding approximate neighbors.")
+            return faiss_knn(x, n_neighbors=n_neighbors)
+        return full_knn(x, n_neighbors=n_neighbors, mode=mode)
+    elif method == 'full':
+        return full_knn(x, n_neighbors=n_neighbors, mode=mode)
+
+    return faiss_knn(x, n_neighbors=n_neighbors)

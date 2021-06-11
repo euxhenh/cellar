@@ -1,8 +1,8 @@
 import igraph as ig
 import leidenalg as la
 import numpy as np
-from sklearn.cluster import (DBSCAN, AgglomerativeClustering, Birch, KMeans,
-                             SpectralClustering)
+from sklearn.cluster import (
+    AgglomerativeClustering, KMeans, SpectralClustering)
 
 from ._neighbors import knn_auto
 from ._evaluation import Eval_Silhouette
@@ -11,13 +11,13 @@ from ._cluster_multiple import cluster_multiple
 from scipy.sparse import csr_matrix
 from sklearn_extra.cluster import KMedoids
 from app import logger
-from ._unit import Unit
 default_eval_obj = Eval_Silhouette()
 
 
 def cl_Leiden(
         adata, key='labels', x_to_use='x_emb', clear_annotations=True,
-        **kwargs):
+        partition_type='RBConfigurationVertexPartition', directed=True,
+        graph_method='auto', n_neighbors=15, use_weights=True, **kwargs):
     if clear_annotations:
         if 'annotations' in adata.obs:
             adata.obs.pop('annotations')
@@ -26,18 +26,27 @@ def cl_Leiden(
     else:
         x_to_use = adata.obsm[x_to_use]
 
-    sources, targets, weights = knn_auto(
-        x_to_use, n_neighbors=15, mode='distance')
+    for k in kwargs:
+        if kwargs[k] == '':
+            kwargs[k] = None
 
-    gg = ig.Graph(directed=True)
+    print(partition_type)
+    print(kwargs)
+    if partition_type in [
+            'ModularityVertexPartition', 'SurpriseVertexPartition']:
+        kwargs.pop('resolution_parameter')
+
+    sources, targets, weights = knn_auto(
+        x_to_use, n_neighbors=n_neighbors,
+        mode='distance', method=graph_method)
+
+    kwargs['weights'] = weights if use_weights else None
+
+    gg = ig.Graph(directed=directed)
     gg.add_vertices(x_to_use.shape[0])
     gg.add_edges(list(zip(list(sources), list(targets))))
 
-    part = la.find_partition(
-        gg, la.RBConfigurationVertexPartition,
-        weights=weights,
-        n_iterations=-1,
-        resolution_parameter=1)
+    part = la.find_partition(gg, getattr(la, partition_type), **kwargs)
 
     adata.obs[key] = np.array(part.membership, dtype=int)
 
@@ -295,7 +304,8 @@ class Ens_HyperGraph(Unit):
 
         n_jobs: int or None, default None
             Number of jobs to use if multithreading. See
-            https://joblib.readthedocs.io/en/latest/generated/joblib.Parallel.html.
+            https://joblib.readthedocs.io/en/latest/generated/
+            joblib.Parallel.html.
 
         **kwargs: dictionary
             Dictionary of parameters that will get passed to obj_def
@@ -330,9 +340,10 @@ class Ens_HyperGraph(Unit):
         try:
             import Cluster_Ensembles as CE
         except ImportError:
-            raise ImportError("Manually install Cluster_Ensembles package if you "
-                              "wish to run ensemble clustering. For more information ",
-                              "see here: https://pypi.org/project/Cluster_Ensembles/")
+            raise ImportError(
+                "Manually install Cluster_Ensembles package if you "
+                "wish to run ensemble clustering. For more information ",
+                "see here: https://pypi.org/project/Cluster_Ensembles/")
 
         self.logger.info("Initializing Ensemble Clustering.")
         self.logger.info("Using the following methods:")
@@ -340,9 +351,10 @@ class Ens_HyperGraph(Unit):
 
         if len(self.methods) == 1:
             # No need to do ensemble if only one method
-            return clu_wrap(self.methods[0])(eval_obj=self.eval_obj,
-                                             n_clusters=self.n_clusters,
-                                             n_jobs=self.n_jobs, **self.kwargs).get(x)
+            return clu_wrap(self.methods[0])(
+                eval_obj=self.eval_obj,
+                n_clusters=self.n_clusters,
+                n_jobs=self.n_jobs, **self.kwargs).get(x)
         elif len(self.methods) < 1:
             raise ValueError("No methods specified for ensemble clustering.")
 
@@ -384,7 +396,8 @@ def cl_ensemble(
         kwargs['distance_threshold']=float(kwargs['distance_threshold'])
 
 
-    y,score = _get_wrapper(x_to_use, obj_def=Ens_HyperGraph, n_clusters=n_clusters,
+    y,score = _get_wrapper(x_to_use, obj_def=Ens_HyperGraph,
+                        n_clusters=n_clusters,
                         eval_obj= default_eval_obj, n_jobs=None,
                         attribute_name='n_clusters', **kwargs)
 
