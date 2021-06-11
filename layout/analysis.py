@@ -170,7 +170,7 @@ to_show = [
     "huMAP",
     "Panther_2016"
 ]
-to_show = [i for i in to_show if i in gene_set_libraries]
+to_show = ['Cell Types'] + [i for i in to_show if i in gene_set_libraries]
 
 
 def get_enrich_card(prefix):
