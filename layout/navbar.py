@@ -7,7 +7,7 @@ from .preprocessing import prep
 CELLAR_LOGO = 'assets/cellar-logo-white.png'
 
 dataset_dict = get_server_dataset_dict(
-    'data/server')
+    '/home/zekrom/Floatzel/cellar/datasets/server')
 
 documentation_bar = dbc.Nav(
     [
