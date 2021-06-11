@@ -149,8 +149,8 @@ def get_features_carddeck(prefix):
     return features
 
 
-# gene_set_libraries = gseapy.get_library_name()
 to_show = [
+    "Cell Type",
     "GO_Biological_Process_2018",
     "GO_Cellular_Component_2018",
     "GO_Molecular_Function_2018",
@@ -170,7 +170,6 @@ to_show = [
     "huMAP",
     "Panther_2016"
 ]
-# to_show = [i for i in to_show if i in gene_set_libraries]
 
 
 def get_enrich_card(prefix):
