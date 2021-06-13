@@ -6,10 +6,11 @@ from .preprocessing import prep
 
 CELLAR_LOGO = 'assets/cellar-logo-white.png'
 
-# dataset_dict = get_server_dataset_dict(
-#     '/home/zekrom/Floatzel/cellar/datasets/server')
 dataset_dict = get_server_dataset_dict(
-    '/home/keldeo/Slowpoke/cellar/datasets/server')
+    '/home/zekrom/Floatzel/cellar/datasets/server')
+# dataset_dict = get_server_dataset_dict(
+#     '/home/keldeo/Slowpoke/cellar/datasets/server')
+# dataset_dict = get_server_dataset_dict('/home/nonroot/cellar/data/server')
 
 documentation_bar = dbc.Nav(
     [
@@ -124,20 +125,24 @@ dataset_bar = dbc.Row(
         ),
         dbc.Col(
             dbc.InputGroupAddon(
-                dbc.Spinner(
+                [
+                    dbc.Spinner(
+                        children=[
+                            html.Div(id="dataset-load"),
+                        ],
+                        type='grow',
+                        fullscreen=True,
+                        size='lg',
+                        debounce=100
+                    ),
                     dbc.Button(
                         "Load Dataset",
                         color="primary",
                         outline=True,
                         block=True,
                         id='load-dataset-btn'
-                    ),
-                    type='grow',
-                    fullscreen=True,
-                    id="dataset-spinner",
-                    size='lg',
-                    debounce=100
-                ),
+                    )
+                ],
                 className='mw-150',
                 addon_type="append"
             ),

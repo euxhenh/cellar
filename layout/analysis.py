@@ -276,12 +276,17 @@ def get_spatial_card(prefix):
                         [
                             dbc.Row(
                                 [
+                                    dcc.Loading(
+                                        id=prefix + "-buf-load",
+                                        fullscreen=True
+                                    ),
                                     dcc.Upload(
                                         id=prefix + "-upload-spatial",
                                         children=[
                                             dbc.Button("Upload")
                                         ],
-                                        className="mr-2"
+                                        className="mr-2",
+                                        max_size=150*1024*1024  # 150 MB
                                     ),
                                     dbc.Button(
                                         "Generate Tile",
@@ -292,20 +297,38 @@ def get_spatial_card(prefix):
                             ),
                             dbc.Row(
                                 [
-                                    dcc.Loading(
-                                        children=[
-                                            html.Div(id=prefix + '-tile')
-                                        ],
-                                        type="circle"
+                                    dbc.Col(
+                                        dcc.Loading(
+                                            children=[
+                                                # html.Div(id=prefix + '-tile',)
+                                                dcc.Graph(
+                                                    id=prefix + '-tile',
+                                                    figure=empty_spatial_figure,
+                                                    config={
+                                                        'autosizable': True,
+                                                        'displaylogo': False,
+                                                        # 'staticPlot': True,
+                                                        'toImageButtonOptions': {
+                                                            'format': 'png'
+                                                        }
+                                                    }
+                                                )
+                                            ],
+                                            type="circle"
+                                        ),
+                                        align='center'
                                     )
-                                ]
+                                ],
+                                align='center',
+                                no_gutters=True
                             )
                         ],
                         width=12
                     )
                 ]
             )
-        ]
+        ],
+        className="mb-2"
     )
     return spatial
 

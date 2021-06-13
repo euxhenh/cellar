@@ -1,4 +1,5 @@
 import dash_bootstrap_components as dbc
+import os
 
 from app import app
 from layout.container import container
@@ -23,6 +24,11 @@ app.layout = dbc.Container(
     fluid=True
 )
 
+if 'SHINYPROXY_PUBLIC_PATH' in os.environ:
+    app.config.update({
+        'routes_pathname_prefix': os.environ['SHINYPROXY_PUBLIC_PATH'],
+        'requests_pathname_prefix': os.environ['SHINYPROXY_PUBLIC_PATH']
+    })
 
 if __name__ == "__main__":
-    app.run_server(debug=True)
+    app.run_server(debug=True, host='0.0.0.0')

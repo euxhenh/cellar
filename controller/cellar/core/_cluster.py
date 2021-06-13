@@ -30,8 +30,6 @@ def cl_Leiden(
         if kwargs[k] == '':
             kwargs[k] = None
 
-    print(partition_type)
-    print(kwargs)
     if partition_type in [
             'ModularityVertexPartition', 'SurpriseVertexPartition']:
         kwargs.pop('resolution_parameter')
