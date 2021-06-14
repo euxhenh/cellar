@@ -14,6 +14,7 @@ from controller.analysis_controller import *
 from controller.session import *
 from controller.preprocessing_controller import *
 from controller.data_uploader import *
+from controller.subsets import *
 
 app.layout = dbc.Container(
     [

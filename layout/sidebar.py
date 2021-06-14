@@ -278,41 +278,97 @@ annotations_block = dbc.Card(
                 dbc.CardBody(
                     dbc.Col(
                         [
-                            dbc.InputGroup(
+                            dbc.Row(
+                                dbc.InputGroup(
+                                    [
+                                        dbc.InputGroupAddon(
+                                            dbc.Select(
+                                                options=[],
+                                                id="main-annotation-select"
+                                            ),
+                                            id="main-annotation-addon",
+                                            addon_type='prepend'
+                                        ),
+                                        dbc.InputGroupAddon(
+                                            dbc.Select(
+                                                options=[],
+                                                id="side-annotation-select"
+                                            ),
+                                            id="side-annotation-addon",
+                                            className="no-display",
+                                            addon_type='prepend'
+                                        ),
+                                        dbc.Input(
+                                            value="",
+                                            placeholder="Annotation",
+                                            type="text",
+                                            id="annotation-input"
+                                        ),
+                                        dbc.InputGroupAddon(
+                                            [
+                                                dbc.Button(
+                                                    "Store",
+                                                    id="annotation-store-btn"
+                                                )
+                                            ],
+                                            addon_type='append'
+                                        )
+                                    ]
+                                ),
+                                className="mb-2",
+                                no_gutters=True
+                            ),
+                            dbc.Row(
+                                [
+                                    dbc.InputGroup(
+                                        [
+                                            dbc.Input(
+                                                value="",
+                                                placeholder="Subset Name",
+                                                type="text",
+                                                id="subset-name-input"
+                                            ),
+                                            dbc.InputGroupAddon(
+                                                dbc.Button(
+                                                    "Store",
+                                                    id="subset-name-store-btn"
+                                                ),
+                                                addon_type='append'
+                                            )
+                                        ]
+                                    )
+                                ],
+                                className="mb-2",
+                                no_gutters=True
+                            ),
+                            dbc.Row(
                                 [
                                     dbc.InputGroupAddon(
                                         dbc.Select(
                                             options=[],
-                                            id="main-annotation-select"
+                                            id="main-subset-select"
                                         ),
-                                        id="main-annotation-addon",
+                                        id="main-subset-addon",
                                         addon_type='prepend'
                                     ),
                                     dbc.InputGroupAddon(
                                         dbc.Select(
                                             options=[],
-                                            id="side-annotation-select"
+                                            id="side-subset-select"
                                         ),
-                                        id="side-annotation-addon",
                                         className="no-display",
+                                        id="side-subset-addon",
                                         addon_type='prepend'
                                     ),
-                                    dbc.Input(
-                                        value="",
-                                        placeholder="Annotation",
-                                        type="text",
-                                        id="annotation-input"
-                                    ),
                                     dbc.InputGroupAddon(
-                                        [
-                                            dbc.Button(
-                                                "Store",
-                                                id="annotation-store-btn"
-                                            )
-                                        ],
+                                        dbc.Button(
+                                            "Merge",
+                                            id="merge-subset-btn"
+                                        ),
                                         addon_type='append'
                                     )
-                                ]
+                                ],
+                                no_gutters=True
                             )
                         ]
                     )

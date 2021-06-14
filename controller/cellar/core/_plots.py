@@ -3,6 +3,7 @@ import dash_bio as dashbio
 import plotly.graph_objects as go
 import plotly.express as px
 import seaborn as sns
+import pandas as pd
 
 from ..utils.exceptions import InternalError
 from ._tools import cl_add_gene_symbol, cl_get_expression
@@ -12,11 +13,16 @@ def get_dim_figure(adata, title):
     if 'x_emb_2d' not in adata.obsm:
         raise InternalError("x_emb_2d not found in adata.")
 
+    indices = np.arange(adata.shape[0]).astype('str')
+    names = adata.obs.index.to_numpy().astype('str')
+    hover_name = [i + ": " + j for i, j in zip(indices, names)]
+
     fig = px.scatter(
         x=adata.obsm['x_emb_2d'][:, 0],
         y=adata.obsm['x_emb_2d'][:, 1],
         opacity=0.8,
-        hover_name=adata.obs.index.to_numpy().astype('str'),
+        custom_data=[np.arange(adata.shape[0])], # indices
+        hover_name=hover_name,
         render_mode='webgl')
 
     fig.update_layout(
@@ -45,11 +51,16 @@ def get_clu_figure(adata, title):
     if 'annotations' in adata.obs:
         hover_data['Annotation'] = adata.obs['annotations'].to_numpy()
 
+    indices = np.arange(adata.shape[0]).astype('str')
+    names = adata.obs.index.to_numpy().astype('str')
+    hover_name = [i + ": " + j for i, j in zip(indices, names)]
+
     fig = px.scatter(
         x=adata.obsm['x_emb_2d'][:, 0],
         y=adata.obsm['x_emb_2d'][:, 1],
-        hover_name=adata.obs.index.to_numpy().astype('str'),
+        hover_name=hover_name,
         hover_data=hover_data,
+        custom_data=[np.arange(adata.shape[0])], # indices
         color=adata.obs['labels'].astype('str'),
         category_orders={'color': unq_colors},
         opacity=0.8,
@@ -106,6 +117,7 @@ def get_expression_figure(adata, feature_values):
         y=adata.obsm['x_emb_2d'][:, 1],
         hover_name=adata.obs.index.to_numpy().astype('str'),
         hover_data=hover_data,
+        custom_data=[np.arange(adata.shape[0])], # indices
         color=expression,
         opacity=0.8,
         labels={'color': 'Normalized Val.'},

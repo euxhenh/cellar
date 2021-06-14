@@ -185,3 +185,7 @@ button.export:hover {
     min-height: 400px;
     height: 100%;
 }
+
+#main-subset-addon {
+    width: calc(100% - 61.07px);
+}

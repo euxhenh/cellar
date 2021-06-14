@@ -7,11 +7,19 @@ from controller.cellar.utils.exceptions import InternalError
 
 
 def ttest(adata, cluster_id, alpha=0.05):
-    if 'labels' not in adata.obs:
+    if 'labels' not in adata.obs and isinstance(cluster_id, int):
         raise InternalError("No labels found in adata.")
 
     grouping = np.zeros(adata.shape[0])
-    grouping[adata.obs['labels'].to_numpy() == cluster_id] = 1
+    if isinstance(cluster_id, str):
+        if 'subsets' not in adata.uns:
+            raise InternalError("'subsets' key not found in adata.")
+        if cluster_id not in adata.uns['subsets']:
+            raise InternalError("subset name not found in adata.")
+
+        grouping[adata.uns['subsets'][cluster_id]] = 1
+    else:
+        grouping[adata.obs['labels'].to_numpy() == cluster_id] = 1
 
     test = de.test.t_test(
         data=adata.X,

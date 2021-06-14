@@ -61,6 +61,17 @@ main_page = dbc.Col(
                   data=1, clear_data=True),
         dcc.Store(id="side-cluster-list-signal", storage_type="memory",
                   data=1, clear_data=True),
+        dcc.Store(id="main-cluster-merge-signal", storage_type="memory",
+                  data=1, clear_data=True),
+        dcc.Store(id="side-cluster-merge-signal", storage_type="memory",
+                  data=1, clear_data=True),
+        dcc.Store(id="main-subset-list-signal", storage_type="memory",
+                  data=1, clear_data=True),
+        dcc.Store(id="side-subset-list-signal", storage_type="memory",
+                  data=1, clear_data=True),
+
+        dcc.Store(id="merge-plot-signal", storage_type="memory",
+                  data=1, clear_data=True),
 
         dcc.Store(id="feature-list-signal", storage_type="memory",
                   data=1, clear_data=True),

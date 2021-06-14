@@ -4,6 +4,7 @@ from dash.dependencies import Input, Output, State
 from dash.exceptions import PreventUpdate
 
 from .cellar.core import ttest, enrich, get_heatmap, get_violin_plot
+from .cellar.utils.exceptions import InternalError
 
 
 # DE genes
@@ -19,10 +20,14 @@ def get_update_de_table_func(prefix):
         if an not in dbroot.adatas:
             raise PreventUpdate
 
-        if 'labels' not in dbroot.adatas[an]['adata'].obs:
-            raise PreventUpdate
+        if not cluster_id.startswith(prefix + '-subset'):
+            cluster_id = int(cluster_id[len(prefix + "-cluster"):])
+        else:
+            cluster_id = cluster_id[len(prefix + "-subset-"):]
 
-        cluster_id = int(cluster_id[len(prefix + "-cluster"):])
+        if 'labels' not in dbroot.adatas[an]['adata'].obs \
+                and isinstance(cluster_id, int):
+            raise PreventUpdate
 
         title = f"PLOT {actp}: DE genes for cluster {cluster_id} vs rest"
 

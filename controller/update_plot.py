@@ -15,6 +15,7 @@ from .operations import clu_filter, dim_reduce_filter, vis_filter
 class Signal(int, Enum):
     DIM_REDUCE = 101
     CLUSTER = 201
+    MERGE = 250
     SS_CLUSTER = 251
     LABEL_TRANSFER = 301
     FEATURE_EXP = 401
@@ -33,10 +34,11 @@ class Signal(int, Enum):
     Input("main-clear-expression-btn", "n_clicks"),
     Input("side-clear-expression-btn", "n_clicks"),
     Input("annotation-signal", "data"),
+    Input("merge-plot-signal", "data"),
     State("active-plot", "data"),
     prevent_initial_call=True
 )
-def signal_plot(n1, n2, mexp, sexp, c1, c2, ans, actp):
+def signal_plot(n1, n2, mexp, sexp, c1, c2, ans, mps, actp):
     ctx = dash.callback_context
     if not ctx.triggered:
         raise PreventUpdate
@@ -57,6 +59,9 @@ def signal_plot(n1, n2, mexp, sexp, c1, c2, ans, actp):
     elif button_id == "annotation-signal":
         if ans is not None:
             to_return[index] = Signal.ANNOTATION
+    elif button_id == "merge-plot-signal":
+        if mps is not None:
+            to_return[index] = Signal.MERGE
 
     return to_return
 
@@ -100,6 +105,8 @@ def get_update_plot_func(an):
         elif s_code == Signal.ANNOTATION:
             return get_clu_figure(dbroot.adatas[an]['adata'], title),\
                 dash.no_update
+        elif s_code == Signal.MERGE:
+            return get_clu_figure(dbroot.adatas[an]['adata'], title), 1
         else:
             raise InternalError(f"No signal with id {s_code} found.")
 
