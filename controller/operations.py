@@ -5,9 +5,10 @@ from dash.exceptions import PreventUpdate
 from layout.method_settings.clu_settings import clu_settings_keys
 from layout.method_settings.dim_settings import dim_settings_keys
 from layout.method_settings.vis_settings import vis_settings_keys
+from layout.method_settings.ssclu_settings import ssclu_settings_keys
 
 from .cellar.utils.exceptions import InternalError
-from .methods import clu_list, dim_list, vis_list, find_method
+from .methods import clu_list, dim_list, vis_list, ssclu_list, find_method
 
 
 def get_button_switch_func(m_list):
@@ -31,8 +32,8 @@ def get_button_switch_func(m_list):
 
 
 for m_list, m_name in zip(
-    [dim_list, clu_list, vis_list],
-    ['dim', 'clu', 'vis']
+    [dim_list, clu_list, vis_list, ssclu_list],
+    ['dim', 'clu', 'vis', 'ssclu']
 ):
     app.callback(
         [Output(m['value'] + '-btn', 'style') for m in m_list],
@@ -117,13 +118,15 @@ def get_filter(settings_keys, m_list, key, x_to_use):
     in the popover components. That function itself returns the function
     that is used to run the chosen method with the chosen parameters.
     """
-    def _func(adata, method, settings):
+    def _func(adata, method, settings, extras=None):
         if method not in settings_keys:
             raise InternalError(f"{method} not found in settings keys.")
 
         kwargs = _search_settings(settings_keys[method], settings)
         kwargs['key'] = key
         kwargs['x_to_use'] = x_to_use
+        if extras is not None:
+            kwargs['extras'] = extras
         return find_method(m_list, method)['func'](adata, **kwargs)
     return _func
 
@@ -131,7 +134,9 @@ def get_filter(settings_keys, m_list, key, x_to_use):
 # functions
 dim_reduce_filter = get_filter(
     dim_settings_keys, dim_list, key='x_emb', x_to_use='x')
-clu_filter = get_filter(
-    clu_settings_keys, clu_list, key='labels', x_to_use='x_emb')
 vis_filter = get_filter(
     vis_settings_keys, vis_list, key='x_emb_2d', x_to_use='x_emb')
+clu_filter = get_filter(
+    clu_settings_keys, clu_list, key='labels', x_to_use='x_emb')
+ssclu_filter = get_filter(
+    ssclu_settings_keys, ssclu_list, key='labels', x_to_use='x_emb')

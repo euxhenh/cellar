@@ -1,5 +1,6 @@
-from .cellar.core import cl_PCA, cl_TruncatedSVD, cl_kPCA, cl_MDS, cl_UMAP, cl_Agglomerative
-from .cellar.core import cl_Leiden, cl_KMeans, cl_KMedoids, cl_SpectralClustering
+from .cellar.core import (cl_Agglomerative, cl_KMeans, cl_KMedoids, cl_kPCA,
+                          cl_Leiden, cl_MDS, cl_PCA, cl_SpectralClustering,
+                          cl_ssLeiden, cl_TruncatedSVD, cl_UMAP)
 
 dim_list = [
     {'label': 'PCA', 'value': 'dim-PCA', 'func': cl_PCA},
@@ -33,10 +34,11 @@ clu_list = [
 
 
 ssclu_list = [
-    {'label': 'Constrained Leiden', 'value': 'ssclu-Constrained-Leiden'},
-    {'label': 'Constrained KMeans', 'value': 'ssclu-Constrained-KMeans'},
-    {'label': 'Seeded KMeans', 'value': 'ssclu-Seeded-KMeans'},
-    {'label': 'KNN Filter', 'value': 'ssclu-KNN-Filter'}
+    {'label': 'Constrained Leiden',
+        'value': 'ssclu-Constrained-Leiden', 'func': cl_ssLeiden}
+    # {'label': 'Constrained KMeans', 'value': 'ssclu-Constrained-KMeans'},
+    # {'label': 'Seeded KMeans', 'value': 'ssclu-Seeded-KMeans'},
+    # {'label': 'KNN Filter', 'value': 'ssclu-KNN-Filter'}
 ]
 
 

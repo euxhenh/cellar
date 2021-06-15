@@ -9,7 +9,7 @@ from .cellar.core import (clear_x_emb_dependends, get_clu_figure,
                           get_reset_figure)
 from .cellar.utils.exceptions import InternalError
 from .methods import clu_list, dim_list, lbt_list, ssclu_list, vis_list
-from .operations import clu_filter, dim_reduce_filter, vis_filter
+from .operations import clu_filter, dim_reduce_filter, vis_filter, ssclu_filter
 
 
 class Signal(int, Enum):
@@ -36,9 +36,10 @@ class Signal(int, Enum):
     Input("annotation-signal", "data"),
     Input("merge-plot-signal", "data"),
     State("active-plot", "data"),
+    State("label-tabs", "active_tab"),
     prevent_initial_call=True
 )
-def signal_plot(n1, n2, mexp, sexp, c1, c2, ans, mps, actp):
+def signal_plot(n1, n2, mexp, sexp, c1, c2, ans, mps, actp, actt):
     ctx = dash.callback_context
     if not ctx.triggered:
         raise PreventUpdate
@@ -50,7 +51,14 @@ def signal_plot(n1, n2, mexp, sexp, c1, c2, ans, mps, actp):
     if button_id == "dim-run-btn":
         to_return[index] = Signal.DIM_REDUCE
     elif button_id == "label-run-btn":
-        to_return[index] = Signal.CLUSTER
+        if actt == 'clu':
+            to_return[index] = Signal.CLUSTER
+        elif actt == 'ssclu':
+            to_return[index] = Signal.SS_CLUSTER
+        elif actt == 'lbt':
+            to_return[index] = Signal.LABEL_TRANSFER
+        else:
+            raise InternalError(f"No tab with name {actt} found.")
     elif button_id == "main-expression" or button_id == "side-expression":
         to_return[index] = Signal.FEATURE_EXP
     elif button_id == "main-clear-expression-btn" or \
@@ -69,7 +77,7 @@ def signal_plot(n1, n2, mexp, sexp, c1, c2, ans, mps, actp):
 def get_update_plot_func(an):
     def update_plot(
             s_code,
-            dim_method, vis_method, clu_method,
+            dim_method, vis_method, clu_method, ssclu_method,
             feature_list,
             *settings):
         ctx = dash.callback_context
@@ -91,6 +99,11 @@ def get_update_plot_func(an):
         elif s_code == Signal.CLUSTER:
             # Cluster and prepare figure
             clu_filter(dbroot.adatas[an]['adata'], clu_method, settings)
+
+            return get_clu_figure(dbroot.adatas[an]['adata'], title), 1
+        elif s_code == Signal.SS_CLUSTER:
+            ssclu_filter(dbroot.adatas[an]['adata'], ssclu_method, settings,
+                         extras={'actp': 1 if an == 'a1' else 2})
 
             return get_clu_figure(dbroot.adatas[an]['adata'], title), 1
         elif s_code == Signal.FEATURE_EXP:
@@ -124,9 +137,11 @@ for prefix, an in zip(['main', 'side'], ['a1', 'a2']):
         State("dim-methods-select", "value"),
         State("vis-methods-select", "value"),
         State("clu-methods-select", "value"),
+        State("ssclu-methods-select", "value"),
         State(prefix + "-feature-list", "value"),
         [State(m['value'] + '-settings', 'children') for m in dim_list],
         [State(m['value'] + '-settings', 'children') for m in clu_list],
         [State(m['value'] + '-settings', 'children') for m in vis_list],
+        [State(m['value'] + '-settings', 'children') for m in ssclu_list],
         prevent_initial_call=True
     )(get_update_plot_func(an))

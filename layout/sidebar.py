@@ -7,6 +7,7 @@ from controller.methods import (clu_list, dim_list, lbt_list, ssclu_list,
 from .method_settings.dim_settings import dim_settings
 from .method_settings.clu_settings import clu_settings
 from .method_settings.vis_settings import vis_settings
+from .method_settings.ssclu_settings import ssclu_settings
 
 
 def get_cog_btn(id, display='none'):
@@ -184,15 +185,23 @@ ssclu_block = dbc.Card(
                         dbc.InputGroup(
                             [
                                 dbc.Select(
-                                    options=ssclu_list,
+                                    options=[
+                                        {
+                                            'label': m['label'],
+                                            'value': m['value']
+                                        } for m in ssclu_list],
                                     required=True,
                                     id="ssclu-methods-select",
                                     value=ssclu_list[0]['value']
                                 ),
                                 dbc.InputGroupAddon(
-                                    get_cog_btn('ssclu-settings-btn'),
+                                    [
+                                        get_cog_btn(i['value'] + '-btn')
+                                        for i in ssclu_list
+                                    ],
                                     addon_type="append"
                                 ),
+                                *ssclu_settings
                             ]
                         )
                     ]
@@ -232,10 +241,11 @@ lbt_block = dbc.Card(
 
 label_tabs = dbc.Tabs(
     [
-        dbc.Tab(clu_block, label="Unsupervised"),
-        dbc.Tab(ssclu_block, label="Semi-Supervised"),
-        dbc.Tab(lbt_block, label="Label Transfer"),
-    ]
+        dbc.Tab(clu_block, label="Unsupervised", tab_id="clu"),
+        dbc.Tab(ssclu_block, label="Semi-Supervised", tab_id="ssclu"),
+        dbc.Tab(lbt_block, label="Label Transfer", tab_id="lbt"),
+    ],
+    id="label-tabs"
 )
 
 label_block = dbc.Card(
@@ -346,6 +356,7 @@ annotations_block = dbc.Card(
                                     dbc.InputGroupAddon(
                                         dbc.Select(
                                             options=[],
+                                            placeholder="Select subset to merge",
                                             id="main-subset-select"
                                         ),
                                         id="main-subset-addon",
@@ -354,6 +365,7 @@ annotations_block = dbc.Card(
                                     dbc.InputGroupAddon(
                                         dbc.Select(
                                             options=[],
+                                            placeholder="Select subset to merge",
                                             id="side-subset-select"
                                         ),
                                         className="no-display",

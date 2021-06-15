@@ -42,7 +42,7 @@ def get_de_cluster_update_func(prefix, an):
 
             clusters = clusters + subsets
 
-        return clusters, value, clusters_ann, value
+        return clusters, value, clusters_ann, value, clusters, []
     return _func
 
 
@@ -53,6 +53,8 @@ for prefix, an in zip(['main', 'side'], ['a1', 'a2']):
         Output(prefix + '-de-cluster-select', "value"),
         Output(prefix + '-annotation-select', "options"),
         Output(prefix + '-annotation-select', "value"),
+        Output('ssclu-Leiden-' + prefix + '-checklist', "options"),
+        Output('ssclu-Leiden-' + prefix + '-checklist', "value"),
 
         Input(prefix + '-cluster-list-signal', "data"),
         Input(prefix + '-subset-list-signal', "data"),

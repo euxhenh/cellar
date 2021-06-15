@@ -83,6 +83,9 @@ def toggle_dual_mode(n1, is_dual, actp):
     Output("side-subset-select", "className"),
     Output("shape-signal-atoggle", "data"),
 
+    Output("ssclu-Leiden-main-checklist", "className"),
+    Output("ssclu-Leiden-side-checklist", "className"),
+
     Input("main-activate-btn", "n_clicks"),
     Input("side-activate-btn", "n_clicks"),
 
@@ -96,7 +99,7 @@ def activate_plot(n1, n2, dual_mode, actp):
 
     ctx = dash.callback_context
     if not ctx.triggered or not dual_mode:
-        to_return = [dash.no_update] * 10
+        to_return = [dash.no_update] * 12
         to_return[2] = 1
         return to_return
 
@@ -112,4 +115,4 @@ def activate_plot(n1, n2, dual_mode, actp):
         new_actp = 2
         mac1, mac2 = mac2, mac1
 
-    return mc1, mc2, new_actp, mac1, mac2, mac1, mac2, mac1, mac2, 1
+    return mc1, mc2, new_actp, mac1, mac2, mac1, mac2, mac1, mac2, 1, mac1, mac2
