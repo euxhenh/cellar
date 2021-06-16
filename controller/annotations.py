@@ -1,6 +1,7 @@
 import dash
 import numpy as np
 from dash.dependencies import Input, Output, State
+from dash.exceptions import PreventUpdate
 
 from app import app, dbroot
 
