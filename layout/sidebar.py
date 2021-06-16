@@ -8,6 +8,7 @@ from .method_settings.dim_settings import dim_settings
 from .method_settings.clu_settings import clu_settings
 from .method_settings.vis_settings import vis_settings
 from .method_settings.ssclu_settings import ssclu_settings
+from .method_settings.lbt_settings import lbt_settings
 
 
 def get_cog_btn(id, display='none'):
@@ -221,15 +222,23 @@ lbt_block = dbc.Card(
                         dbc.InputGroup(
                             [
                                 dbc.Select(
-                                    options=lbt_list,
+                                    options=[
+                                        {
+                                            'label': m['label'],
+                                            'value': m['value']
+                                        } for m in lbt_list],
                                     required=True,
                                     id="lbt-methods-select",
                                     value=lbt_list[0]['value']
                                 ),
                                 dbc.InputGroupAddon(
-                                    get_cog_btn('lbt-settings-btn'),
+                                    [
+                                        get_cog_btn(i['value'] + '-btn')
+                                        for i in lbt_list
+                                    ],
                                     addon_type="append"
-                                )
+                                ),
+                                *lbt_settings
                             ]
                         )
                     ]
@@ -353,31 +362,27 @@ annotations_block = dbc.Card(
                             ),
                             dbc.Row(
                                 [
-                                    dbc.InputGroupAddon(
-                                        dbc.Select(
-                                            options=[],
-                                            placeholder="Select subset to merge",
-                                            id="main-subset-select"
-                                        ),
-                                        id="main-subset-addon",
-                                        addon_type='prepend'
-                                    ),
-                                    dbc.InputGroupAddon(
-                                        dbc.Select(
-                                            options=[],
-                                            placeholder="Select subset to merge",
-                                            id="side-subset-select"
-                                        ),
-                                        className="no-display",
-                                        id="side-subset-addon",
-                                        addon_type='prepend'
-                                    ),
-                                    dbc.InputGroupAddon(
-                                        dbc.Button(
-                                            "Merge",
-                                            id="merge-subset-btn"
-                                        ),
-                                        addon_type='append'
+                                    dbc.InputGroup(
+                                        [
+                                            dbc.Select(
+                                                options=[],
+                                                placeholder="Subset to merge",
+                                                id="main-subset-select"
+                                            ),
+                                            dbc.Select(
+                                                options=[],
+                                                placeholder="Subset to merge",
+                                                className="no-display",
+                                                id="side-subset-select"
+                                            ),
+                                            dbc.InputGroupAddon(
+                                                dbc.Button(
+                                                    "Merge",
+                                                    id="merge-subset-btn"
+                                                ),
+                                                addon_type='append'
+                                            )
+                                        ]
                                     )
                                 ],
                                 no_gutters=True
@@ -404,18 +409,6 @@ session_block = dbc.Card(
             [
                 dbc.CardBody(
                     [
-                        # dcc.Upload(
-                        #     dbc.Button(
-                        #         "Import Session",
-                        #         # id='import-session-btn',
-                        #         block=True,
-                        #         color='secondary',
-                        #         outline=True
-                        #     ),
-                        #     id='import-session-btn',
-                        #     max_size=1 * 1024**3,  # 1GB
-                        #     className="mb-2"
-                        # ),
                         dbc.Button(
                             "Export Session",
                             id='export-session-btn',

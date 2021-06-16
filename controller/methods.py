@@ -1,6 +1,6 @@
 from .cellar.core import (cl_Agglomerative, cl_KMeans, cl_KMedoids, cl_kPCA,
                           cl_Leiden, cl_MDS, cl_PCA, cl_SpectralClustering,
-                          cl_ssLeiden, cl_TruncatedSVD, cl_UMAP)
+                          cl_ssLeiden, cl_TruncatedSVD, cl_UMAP, cl_Ingest)
 
 dim_list = [
     {'label': 'PCA', 'value': 'dim-PCA', 'func': cl_PCA},
@@ -43,8 +43,9 @@ ssclu_list = [
 
 
 lbt_list = [
-    {'label': 'SingleR', 'value': 'lbt-SingleR'},
-    {'label': 'Scanpy Ingest', 'value': 'lbt-Scanpy-Ingest'}
+    {'label': 'Scanpy Ingest',
+        'value': 'lbt-Scanpy-Ingest', 'func': cl_Ingest},
+    # {'label': 'SingleR', 'value': 'lbt-SingleR'}
 ]
 
 

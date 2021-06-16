@@ -4,11 +4,13 @@ from dash.dependencies import Input, Output, State
 from dash.exceptions import PreventUpdate
 from layout.method_settings.clu_settings import clu_settings_keys
 from layout.method_settings.dim_settings import dim_settings_keys
-from layout.method_settings.vis_settings import vis_settings_keys
 from layout.method_settings.ssclu_settings import ssclu_settings_keys
+from layout.method_settings.vis_settings import vis_settings_keys
+from layout.method_settings.lbt_settings import lbt_settings_keys
 
 from .cellar.utils.exceptions import InternalError
-from .methods import clu_list, dim_list, vis_list, ssclu_list, find_method
+from .methods import (clu_list, dim_list, find_method, lbt_list, ssclu_list,
+                      vis_list)
 
 
 def get_button_switch_func(m_list):
@@ -32,8 +34,8 @@ def get_button_switch_func(m_list):
 
 
 for m_list, m_name in zip(
-    [dim_list, clu_list, vis_list, ssclu_list],
-    ['dim', 'clu', 'vis', 'ssclu']
+    [dim_list, clu_list, vis_list, ssclu_list, lbt_list],
+    ['dim', 'clu', 'vis', 'ssclu', 'lbt']
 ):
     app.callback(
         [Output(m['value'] + '-btn', 'style') for m in m_list],
@@ -105,7 +107,7 @@ def _search_settings(method_settings_keys, settings):
         # then child should never be None. 'value' may be missing
         # if not manually specified when constructing the widget.
         if child is None or 'value' not in child:
-            raise InternalError(f"'value' key not found in child.")
+            raise InternalError("'value' key not found in child.")
 
         kwargs[method_settings_keys[key]] = child['value']
 
@@ -140,3 +142,5 @@ clu_filter = get_filter(
     clu_settings_keys, clu_list, key='labels', x_to_use='x_emb')
 ssclu_filter = get_filter(
     ssclu_settings_keys, ssclu_list, key='labels', x_to_use='x_emb')
+lbt_filter = get_filter(
+    lbt_settings_keys, lbt_list, key='labels', x_to_use='x')

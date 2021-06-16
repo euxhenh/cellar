@@ -26,7 +26,7 @@ def cl_ssLeiden(
 
     sources, targets, weights = knn_auto(
         x_to_use, n_neighbors=n_neighbors,
-        mode='distance', method=graph_method)
+        mode='connectivity', method=graph_method)
 
     if not use_weights:
         weights = None
