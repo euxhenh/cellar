@@ -63,4 +63,7 @@ def enrich(adata, gene_set, de_genes_list):
     res.rename(columns={'P-value': 'pval',
                         'Adjusted P-value': 'qval'}, inplace=True)
 
+    if gene_set == 'data/cell_type_markers.gmt':
+        res.sort_values(by=['qval'], inplace=True)
+
     return res

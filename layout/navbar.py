@@ -2,14 +2,14 @@ import dash_bootstrap_components as dbc
 import dash_core_components as dcc
 import dash_html_components as html
 from controller.cellar.utils.misc import get_server_dataset_dict
-from .preprocessing import prep
+from .preprocessing import prep_tabs
 
 CELLAR_LOGO = 'assets/cellar-logo-white.png'
 
-# dataset_dict = get_server_dataset_dict(
-#     '/home/zekrom/Floatzel/cellar/datasets/server')
 dataset_dict = get_server_dataset_dict(
-    '/home/keldeo/Slowpoke/cellar/datasets/server')
+    '/home/zekrom/Floatzel/cellar/datasets/server')
+# dataset_dict = get_server_dataset_dict(
+#     '/home/keldeo/Slowpoke/cellar/datasets/server')
 # dataset_dict = get_server_dataset_dict('/home/nonroot/cellar/data/server')
 
 documentation_bar = dbc.Nav(
@@ -183,7 +183,7 @@ modes_bar = html.Div(
             id="collapsible-dataset-bar",
         ),
         dbc.Collapse(
-            prep,
+            prep_tabs,
             id="collapsible-prep"
         )
     ]
