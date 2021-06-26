@@ -10,14 +10,28 @@ row_1 = dbc.Row([
             [
                 dbc.CardBody(
                     [
-                        html.H5("Filter Cells", className="card-title"),
+                        html.H5("Filter Cells",
+                                className="card-title"),
                         dbc.Row(
                             [
                                 dbc.Col(
                                     dbc.FormGroup(
                                         [
-                                            dbc.Label(
-                                                "Counts", html_for="slider"),
+                                            dbc.Row(
+                                                [
+                                                    dbc.Checkbox(
+                                                        "prep-filter-cells-counts-checkbox",
+                                                        className="mr-3 prep-ckb"
+                                                    ),
+                                                    dbc.Label(
+                                                        "Counts", html_for="slider"),
+                                                ],
+                                                # justify="between",
+                                                align="baseline",
+                                                no_gutters=True
+                                            ),
+                                            # dbc.Label(
+                                            # "Counts", html_for="slider"),
                                             dcc.RangeSlider(
                                                 min=0,
                                                 max=3000,
@@ -39,8 +53,20 @@ row_1 = dbc.Row([
                                 dbc.Col(
                                     dbc.FormGroup(
                                         [
-                                            dbc.Label(
-                                                "Genes", html_for="slider"),
+                                            dbc.Row(
+                                                [
+                                                    dbc.Checkbox(
+                                                        "prep-filter-cells-genes-checkbox",
+                                                        className="mr-3 prep-ckb",
+                                                        checked=True
+                                                    ),
+                                                    dbc.Label(
+                                                        "Genes", html_for="slider"),
+                                                ],
+                                                # justify="between",
+                                                align="baseline",
+                                                no_gutters=True
+                                            ),
                                             dcc.RangeSlider(
                                                 min=0,
                                                 max=3000,
@@ -56,11 +82,6 @@ row_1 = dbc.Row([
                                 )
                             ],
                             no_gutters=True
-                        ),
-                        dbc.Button(
-                            "Run", block=True, color='secondary',
-                            outline=True,
-                            className="mb-3"
                         ),
                         html.P(
                             [
@@ -80,21 +101,33 @@ row_1 = dbc.Row([
             ],
             className="prep-card-long"
         ),
-        width=3
+        width=3, xs=12, sm=12, md=3, lg=3
     ),
     dbc.Col(
         dbc.Card(
             [
                 dbc.CardBody(
                     [
-                        html.H5("Filter Genes", className="card-title"),
+                        html.H5("Filter Genes",
+                                className="card-title"),
                         dbc.Row(
                             [
                                 dbc.Col(
                                     dbc.FormGroup(
                                         [
-                                            dbc.Label(
-                                                "Counts", html_for="slider"),
+                                            dbc.Row(
+                                                [
+                                                    dbc.Checkbox(
+                                                        "prep-filter-genes-counts-checkbox",
+                                                        className="mr-3 prep-ckb"
+                                                    ),
+                                                    dbc.Label(
+                                                        "Counts", html_for="slider"),
+                                                ],
+                                                # justify="between",
+                                                align="baseline",
+                                                no_gutters=True
+                                            ),
                                             dcc.RangeSlider(
                                                 min=0,
                                                 max=3000,
@@ -116,8 +149,20 @@ row_1 = dbc.Row([
                                 dbc.Col(
                                     dbc.FormGroup(
                                         [
-                                            dbc.Label(
-                                                "Cells", html_for="slider"),
+                                            dbc.Row(
+                                                [
+                                                    dbc.Checkbox(
+                                                        "prep-filter-genes-cells-checkbox",
+                                                        className="mr-3 prep-ckb",
+                                                        checked=True
+                                                    ),
+                                                    dbc.Label(
+                                                        "Cells", html_for="slider"),
+                                                ],
+                                                # justify="between",
+                                                align="baseline",
+                                                no_gutters=True
+                                            ),
                                             dcc.RangeSlider(
                                                 min=0,
                                                 max=3000,
@@ -133,11 +178,6 @@ row_1 = dbc.Row([
                                 )
                             ],
                             no_gutters=True
-                        ),
-                        dbc.Button(
-                            "Run", block=True, color='secondary',
-                            outline=True,
-                            className="mb-3"
                         ),
                         html.P(
                             [
@@ -157,15 +197,27 @@ row_1 = dbc.Row([
             ],
             className="prep-card-long"
         ),
-        width=3
+        width=3, xs=12, sm=12, md=3, lg=3
     ),
     dbc.Col(
         dbc.Card(
             [
                 dbc.CardBody(
                     [
-                        html.H5("Highly Variable Genes",
-                                className="card-title"),
+                        dbc.Row(
+                            [
+                                dbc.Checkbox(
+                                    "prep-high-var-checkbox",
+                                    className="mr-3 prep-ckb",
+                                    checked=True
+                                ),
+                                html.H5("Highly Variable Genes",
+                                        className="card-title")
+                            ],
+                            # justify="between",
+                            align="baseline",
+                            no_gutters=True
+                        ),
                         dbc.Row(
                             [
                                 dbc.Col(
@@ -272,11 +324,6 @@ row_1 = dbc.Row([
                                 )
                             ]
                         ),
-                        dbc.Button(
-                            "Run", block=True, color='secondary',
-                            outline=True,
-                            className="mb-3"
-                        ),
                         html.P(
                             [
                                 "Details: ",
@@ -296,7 +343,7 @@ row_1 = dbc.Row([
             ],
             className="prep-card-long"
         ),
-        width=3
+        width=3, xs=12, sm=12, md=3, lg=3
     ),
     dbc.Col(
         dbc.Card(
@@ -306,7 +353,20 @@ row_1 = dbc.Row([
                         html.H5("Misc", className="card-title"),
                         dbc.FormGroup(
                             [
-                                dbc.Label("Normalize Total"),
+                                dbc.Row(
+                                    [
+                                        dbc.Checkbox(
+                                            "prep-normalize-total-checkbox",
+                                            className="mr-3 prep-ckb",
+                                            checked=True
+                                        ),
+                                        dbc.Label(
+                                            "Normalize Total"),
+                                    ],
+                                    # justify="between",
+                                    align="baseline",
+                                    no_gutters=True
+                                ),
                                 dbc.Row(
                                     [
                                         dbc.Col(
@@ -341,7 +401,19 @@ row_1 = dbc.Row([
                         ),
                         dbc.FormGroup(
                             [
-                                dbc.Label("Log1p"),
+                                dbc.Row(
+                                    [
+                                        dbc.Checkbox(
+                                            "prep-log1p-checkbox",
+                                            className="mr-3 prep-ckb",
+                                            checked=True
+                                        ),
+                                        dbc.Label("Log1p"),
+                                    ],
+                                    # justify="between",
+                                    align="baseline",
+                                    no_gutters=True
+                                ),
                                 dbc.RadioItems(
                                     options=[
                                         {"label": "True", "value": True},
@@ -354,7 +426,19 @@ row_1 = dbc.Row([
                         ),
                         dbc.FormGroup(
                             [
-                                dbc.Label("Scale"),
+                                dbc.Row(
+                                    [
+                                        dbc.Checkbox(
+                                            "prep-scale-checkbox",
+                                            className="mr-3 prep-ckb",
+                                            checked=True
+                                        ),
+                                        dbc.Label("Scale"),
+                                    ],
+                                    # justify="between",
+                                    align="baseline",
+                                    no_gutters=True
+                                ),
                                 dbc.Row(
                                     [
                                         dbc.Col(
@@ -396,11 +480,6 @@ row_1 = dbc.Row([
                                 )
                             ]
                         ),
-                        dbc.Button(
-                            "Run", block=True, color='secondary',
-                            outline=True,
-                            className="mb-3"
-                        ),
                         html.P(
                             [
                                 "Details: ",
@@ -417,7 +496,7 @@ row_1 = dbc.Row([
             ],
             className="prep-card-long"
         ),
-        width=3
+        width=3, xs=12, sm=12, md=3, lg=3
     )
 ], no_gutters=True)
 
@@ -438,7 +517,12 @@ atac = dbc.Row([
 
 
 prep = html.Div([
-    row_1
+    row_1,
+    dbc.Row(
+        dbc.Col(dbc.Button("Run", outline=True, block=True), width=3),
+        justify='center',
+        className="mt-2"
+    )
 ], className="mb-3", id="prep-row")
 
 

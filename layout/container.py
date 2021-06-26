@@ -83,6 +83,9 @@ main_page = dbc.Col(
                   data=1, clear_data=True),
         dcc.Store(id="side-plot-signal-code", storage_type="memory",
                   data=1, clear_data=True),
+
+        dcc.Store(id="data-loaded-plot-signal", storage_type="memory",
+                  data=1, clear_data=True),
         main_body
     ],
     id='main-body',

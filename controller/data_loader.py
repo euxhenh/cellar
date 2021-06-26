@@ -12,6 +12,7 @@ from .cellar.core import read_adata, cl_add_gene_symbol
     Output("shape-signal-upload", "data"),
     Output("feature-list-signal", "data"),
     Output("dataset-load", "style"),
+    Output("data-loaded-plot-signal", "data"),
 
     Input("load-dataset-btn", "n_clicks"),
     State("server-dataset-dropdown", "value"),
@@ -32,7 +33,7 @@ def load_dataset(n1, dname, actp):
 
     logger.info(f"Read {dname} info {an}.")
 
-    return 1, 1, {}
+    return 1, 1, {}, 1
 
 
 @app.callback(
