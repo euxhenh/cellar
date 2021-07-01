@@ -82,14 +82,9 @@ def signal_plot(
     elif button_id == "merge-plot-signal":
         if mps is not None:
             to_return[index] = Signal.MERGE
-<<<<<<< HEAD
     elif button_id == "data-loaded-plot-signal"\
             or button_id == "data-loaded-plot-signal-prep":
-        if dlps is not None and dlpsp is None:
-=======
-    elif button_id == "data-loaded-plot-signal":
-        if dlps is not None:
->>>>>>> 9620cf287a3de752e5882c199a6269da22dd90d5
+        if dlps is not None and dlpsp is None and dlpspa is None:
             to_return[index] = Signal.DATA_LOAD
 
     return to_return

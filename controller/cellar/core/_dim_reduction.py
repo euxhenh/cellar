@@ -1,6 +1,6 @@
 from sklearn.decomposition import PCA, TruncatedSVD, KernelPCA
 from sklearn.manifold import MDS
-# from umap import UMAP
+from umap import UMAP
 
 
 func_map = {
@@ -8,7 +8,7 @@ func_map = {
     'cl_TruncatedSVD': TruncatedSVD,
     'cl_kPCA': KernelPCA,
     'cl_MDS': MDS,
-    'cl_UMAP': PCA
+    'cl_UMAP': UMAP
 }
 
 
