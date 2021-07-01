@@ -7,10 +7,8 @@ from .preprocessing import prep_tabs
 CELLAR_LOGO = 'assets/cellar-logo-white.png'
 
 dataset_dict = get_server_dataset_dict(
-    '/home/ferrocactus/Floatzel/cellar/datasets/server')
-# dataset_dict = get_server_dataset_dict(
-#     '/home/keldeo/Slowpoke/cellar/datasets/server')
-# dataset_dict = get_server_dataset_dict('/home/nonroot/cellar/data/server')
+    '/home/nonroot/cellar/data/server'
+)
 
 documentation_bar = dbc.Nav(
     [
