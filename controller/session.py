@@ -37,7 +37,7 @@ def export_session(n1, actp):
     State("active-plot", "data"),
     prevent_initial_call=True
 )
-def export_session(n1, actp):
+def export_annotations(n1, actp):
     ctx = dash.callback_context
     if not ctx.triggered:
         raise PreventUpdate
