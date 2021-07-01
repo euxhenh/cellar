@@ -5,6 +5,7 @@ from app import app, dbroot, logger
 from dash.dependencies import Input, Output, State
 from dash.exceptions import PreventUpdate
 
+from layout.misc import empty_figure
 from .cellar.core import (clear_x_emb_dependends, get_clu_figure,
                           get_dim_figure, get_expression_figure,
                           get_reset_figure)
@@ -22,6 +23,7 @@ class Signal(int, Enum):
     LABEL_TRANSFER = 301
     FEATURE_EXP = 401
     ANNOTATION = 501
+    DATA_LOAD = 801
     RESET = 901
 
 
@@ -37,11 +39,15 @@ class Signal(int, Enum):
     Input("side-clear-expression-btn", "n_clicks"),
     Input("annotation-signal", "data"),
     Input("merge-plot-signal", "data"),
+    Input("data-loaded-plot-signal", "data"),
+    Input("data-loaded-plot-signal-prep", "data"),
+    Input("data-loaded-plot-signal-prep-atac", "data"),
     State("active-plot", "data"),
     State("label-tabs", "active_tab"),
     prevent_initial_call=True
 )
-def signal_plot(n1, n2, mexp, sexp, c1, c2, ans, mps, actp, actt):
+def signal_plot(
+        n1, n2, mexp, sexp, c1, c2, ans, mps, dlps, dlpsp, dlpspa, actp, actt):
     ctx = dash.callback_context
     if not ctx.triggered:
         raise PreventUpdate
@@ -49,6 +55,8 @@ def signal_plot(n1, n2, mexp, sexp, c1, c2, ans, mps, actp, actt):
     to_return = [dash.no_update] * 2
     index = 0 if actp == 1 else 1
     button_id = ctx.triggered[0]["prop_id"].split(".")[0]
+
+    logger.info(f"Running button with id {button_id}.")
 
     if button_id == "dim-run-btn":
         to_return[index] = Signal.DIM_REDUCE
@@ -74,6 +82,10 @@ def signal_plot(n1, n2, mexp, sexp, c1, c2, ans, mps, actp, actt):
     elif button_id == "merge-plot-signal":
         if mps is not None:
             to_return[index] = Signal.MERGE
+    elif button_id == "data-loaded-plot-signal"\
+            or button_id == "data-loaded-plot-signal-prep":
+        if dlps is not None and dlpsp is None:
+            to_return[index] = Signal.DATA_LOAD
 
     return to_return
 
@@ -132,6 +144,12 @@ def get_update_plot_func(an):
                 dash.no_update
         elif s_code == Signal.MERGE:
             return get_clu_figure(dbroot.adatas[an]['adata'], title), 1
+        elif s_code == Signal.DATA_LOAD:
+            if 'x_emb_2d' in dbroot.adatas[an]['adata'].obsm:
+                if 'labels' in dbroot.adatas[an]['adata'].obs:
+                    return get_clu_figure(dbroot.adatas[an]['adata'], title), 1
+                return get_dim_figure(dbroot.adatas[an]['adata'], title), 1
+            return empty_figure, 1
         else:
             raise InternalError(f"No signal with id {s_code} found.")
 

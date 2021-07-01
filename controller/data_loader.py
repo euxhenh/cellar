@@ -12,6 +12,7 @@ from .cellar.core import read_adata, cl_add_gene_symbol
     Output("shape-signal-upload", "data"),
     Output("feature-list-signal", "data"),
     Output("dataset-load", "style"),
+    Output("data-loaded-plot-signal", "data"),
 
     Input("load-dataset-btn", "n_clicks"),
     State("server-dataset-dropdown", "value"),
@@ -32,7 +33,7 @@ def load_dataset(n1, dname, actp):
 
     logger.info(f"Read {dname} info {an}.")
 
-    return 1, 1, {}
+    return 1, 1, {}, 1
 
 
 @app.callback(
@@ -40,16 +41,18 @@ def load_dataset(n1, dname, actp):
     Output("no-features", "children"),
 
     Input("shape-signal-upload", "data"),
+    Input("shape-signal-upload-prep", "data"),
+    Input("shape-signal-upload-prep-atac", "data"),
     Input("shape-signal-atoggle", "data"),
 
     State("active-plot", "data"),
     prevent_initial_call=True
 )
-def update_shape(s1, s2, actp):
+def update_shape(s1, s2, s3, s4, actp):
     nos, nof = 'N/A', 'N/A'
 
     ctx = dash.callback_context
-    if not ctx.triggered or (s1 is None and s2 is None):
+    if not ctx.triggered or (s1 is None and s2 is None and s3 is None):
         raise PreventUpdate
 
     an = 'a1' if actp == 1 else 'a2'
@@ -65,17 +68,23 @@ def update_shape(s1, s2, actp):
     Output("side-feature-list", "options"),
 
     Input("feature-list-signal", "data"),
+    Input("feature-list-signal-prep", "data"),
+    Input("feature-list-signal-prep-atac", "data"),
     State("active-plot", "data"),
     prevent_initial_call=True
 )
-def update_feature_list(s1, actp):
+def update_feature_list(s1, s2, s3, actp):
     ctx = dash.callback_context
-    if not ctx.triggered or s1 is None:
+    if not ctx.triggered or (s1 is None and s2 is None):
         raise PreventUpdate
 
     an = 'a1' if actp == 1 else 'a2'
 
     if an in dbroot.adatas:
+        if dbroot.adatas[an]['adata'].shape[1] > 100000:
+            logger.warn("Too many features found. Skipping feature list.")
+            raise PreventUpdate
+
         if 'gene_symbols' not in dbroot.adatas[an]['adata'].var:
             cl_add_gene_symbol(dbroot.adatas[an]['adata'])
 

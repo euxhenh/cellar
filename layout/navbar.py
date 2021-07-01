@@ -7,7 +7,7 @@ from .preprocessing import prep_tabs
 CELLAR_LOGO = 'assets/cellar-logo-white.png'
 
 dataset_dict = get_server_dataset_dict(
-    '/home/zekrom/Floatzel/cellar/datasets/server')
+    '/home/ferrocactus/Floatzel/cellar/datasets/server')
 # dataset_dict = get_server_dataset_dict(
 #     '/home/keldeo/Slowpoke/cellar/datasets/server')
 # dataset_dict = get_server_dataset_dict('/home/nonroot/cellar/data/server')
@@ -104,7 +104,8 @@ dataset_bar = dbc.Row(
             dbc.Button(
                 "Upload",
                 id="upload-dataset-btn",
-                color='primary'
+                color='primary',
+                disabled=True
             ),
             width='auto'
         ),
@@ -157,16 +158,20 @@ modes = dbc.Nav(
     [
         dbc.NavItem(dbc.Card(dbc.Button(
             "Change Dataset", id="change-dataset-btn",
-            block=True, color='primary', outline=True), className="shadow-sm")),
+            block=True, color='primary', outline=True),
+            className="shadow-sm")),
         dbc.NavItem(dbc.Card(dbc.Button(
             "Preprocessing", id="preprocessing-mode-btn",
-            block=True, color='primary', outline=True), className="shadow-sm")),
+            block=True, color='primary', outline=True),
+            className="shadow-sm")),
         dbc.NavItem(dbc.Card(dbc.Button(
             "Dual Mode", id="dual-mode-btn",
-            block=True, color='primary', outline=True), className="shadow-sm")),
+            block=True, color='primary', outline=True),
+            className="shadow-sm")),
         dbc.NavItem(dbc.Card(dbc.Button(
             "Exploratory Data Analysis Mode", id="exploratory-analysis-btn",
-            block=True, color='primary', outline=True), className="shadow-sm"))
+            block=True, color='primary', outline=True, disabled=True),
+            className="shadow-sm"))
     ],
     justified=True,
     className="mb-2 mt-2",

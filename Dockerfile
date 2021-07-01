@@ -32,8 +32,8 @@ RUN rm -rf /home/nonroot/downloads
 
 RUN conda init bash
 RUN mkdir /home/nonroot/cellar
-# RUN git clone https://github.com/ferrocactus/CellarV /home/nonroot/cellar
-COPY . /home/nonroot/cellar
+RUN git clone https://github.com/ferrocactus/CellarV /home/nonroot/cellar
+#COPY . /home/nonroot/cellar
 WORKDIR /home/nonroot/cellar
 EXPOSE 8050
 ENTRYPOINT ["conda", "run", "--no-capture-output", "-n", "cellar", "python", "main.py"]

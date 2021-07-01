@@ -10,15 +10,36 @@ row_1 = dbc.Row([
             [
                 dbc.CardBody(
                     [
-                        html.H5("Filter Cells", className="card-title"),
+                        dcc.Loading(
+                            html.H5(
+                                "Filter Cells",
+                                className="card-title",
+                                id="temp-prep-h5"
+                            ),
+                            fullscreen=True
+                        ),
                         dbc.Row(
                             [
                                 dbc.Col(
                                     dbc.FormGroup(
                                         [
-                                            dbc.Label(
-                                                "Counts", html_for="slider"),
+                                            dbc.Row(
+                                                [
+                                                    dbc.Checkbox(
+                                                        "prep-filter-cells-counts-checkbox",
+                                                        className="mr-3 prep-ckb"
+                                                    ),
+                                                    dbc.Label(
+                                                        "Counts", html_for="slider"),
+                                                ],
+                                                # justify="between",
+                                                align="baseline",
+                                                no_gutters=True
+                                            ),
+                                            # dbc.Label(
+                                            # "Counts", html_for="slider"),
                                             dcc.RangeSlider(
+                                                id="prep-filter-cells-counts-slider",
                                                 min=0,
                                                 max=3000,
                                                 step=50,
@@ -39,9 +60,22 @@ row_1 = dbc.Row([
                                 dbc.Col(
                                     dbc.FormGroup(
                                         [
-                                            dbc.Label(
-                                                "Genes", html_for="slider"),
+                                            dbc.Row(
+                                                [
+                                                    dbc.Checkbox(
+                                                        "prep-filter-cells-genes-checkbox",
+                                                        className="mr-3 prep-ckb",
+                                                        checked=True
+                                                    ),
+                                                    dbc.Label(
+                                                        "Genes", html_for="slider"),
+                                                ],
+                                                # justify="between",
+                                                align="baseline",
+                                                no_gutters=True
+                                            ),
                                             dcc.RangeSlider(
+                                                id="prep-filter-cells-genes-slider",
                                                 min=0,
                                                 max=3000,
                                                 step=50,
@@ -56,11 +90,6 @@ row_1 = dbc.Row([
                                 )
                             ],
                             no_gutters=True
-                        ),
-                        dbc.Button(
-                            "Run", block=True, color='secondary',
-                            outline=True,
-                            className="mb-3"
                         ),
                         html.P(
                             [
@@ -80,22 +109,35 @@ row_1 = dbc.Row([
             ],
             className="prep-card-long"
         ),
-        width=3
+        width=3, xs=12, sm=12, md=3, lg=3
     ),
     dbc.Col(
         dbc.Card(
             [
                 dbc.CardBody(
                     [
-                        html.H5("Filter Genes", className="card-title"),
+                        html.H5("Filter Genes",
+                                className="card-title"),
                         dbc.Row(
                             [
                                 dbc.Col(
                                     dbc.FormGroup(
                                         [
-                                            dbc.Label(
-                                                "Counts", html_for="slider"),
+                                            dbc.Row(
+                                                [
+                                                    dbc.Checkbox(
+                                                        "prep-filter-genes-counts-checkbox",
+                                                        className="mr-3 prep-ckb"
+                                                    ),
+                                                    dbc.Label(
+                                                        "Counts", html_for="slider"),
+                                                ],
+                                                # justify="between",
+                                                align="baseline",
+                                                no_gutters=True
+                                            ),
                                             dcc.RangeSlider(
+                                                id="prep-filter-genes-counts-slider",
                                                 min=0,
                                                 max=3000,
                                                 step=50,
@@ -116,9 +158,22 @@ row_1 = dbc.Row([
                                 dbc.Col(
                                     dbc.FormGroup(
                                         [
-                                            dbc.Label(
-                                                "Cells", html_for="slider"),
+                                            dbc.Row(
+                                                [
+                                                    dbc.Checkbox(
+                                                        "prep-filter-genes-cells-checkbox",
+                                                        className="mr-3 prep-ckb",
+                                                        checked=True
+                                                    ),
+                                                    dbc.Label(
+                                                        "Cells", html_for="slider"),
+                                                ],
+                                                # justify="between",
+                                                align="baseline",
+                                                no_gutters=True
+                                            ),
                                             dcc.RangeSlider(
+                                                id="prep-filter-genes-cells-slider",
                                                 min=0,
                                                 max=3000,
                                                 step=50,
@@ -133,11 +188,6 @@ row_1 = dbc.Row([
                                 )
                             ],
                             no_gutters=True
-                        ),
-                        dbc.Button(
-                            "Run", block=True, color='secondary',
-                            outline=True,
-                            className="mb-3"
                         ),
                         html.P(
                             [
@@ -157,15 +207,27 @@ row_1 = dbc.Row([
             ],
             className="prep-card-long"
         ),
-        width=3
+        width=3, xs=12, sm=12, md=3, lg=3
     ),
     dbc.Col(
         dbc.Card(
             [
                 dbc.CardBody(
                     [
-                        html.H5("Highly Variable Genes",
-                                className="card-title"),
+                        dbc.Row(
+                            [
+                                dbc.Checkbox(
+                                    "prep-high-var-checkbox",
+                                    className="mr-3 prep-ckb",
+                                    checked=True
+                                ),
+                                html.H5("Highly Variable Genes",
+                                        className="card-title")
+                            ],
+                            # justify="between",
+                            align="baseline",
+                            no_gutters=True
+                        ),
                         dbc.Row(
                             [
                                 dbc.Col(
@@ -181,6 +243,7 @@ row_1 = dbc.Row([
                                                     {'label': 'seurat_v3',
                                                         'value': 'seurat_v3'},
                                                 ],
+                                                id="prep-high-var-flavor",
                                                 value="seurat"
                                             )
                                         ]
@@ -191,7 +254,7 @@ row_1 = dbc.Row([
                                         [
                                             dbc.Label("No. Top Genes"),
                                             dbc.Input(
-                                                "No. top genes",
+                                                id="prep-high-var-top-genes",
                                                 type="number",
                                                 placeholder="None"
                                             )
@@ -214,7 +277,9 @@ row_1 = dbc.Row([
                                                     dbc.Input(
                                                         type="number",
                                                         value=0.0125,
-                                                        placeholder="None")
+                                                        placeholder="None",
+                                                        id="prep-high-var-mean-min"
+                                                    )
                                                 ]
                                             )
                                         ),
@@ -227,7 +292,9 @@ row_1 = dbc.Row([
                                                     dbc.Input(
                                                         type="number",
                                                         value=3,
-                                                        placeholder="None")
+                                                        placeholder="None",
+                                                        id="prep-high-var-mean-max"
+                                                    )
                                                 ]
                                             )
                                         )
@@ -248,6 +315,7 @@ row_1 = dbc.Row([
                                                         "Min",
                                                         addon_type="prepend"),
                                                     dbc.Input(
+                                                        id="prep-high-var-disp-min",
                                                         type="number",
                                                         value=0.5,
                                                         placeholder="None")
@@ -261,6 +329,7 @@ row_1 = dbc.Row([
                                                         "Max",
                                                         addon_type="prepend"),
                                                     dbc.Input(
+                                                        id="prep-high-var-disp-max",
                                                         type="text",
                                                         value="inf",
                                                         placeholder="None")
@@ -271,11 +340,6 @@ row_1 = dbc.Row([
                                     no_gutters=True
                                 )
                             ]
-                        ),
-                        dbc.Button(
-                            "Run", block=True, color='secondary',
-                            outline=True,
-                            className="mb-3"
                         ),
                         html.P(
                             [
@@ -296,7 +360,7 @@ row_1 = dbc.Row([
             ],
             className="prep-card-long"
         ),
-        width=3
+        width=3, xs=12, sm=12, md=3, lg=3
     ),
     dbc.Col(
         dbc.Card(
@@ -306,7 +370,20 @@ row_1 = dbc.Row([
                         html.H5("Misc", className="card-title"),
                         dbc.FormGroup(
                             [
-                                dbc.Label("Normalize Total"),
+                                dbc.Row(
+                                    [
+                                        dbc.Checkbox(
+                                            "prep-normalize-total-checkbox",
+                                            className="mr-3 prep-ckb",
+                                            checked=True
+                                        ),
+                                        dbc.Label(
+                                            "Normalize Total"),
+                                    ],
+                                    # justify="between",
+                                    align="baseline",
+                                    no_gutters=True
+                                ),
                                 dbc.Row(
                                     [
                                         dbc.Col(
@@ -315,6 +392,7 @@ row_1 = dbc.Row([
                                                     dbc.InputGroupAddon(
                                                         "Target Sum", addon_type="prepend"),
                                                     dbc.Input(
+                                                        id="prep-norm-target",
                                                         type="number",
                                                         placeholder="None"
                                                     )
@@ -328,7 +406,9 @@ row_1 = dbc.Row([
                                                         "Max Fraction",
                                                         addon_type="prepend"),
                                                     dbc.Input(
+                                                        id="prep-norm-maxf",
                                                         type="number",
+                                                        value=0.05,
                                                         placeholder="None"
                                                     )
                                                 ]
@@ -341,20 +421,36 @@ row_1 = dbc.Row([
                         ),
                         dbc.FormGroup(
                             [
-                                dbc.Label("Log1p"),
-                                dbc.RadioItems(
-                                    options=[
-                                        {"label": "True", "value": True},
-                                        {"label": "False", "value": False},
+                                dbc.Row(
+                                    [
+                                        dbc.Checkbox(
+                                            "prep-log1p-checkbox",
+                                            className="mr-3 prep-ckb",
+                                            checked=True
+                                        ),
+                                        dbc.Label("Log1p"),
                                     ],
-                                    value=True,
-                                    inline=True
+                                    # justify="between",
+                                    align="baseline",
+                                    no_gutters=True
                                 )
                             ]
                         ),
                         dbc.FormGroup(
                             [
-                                dbc.Label("Scale"),
+                                dbc.Row(
+                                    [
+                                        dbc.Checkbox(
+                                            "prep-scale-checkbox",
+                                            className="mr-3 prep-ckb",
+                                            checked=True
+                                        ),
+                                        dbc.Label("Scale"),
+                                    ],
+                                    # justify="between",
+                                    align="baseline",
+                                    no_gutters=True
+                                ),
                                 dbc.Row(
                                     [
                                         dbc.Col(
@@ -365,6 +461,7 @@ row_1 = dbc.Row([
                                                         addon_type="prepend",
                                                         className="mr-2"),
                                                     dbc.RadioItems(
+                                                        id="prep-scale-zero",
                                                         options=[
                                                             {"label": "True",
                                                                 "value": True},
@@ -385,6 +482,7 @@ row_1 = dbc.Row([
                                                         addon_type="prepend",
                                                         className="mr-2"),
                                                     dbc.Input(
+                                                        id="prep-scale-max",
                                                         type="number",
                                                         placeholder="None"
                                                     )
@@ -395,11 +493,6 @@ row_1 = dbc.Row([
                                     no_gutters=True
                                 )
                             ]
-                        ),
-                        dbc.Button(
-                            "Run", block=True, color='secondary',
-                            outline=True,
-                            className="mb-3"
                         ),
                         html.P(
                             [
@@ -417,35 +510,155 @@ row_1 = dbc.Row([
             ],
             className="prep-card-long"
         ),
-        width=3
+        width=3, xs=12, sm=12, md=3, lg=3
     )
 ], no_gutters=True)
 
 
-atac = dbc.Row([
+atac_row = dbc.Row([
     dbc.Col([
         dbc.Card(
             [
                 dbc.CardBody(
                     [
-                        html.H5("Misc", className="card-title"),
+                        dcc.Loading(
+                            html.H5(
+                                "Bin Operation",
+                                className="card-title",
+                                id="temp-prep-h5-atac"
+                            ),
+                            fullscreen=True
+                        ),
+                        dbc.RadioItems(
+                            options=[
+                                {"label": "Sum", "value": "sum"},
+                                {"label": "Mean", "value": "mean"},
+                            ],
+                            value="sum",
+                            inline=True,
+                            className="mb-3",
+                            id="atac-operation"
+                        ),
+                        html.H5("Extend Gene Length", className="card-title"),
+                        dbc.Row(
+                            [
+                                dbc.Col(dbc.InputGroup(
+                                    [
+                                        dbc.InputGroupAddon(
+                                            "Extend", addon_type="append"),
+                                        dbc.Input(
+                                            "atac-extend-input",
+                                            type="text", value="5x"
+                                        )
+                                    ]
+                                ), width=6),
+                                dbc.Col(dbc.InputGroup(
+                                    [
+                                        dbc.InputGroupAddon(
+                                            "Max Extend", addon_type="append"),
+                                        dbc.Input(
+                                            "atac-max-extend-input",
+                                            type="text", value="5000"
+                                        )
+                                    ]
+                                ), width=6, className="mb-3")
+                            ]
+                        ),
+                        html.H5("Orientation", className="card-title"),
+                        dbc.Row(
+                            [
+                                dbc.Col(
+                                    dbc.Label("Consider Strand Orientation"),
+                                    width=6
+                                ),
+                                dbc.Col(
+                                    dbc.RadioItems(
+                                        options=[
+                                            {"label": "True", "value": True},
+                                            {"label": "False", "value": False},
+                                        ],
+                                        value=False,
+                                        inline=True,
+                                        id="atac-strand-bool"
+                                    ),
+                                    width=6
+                                )
+                            ]
+                        ),
+                        dbc.Row(
+                            [
+                                dbc.Col(dbc.InputGroup(
+                                    [
+                                        dbc.InputGroupAddon(
+                                            "Op Extend", addon_type="append"),
+                                        dbc.Input(
+                                            "atac-op-extend-input",
+                                            type="text", value="1x"
+                                        )
+                                    ]
+                                ), width=6),
+                                dbc.Col(dbc.InputGroup(
+                                    [
+                                        dbc.InputGroupAddon(
+                                            "Op Max Extend",
+                                            addon_type="append"),
+                                        dbc.Input(
+                                            "atac-max-op-extend-input",
+                                            type="text", value="1000"
+                                        )
+                                    ]
+                                ), width=6)
+                            ]
+                        )
                     ]
                 )
-            ]
+            ],
+            className="prep-card-long"
         )
-    ], width=3)
+    ], width=3, xs=12, sm=12, md=3, lg=3)
 ], no_gutters=True)
 
 
 prep = html.Div([
-    row_1
+    row_1,
+    dbc.Row(
+        dbc.Col(
+            dbc.Button(
+                "Run",
+                outline=True,
+                block=True,
+                id="prep-run-btn"
+            ),
+            width=3
+        ),
+        justify='center',
+        className="mt-2"
+    )
 ], className="mb-3", id="prep-row")
+
+
+atac = html.Div([
+    atac_row,
+    dbc.Row(
+        dbc.Col(
+            dbc.Button(
+                "Run",
+                outline=True,
+                block=True,
+                id="prep-atac-run-btn"
+            ),
+            width=3
+        ),
+        justify='center',
+        className="mt-2"
+    )
+], className="mb-3", id="prep-atac-row")
 
 
 prep_tabs = dbc.Tabs(
     [
         dbc.Tab(prep, label="Preprocessing", tab_id="prep"),
-        dbc.Tab([], label="scATAC-seq", tab_id="atacseq"),
+        dbc.Tab(atac, label="scATAC-seq", tab_id="atacseq"),
     ],
     id="prep-tabs"
 )

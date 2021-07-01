@@ -54,6 +54,10 @@ main_page = dbc.Col(
 
         dcc.Store(id="shape-signal-upload", storage_type="memory",
                   data=1, clear_data=True),
+        dcc.Store(id="shape-signal-upload-prep", storage_type="memory",
+                  data=1, clear_data=True),
+        dcc.Store(id="shape-signal-upload-prep-atac", storage_type="memory",
+                  data=1, clear_data=True),
         dcc.Store(id="shape-signal-atoggle", storage_type="memory",
                   data=1, clear_data=True),
 
@@ -75,6 +79,10 @@ main_page = dbc.Col(
 
         dcc.Store(id="feature-list-signal", storage_type="memory",
                   data=1, clear_data=True),
+        dcc.Store(id="feature-list-signal-prep", storage_type="memory",
+                  data=1, clear_data=True),
+        dcc.Store(id="feature-list-signal-prep-atac", storage_type="memory",
+                  data=1, clear_data=True),
 
         dcc.Store(id="annotation-signal", storage_type="memory",
                   data=1, clear_data=True),
@@ -82,6 +90,13 @@ main_page = dbc.Col(
         dcc.Store(id="main-plot-signal-code", storage_type="memory",
                   data=1, clear_data=True),
         dcc.Store(id="side-plot-signal-code", storage_type="memory",
+                  data=1, clear_data=True),
+
+        dcc.Store(id="data-loaded-plot-signal", storage_type="memory",
+                  data=1, clear_data=True),
+        dcc.Store(id="data-loaded-plot-signal-prep", storage_type="memory",
+                  data=1, clear_data=True),
+        dcc.Store(id="data-loaded-plot-signal-prep-atac", storage_type="memory",
                   data=1, clear_data=True),
         main_body
     ],
