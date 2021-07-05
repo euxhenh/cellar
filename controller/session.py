@@ -5,7 +5,6 @@ from dash.dependencies import Input, Output, State
 from dash.exceptions import PreventUpdate
 
 from app import app, logger, dbroot
-from .cellar.core import read_adata
 
 
 @app.callback(
@@ -26,6 +25,7 @@ def export_session(n1, actp):
 
     title = dbroot.adatas[an]['name'] + '_cellar.h5ad'
     path = os.path.join('tmp', title)
+    logger.info("Compressing AnnData object.")
     dbroot.adatas[an]['adata'].write_h5ad(path, compression=9)
 
     return dcc.send_file(path)
