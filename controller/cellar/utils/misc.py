@@ -1,5 +1,13 @@
 import glob
 import os
+import scipy.sparse
+from anndata._core.sparse_dataset import SparseDataset
+
+
+def is_sparse(x):
+    if isinstance(x, SparseDataset):
+        return True
+    return scipy.sparse.issparse(x)
 
 
 def get_server_dataset_dict(root='data/server'):
@@ -17,7 +25,12 @@ def get_server_dataset_dict(root='data/server'):
 
     for dataset in datasets:
         paths = dataset.split("/")
-        value = paths[-3] + " / " + paths[-2] + " / " + paths[-1][:-5]
+        fn = paths[-1][:-5]
+        value = ""
+        for subdir in paths[2:-1]:
+            value += subdir + " / "
+        value += fn
+        # value = paths[-3] + " / " + paths[-2] + " / " + paths[-1][:-5]
         dataset_dict[dataset] = value
 
     return dataset_dict

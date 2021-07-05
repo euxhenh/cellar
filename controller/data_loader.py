@@ -6,6 +6,7 @@ from dash.exceptions import PreventUpdate
 
 from app import app, logger, dbroot
 from .cellar.core import read_adata, cl_add_gene_symbol
+from .cellar.utils.misc import is_sparse
 
 
 @app.callback(
@@ -32,6 +33,8 @@ def load_dataset(n1, dname, actp):
         os.path.basename(dname))[0]
 
     logger.info(f"Read {dname} info {an}.")
+    if is_sparse(dbroot.adatas[an]['adata'].X):
+        logger.info("Found Sparse Matrix.")
 
     return 1, 1, {}, 1
 

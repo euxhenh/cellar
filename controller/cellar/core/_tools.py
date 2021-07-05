@@ -1,14 +1,17 @@
 import anndata
 import numpy as np
 import pandas as pd
+from app import logger
 from controller.cellar.utils.exceptions import InternalError
 from controller.cellar.utils.exceptions import IncorrectFileFormat
+from controller.cellar.utils.misc import is_sparse
 
 
 def read_adata(path, mode='r'):
     try:
         return anndata.read_h5ad(path, mode)
-    except:
+    except Exception as e:
+        logger.info(str(e))
         raise IncorrectFileFormat
 
 
@@ -25,9 +28,26 @@ def cl_get_expression(adata, var_names, op='min'):
     var_names = np.array(var_names, dtype=str).flatten()
 
     if len(var_names) == 1:  # Don't normalize if single feature
-        return adata[:, var_names[0]].X.flatten()
+        x = adata[:, var_names[0]].X
+
+        if is_sparse(x):
+            x = np.asarray(x.todense())
+
+        print(type(x))
+        print(x.shape)
+        print(x.flatten().shape)
+        print(x.reshape(-1).shape)
+        print(np.squeeze(x).shape)
+
+        # x = x.reshape(-1)
+        return x.flatten()
 
     x = adata[:, var_names].X
+
+    if is_sparse(x):
+        x = np.asarray(x.todense())
+
+    print(x.shape)
 
     rang = np.ptp(x, axis=0)  # range of values
 

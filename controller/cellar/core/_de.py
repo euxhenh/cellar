@@ -1,7 +1,6 @@
 import diffxpy.api as de
 import numpy as np
 import gseapy as gp
-import json
 
 from controller.cellar.utils.exceptions import InternalError
 
@@ -21,10 +20,15 @@ def ttest(adata, cluster_id, alpha=0.05):
     else:
         grouping[adata.obs['labels'].to_numpy() == cluster_id] = 1
 
+    if 'gene_symbols' in adata.var:
+        gene_names = adata.var['gene_symbols']
+    else:
+        gene_names = adata.var.index.to_numpy()
+
     test = de.test.t_test(
         data=adata.X,
         grouping=grouping,
-        gene_names=adata.var['gene_symbols'],
+        gene_names=gene_names,
         is_logged=True
     )
 

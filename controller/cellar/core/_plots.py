@@ -3,10 +3,10 @@ import dash_bio as dashbio
 import plotly.graph_objects as go
 import plotly.express as px
 import seaborn as sns
-import pandas as pd
 
 from ..utils.exceptions import InternalError
 from ._tools import cl_add_gene_symbol, cl_get_expression
+from ..utils.misc import is_sparse
 
 
 def get_dim_figure(adata, title):
@@ -21,7 +21,7 @@ def get_dim_figure(adata, title):
         x=adata.obsm['x_emb_2d'][:, 0],
         y=adata.obsm['x_emb_2d'][:, 1],
         opacity=0.8,
-        custom_data=[np.arange(adata.shape[0])], # indices
+        custom_data=[np.arange(adata.shape[0])],  # indices
         hover_name=hover_name,
         render_mode='webgl')
 
@@ -60,7 +60,7 @@ def get_clu_figure(adata, title):
         y=adata.obsm['x_emb_2d'][:, 1],
         hover_name=hover_name,
         hover_data=hover_data,
-        custom_data=[np.arange(adata.shape[0])], # indices
+        custom_data=[np.arange(adata.shape[0])],  # indices
         color=adata.obs['labels'].astype('str'),
         category_orders={'color': unq_colors},
         opacity=0.8,
@@ -117,7 +117,7 @@ def get_expression_figure(adata, feature_values):
         y=adata.obsm['x_emb_2d'][:, 1],
         hover_name=adata.obs.index.to_numpy().astype('str'),
         hover_data=hover_data,
-        custom_data=[np.arange(adata.shape[0])], # indices
+        custom_data=[np.arange(adata.shape[0])],  # indices
         color=expression,
         opacity=0.8,
         labels={'color': 'Normalized Val.'},
@@ -148,8 +148,12 @@ def get_heatmap(adata, feature_list):
     aves = []
 
     for label in unq_labels:
-        aves.append(adata[:, feature_list].X[np.where(
-            adata.obs['labels'] == label)].mean(axis=0))
+        row = adata[:, feature_list].X[np.where(
+            adata.obs['labels'] == label)]
+        if is_sparse(row):
+            row = np.asarray(row.todense())
+        row = row.mean(axis=0)
+        aves.append(row)
     aves = np.array(aves)
 
     if 'gene_symbols' not in adata.var:
@@ -187,7 +191,10 @@ def get_violin_plot(adata, feature, plot1):
     if feature not in adata.var_names:
         raise InternalError(f"Feature {feature} not found in adata.")
 
-    vect = adata[:, feature].X.flatten()
+    vect = adata[:, feature].X
+    if is_sparse(vect):
+        vect = np.asarray(vect.todense())
+    vect = vect.flatten()
 
     unq_labels = np.unique(adata.obs['labels'])
     pal = sns.color_palette("Set2", np.max(unq_labels) + 1)

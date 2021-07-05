@@ -1,6 +1,7 @@
 from sklearn.decomposition import PCA, TruncatedSVD, KernelPCA
 from sklearn.manifold import MDS
 # from umap import UMAP
+from anndata._core.sparse_dataset import SparseDataset
 
 
 func_map = {
@@ -14,12 +15,18 @@ func_map = {
 
 def get_func(func_name):
     def _func(adata, key, x_to_use, **kwargs):
+
         for k in kwargs:
             if kwargs[k] == '':
                 kwargs[k] = None
 
         if x_to_use == 'x':
             x_to_use = adata.X
+            # Load sparse matrix to memory since cannot work with
+            # HDF5 in backed mode
+            if isinstance(adata.X, SparseDataset):
+                if adata.isbacked:
+                    x_to_use = x_to_use.to_memory()
         else:
             x_to_use = adata.obsm['x_emb']
 
