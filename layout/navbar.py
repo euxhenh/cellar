@@ -2,13 +2,12 @@ import dash_bootstrap_components as dbc
 import dash_core_components as dcc
 import dash_html_components as html
 from controller.cellar.utils.misc import get_server_dataset_dict
+from gvars import (CELLAR_LOGO, DATA_PATH, DEMOS_URL, DOCS_URL, GITHUB_URL,
+                   PAPER_URL)
+
 from .preprocessing import prep_tabs
 
-CELLAR_LOGO = 'assets/cellar-logo-white.png'
-
-dataset_dict = get_server_dataset_dict(
-    '/home/nonroot/cellar/data/server'
-)
+dataset_dict = get_server_dataset_dict(DATA_PATH)
 
 documentation_bar = dbc.Nav(
     [
@@ -24,7 +23,7 @@ documentation_bar = dbc.Nav(
                     no_gutters=True
                 ),
                 external_link=True,
-                href="https://ferrocactus.github.io/cellar/",
+                href=DOCS_URL,
                 target="_blank")
         ),
         dbc.NavItem(
@@ -39,7 +38,7 @@ documentation_bar = dbc.Nav(
                     no_gutters=True
                 ),
                 external_link=True,
-                href="https://github.com/ferrocactus/cellar",
+                href=GITHUB_URL,
                 target="_blank")
         ),
         dbc.NavItem(
@@ -54,7 +53,7 @@ documentation_bar = dbc.Nav(
                     no_gutters=True
                 ),
                 external_link=True,
-                href="https://www.youtube.com/watch?v=6gzR-Zlprx4",
+                href=DEMOS_URL,
                 target="_blank")
         )
     ],
@@ -77,8 +76,7 @@ navbar = dbc.Navbar(
                         align='center',
                         no_gutters=True
                     ),
-                    href="https://www.biorxiv.org/content/10.1101/"
-                    "2021.03.19.436162v1?rss=1",
+                    href=PAPER_URL,
                     target="_blank"
                 ),
                 html.Div(className="vline"),

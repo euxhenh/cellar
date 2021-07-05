@@ -2,7 +2,6 @@ import dash_bootstrap_components as dbc
 import dash_html_components as html
 import dash_core_components as dcc
 import dash_table
-import gseapy
 
 from .misc import empty_analysis_figure, empty_spatial_figure
 
@@ -279,6 +278,17 @@ def get_spatial_card(prefix):
                                     dcc.Loading(
                                         id=prefix + "-buf-load",
                                         fullscreen=True
+                                    ),
+                                    dcc.Dropdown(
+                                        options=[
+                                            {'label': 'CODEX',
+                                             'value': 'spatial-codex'},
+                                            {'label': '10X Genomics',
+                                             'value': 'spatial-10x'}
+                                        ],
+                                        className="mw-300",
+                                        placeholder="Select spatial data type",
+                                        id=prefix + '-spatial-type-dropdown'
                                     ),
                                     dcc.Upload(
                                         id=prefix + "-upload-spatial",

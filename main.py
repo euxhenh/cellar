@@ -32,5 +32,5 @@ if 'SHINYPROXY_PUBLIC_PATH' in os.environ:
     })
 
 if __name__ == "__main__":
-    dev = False
+    dev = True
     app.run_server(debug=dev, use_reloader=dev, host='0.0.0.0')

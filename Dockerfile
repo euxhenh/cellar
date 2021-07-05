@@ -32,6 +32,7 @@ RUN rm -rf /home/nonroot/downloads
 
 RUN conda init bash
 RUN mkdir /home/nonroot/cellar
+ARG VER=unknown
 RUN git clone https://github.com/ferrocactus/CellarV /home/nonroot/cellar
 #COPY . /home/nonroot/cellar
 WORKDIR /home/nonroot/cellar

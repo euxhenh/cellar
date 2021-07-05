@@ -5,3 +5,4 @@ tmp
 Enrichr
 notebooks
 shinyproxy
+data/server/*

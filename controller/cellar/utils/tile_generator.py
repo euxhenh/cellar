@@ -3,9 +3,12 @@ import tifffile
 import pandas as pd
 import numpy as np
 import matplotlib
+import json
+import matplotlib.pyplot as plt
+import matplotlib.patches as patches
 
 from .exceptions import InvalidArgument
-from .colors import palette_to_rgb
+from .colors import palette_to_rgb, PALETTE
 
 from app import logger
 
@@ -88,3 +91,87 @@ def generate_tile(
         matplotlib.image.imsave(savepath, grid.astype(np.uint8))
 
     return grid.astype(np.uint8)
+
+
+def generate_10x_spatial(
+        path_to_img, path_to_df, path_to_json,
+        adata=None, savepath=None, in_tissue=True):
+    '''
+    in_tissue:
+        True: onyl show spots that are in the tissue
+        False: show all spots
+    '''
+
+    has_labels = False
+    if adata is not None:
+        if 'labels' in adata.obs:
+            has_labels = True
+
+    if has_labels:
+        labels = adata.obs['labels']
+    else:
+        return
+
+    if 'json_dict' in adata.uns:
+        dic = adata.uns['json_dict']
+    else:
+        json_file = open(path_to_json, 'r')
+        dic = json.load(json_file)
+
+    scaling_factor = dic['tissue_hires_scalef']  # 0.08250825
+    full_d = dic['spot_diameter_fullres']
+    r = full_d*scaling_factor/2
+
+    if 'image' in adata.uns:
+        small_img = adata.uns['image']
+    else:
+        small_img = plt.imread(path_to_img)
+
+    if 'spatial_dict' in adata.uns:
+        spatial_dict = adata.uns['spatial_dict']
+    else:
+        spatial_dict = {}
+        points = []
+        row_col_dict = {}
+        spatial_info = pd.read_csv(
+            path_to_df, delimiter=",", header=None).values
+        for row in spatial_info:
+            if row[1] == 0 and in_tissue == True:
+                continue
+            spatial_dict[row[0]] = [row[-2], row[-1]]
+            points.append([row[-2], row[-1]])
+            row_col_dict[(row[2], row[3])] = row[0]
+
+    # Display the image
+    ax = plt.subplot()
+    ax.imshow(small_img)
+    label_dict = {}
+    barcodes = list(adata.obs['barcodes'])
+    for i in range(len(adata.obs)):
+        # Create a Rectangle patch
+        label_dict[barcodes[i]] = labels[i]
+        center = np.array(spatial_dict[(barcodes[i])]) * scaling_factor
+        center = center.astype('int')
+        color = PALETTE[labels[i]]
+        circle = patches.Circle(
+            (center[1], center[0]),
+            r,
+            linewidth=1,
+            edgecolor=color,
+            facecolor=color,
+            alpha=0.6)
+
+        # Add the patch to the Axes
+        ax.add_patch(circle)
+
+    fig = ax.get_figure()
+    if savepath is not None:
+        fig.savefig(savepath)
+
+    # fig2data
+    fig.canvas.draw()
+    tile = np.fromstring(fig.canvas.tostring_rgb(), dtype=np.uint8, sep='')
+    tile = tile.reshape(fig.canvas.get_width_height()[::-1] + (3,))
+    # end of fig2data
+
+    return tile
