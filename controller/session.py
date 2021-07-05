@@ -25,7 +25,7 @@ def export_session(n1, actp):
         raise PreventUpdate
 
     title = dbroot.adatas[an]['name'] + '_cellar.h5ad'
-    path = os.path.join('data/tmp', title)
+    path = os.path.join('tmp', title)
     dbroot.adatas[an]['adata'].write_h5ad(path, compression=9)
 
     return dcc.send_file(path)

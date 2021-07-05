@@ -33,21 +33,12 @@ def cl_get_expression(adata, var_names, op='min'):
         if is_sparse(x):
             x = np.asarray(x.todense())
 
-        print(type(x))
-        print(x.shape)
-        print(x.flatten().shape)
-        print(x.reshape(-1).shape)
-        print(np.squeeze(x).shape)
-
-        # x = x.reshape(-1)
         return x.flatten()
 
     x = adata[:, var_names].X
 
     if is_sparse(x):
         x = np.asarray(x.todense())
-
-    print(x.shape)
 
     rang = np.ptp(x, axis=0)  # range of values
 

@@ -1,7 +1,9 @@
 .vscode
 /**/__pycache__
 /**/.ipynb*
-tmp
+data/*
+tmp/a1/*
+tmp/a2/*
 Enrichr
 notebooks
 shinyproxy
