@@ -2,6 +2,7 @@ from sklearn.decomposition import PCA, TruncatedSVD, KernelPCA
 from sklearn.manifold import MDS
 from umap import UMAP
 from anndata._core.sparse_dataset import SparseDataset
+from scipy.sparse import issparse
 
 
 func_map = {
@@ -24,7 +25,7 @@ def get_func(func_name):
             x_to_use = adata.X
             # Load sparse matrix to memory since cannot work with
             # HDF5 in backed mode
-            if isinstance(adata.X, SparseDataset):
+            if isinstance(adata.X, SparseDataset) or issparse(adata.X):
                 if adata.isbacked:
                     x_to_use = x_to_use.to_memory()
         else:

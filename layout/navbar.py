@@ -97,26 +97,39 @@ navbar = dbc.Navbar(
 dataset_bar = dbc.Row(
     [
         dbc.Col(
-            dbc.Button(
-                "Upload",
-                id="upload-dataset-btn",
-                color='primary',
-                disabled=True
-            ),
+            [
+                # dcc.Loading(
+                #     id="upload-loading",
+                #     fullscreen=True
+                # ),
+                dcc.Upload(
+                    id="upload-dataset",
+                    children=[
+                        dbc.Button("Upload")
+                    ],
+                    className="mr-2",
+                    max_size=1020*1024*1024  # 1 GB
+                    # color='primary',
+                    # disabled=False
+                ),
+            ],
             width='auto'
         ),
         dbc.Col(
-            dcc.Dropdown(
-                options=[
-                    {'label': dataset_dict[d], 'value': d}
-                    for d in dataset_dict
-                ],
-                className='mw-800',
-                id='server-dataset-dropdown',
-                style={
-                    'height': '32.5px',
-                    'font-size': '0.8125rem'
-                }
+            dcc.Loading(
+                dbc.Select(
+                    options=[
+                        {'label': dataset_dict[d], 'value': d}
+                        for d in dataset_dict
+                    ],
+                    className='mw-800',
+                    id='dataset-dropdown',
+                    style={
+                        'height': '32.5px',
+                        'font-size': '0.8125rem'
+                    }
+                ),
+                fullscreen=True
             ),
             width='auto'
         ),

@@ -10,7 +10,7 @@ ssclu_leiden_settings = dbc.Popover(
             [
                 dbc.FormGroup(
                     [
-                        dbc.Label("Freeze Subsets"),
+                        dbc.Label("Merge Subsets"),
                         dbc.Checklist(
                             options=[],
                             id="ssclu-Leiden-main-checklist",

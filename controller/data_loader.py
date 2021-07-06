@@ -16,7 +16,7 @@ from .cellar.utils.misc import is_sparse
     Output("data-loaded-plot-signal", "data"),
 
     Input("load-dataset-btn", "n_clicks"),
-    State("server-dataset-dropdown", "value"),
+    State("dataset-dropdown", "value"),
     State("active-plot", "data"),
     prevent_initial_call=True
 )

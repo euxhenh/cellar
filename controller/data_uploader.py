@@ -1,103 +1,68 @@
-import io
 import os
-import shutil
+import io
 import tarfile
-from base64 import b64decode
+import shutil
+import gc
 
-import plotly.express as px
-from app import app, dbroot, logger
+import scanpy as sc
+from base64 import b64decode
 from dash.dependencies import Input, Output, State
 from dash.exceptions import PreventUpdate
 
-from controller.cellar.utils.exceptions import IncorrectFileFormat
-from controller.cellar.utils.tile_generator import (generate_10x_spatial,
-                                                    generate_tile)
+from app import app, logger
+from gvars import DATA_PATH
+from controller.cellar.utils.misc import get_server_dataset_dict
 
 
-def get_parse_tar_gz_func(an):
-    def _func(contents, filename, data_type):
-        content_type, content_string = contents.split(',')
-        decoded = b64decode(content_string)
+@app.callback(
+    Output("dataset-dropdown", "options"),
+    Input('upload-dataset', 'contents'),
+    State('upload-dataset', 'filename'),
+    State('active-plot', "data"),
+    prevent_initial_call=True
+)
+def upload_data(contents, filename, actp):
+    # Don't allow / in filename
+    filename = filename.split('/')[-1]
 
-        if data_type == 'spatial-10x':
-            extract_path = f'tmp/{an}/s10x'
-        elif data_type == 'spatial-codex':
-            extract_path = f'tmp/{an}/codex'
-        else:
-            raise PreventUpdate
+    an = "a1" if actp == 1 else 'a2'
 
-        if filename.endswith('tar.gz'):
-            logger.info("Extracting tar.gz file.")
-            tar = tarfile.open(fileobj=io.BytesIO(decoded))
-            if os.path.isdir(extract_path):
-                shutil.rmtree(extract_path)
-            tar.extractall(extract_path)
-            tar.close()
-        else:
-            raise IncorrectFileFormat(f'{filename} format not recognized.')
+    if filename in os.listdir(os.path.join(DATA_PATH, 'uploaded')):
+        logger.warn(f"Dataset {filename} found in path. Skipping...")
+        raise PreventUpdate
 
-        return {}
+    content_type, content_string = contents.split(',')
+    decoded = b64decode(content_string)
 
-    return _func
+    if filename.endswith('.h5ad'):
+        with open(os.path.join(DATA_PATH, 'uploaded', filename), "wb") as f:
+            logger.info(f"Writing {filename} into uploaded directory.")
+            f.write(io.BytesIO(decoded).read())
+    elif filename.endswith('.tar.gz'):
+        filename = filename[:-len('.tar.gz')] + ".h5ad"
+        extract_path = f'tmp/{an}/d10x'
 
+        logger.info("Extracting tar.gz file.")
+        tar = tarfile.open(fileobj=io.BytesIO(decoded))
+        if os.path.isdir(extract_path):
+            shutil.rmtree(extract_path)
+        tar.extractall(extract_path)
+        tar.close()
 
-for prefix, an in zip(["main", "side"], ["a1", "a2"]):
-    app.callback(
-        Output(prefix + "-buf-load", "style"),
+        adata = sc.read_10x_mtx(extract_path, var_names='gene_symbols')
+        adata.write(os.path.join(DATA_PATH, 'uploaded', filename))
 
-        Input(prefix + '-upload-spatial', 'contents'),
-        State(prefix + '-upload-spatial', 'filename'),
-        State(prefix + "-spatial-type-dropdown", "value"),
-        prevent_initial_call=True
-    )(get_parse_tar_gz_func(an))
+        shutil.rmtree(extract_path)
 
+        del adata
+        gc.collect()
+    else:
+        logger.warn("File format not implemented.")
+        raise PreventUpdate
 
-def get_generate_tile_func(an):
-    def _func(n1, data_type):
-        if an not in dbroot.adatas:
-            raise PreventUpdate
+    dataset_dict = get_server_dataset_dict(DATA_PATH)
 
-        if (data_type == 'spatial-10x'):
-            # if not os.path.isdir(f'tmp/{an}/s10x'):
-            #     raise PreventUpdate
-
-            tile = generate_10x_spatial(
-                f'tmp/{an}/s10x/detected_tissue_image.jpg',
-                f'tmp/{an}/s10x/tissue_positions_list.csv',
-                f'tmp/{an}/s10x/scalefactors_json.json',
-                adata=dbroot.adatas['a1']['adata'],
-                in_tissue=True)
-        elif data_type == 'spatial-codex':
-            if not os.path.isdir(f'tmp/{an}/codex'):
-                raise PreventUpdate
-
-            tile = generate_tile(
-                f'tmp/{an}/codex/images',
-                f'tmp/{an}/codex/data.csv',
-                adata=dbroot.adatas[an]['adata'])
-        else:
-            raise PreventUpdate
-
-        logger.info(f"Generated tile with shape {tile.shape}. Scaling...")
-
-        ho, wo = tile.shape[:2]
-        scaler = 1000 / max(wo, ho)
-        w, h = scaler * wo, scaler * ho
-
-        fig = px.imshow(tile, width=w, height=h)
-        fig.update_layout(coloraxis_showscale=False)
-        fig.update_xaxes(showticklabels=False)
-        fig.update_yaxes(showticklabels=False)
-
-        return fig
-    return _func
-
-
-for prefix, an in zip(["main", "side"], ["a1", "a2"]):
-    app.callback(
-        Output(prefix + "-tile", "figure"),
-
-        Input(prefix + "-generate-tile-btn", "n_clicks"),
-        State(prefix + "-spatial-type-dropdown", "value"),
-        prevent_initial_call=True
-    )(get_generate_tile_func(an))
+    return [
+        {'label': dataset_dict[d], 'value': d}
+        for d in dataset_dict
+    ]

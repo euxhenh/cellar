@@ -8,3 +8,4 @@ Enrichr
 notebooks
 shinyproxy
 data/server/*
+!data/uploaded

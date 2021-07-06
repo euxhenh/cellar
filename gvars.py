@@ -1,4 +1,4 @@
-DATA_PATH = 'data/server'
+DATA_PATH = 'data'
 CELLAR_LOGO = 'assets/cellar-logo-white.png'
 DOCS_URL = 'https://ferrocactus.github.io/cellar/'
 GITHUB_URL = 'https://github.com/ferrocactus/cellar'
