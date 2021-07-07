@@ -68,17 +68,17 @@ def get_generate_tile_func(an):
                 adata=dbroot.adatas['a1']['adata'],
                 in_tissue=True)
         elif data_type == 'spatial-codex':
-            
             tile_list = os.listdir('data/codex_tile')
             fname = dbroot.adatas[an]['name']
-            #logger.info(fname)
+
             if fname in tile_list:
+                logger.info("Found CODEX tile locally.")
+
                 tile = generate_tile(
                     f'data/codex_tile/{fname}/images',
                     f'data/codex_tile/{fname}/data.csv',
                     adata=dbroot.adatas[an]['adata'])
             else:
-            
                 if not os.path.isdir(f'tmp/{an}/codex'):
                     raise PreventUpdate
 
