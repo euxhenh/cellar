@@ -9,3 +9,4 @@ notebooks
 shinyproxy
 data/server/*
 !data/uploaded
+!data/codex_tile

@@ -2,8 +2,6 @@ import dash_bootstrap_components as dbc
 import dash_core_components as dcc
 import dash_html_components as html
 
-from .misc import empty_prep_figure
-
 row_1 = dbc.Row([
     dbc.Col(
         dbc.Card(
@@ -625,7 +623,8 @@ prep = html.Div([
         dbc.Col(
             dbc.Button(
                 "Run",
-                outline=True,
+                outline=False,
+                color='primary',
                 block=True,
                 id="prep-run-btn"
             ),
@@ -643,7 +642,8 @@ atac = html.Div([
         dbc.Col(
             dbc.Button(
                 "Run",
-                outline=True,
+                outline=False,
+                color='primary',
                 block=True,
                 id="prep-atac-run-btn"
             ),

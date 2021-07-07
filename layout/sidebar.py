@@ -56,9 +56,19 @@ dataset_shape = dbc.Row(
 dim_block = dbc.Card(
     [
         dbc.Button(
-            "Dimensionality Reduction",
+            dbc.Row(
+                [
+                    html.Span("Dimensionality Reduction"),
+                    html.Span(style={'width': '5px'}),
+                    html.I(className="fas fa-chevron-down"),
+                ],
+                align='baseline',
+                justify='center',
+                no_gutters=True
+            ),
             id="dim-reduce-collapse-btn",
-            color='primary'
+            color='light',
+            outline=False
         ),
         dbc.Collapse(
             [
@@ -127,8 +137,8 @@ dim_block = dbc.Card(
                         "Run",
                         block=True,
                         id="dim-run-btn",
-                        color='secondary',
-                        outline=True
+                        color='primary',
+                        outline=False
                     ),
                     className="p-0"
                 )
@@ -260,9 +270,19 @@ label_tabs = dbc.Tabs(
 label_block = dbc.Card(
     [
         dbc.Button(
-            "Clustering",
+            dbc.Row(
+                [
+                    html.Span("Clustering"),
+                    html.Span(style={'width': '5px'}),
+                    html.I(className="fas fa-chevron-down"),
+                ],
+                align='baseline',
+                justify='center',
+                no_gutters=True
+            ),
             id="clustering-collapse-btn",
-            color='primary'
+            color='light',
+            outline=False
         ),
         dbc.Collapse(
             [
@@ -272,8 +292,8 @@ label_block = dbc.Card(
                         "Run",
                         block=True,
                         id="label-run-btn",
-                        color='secondary',
-                        outline=True
+                        color='primary',
+                        outline=False
                     ),
                     className="p-0"
                 )
@@ -288,9 +308,19 @@ label_block = dbc.Card(
 annotations_block = dbc.Card(
     [
         dbc.Button(
-            "Annotations",
+            dbc.Row(
+                [
+                    html.Span("Annotations"),
+                    html.Span(style={'width': '5px'}),
+                    html.I(className="fas fa-chevron-down"),
+                ],
+                align='baseline',
+                justify='center',
+                no_gutters=True
+            ),
             id="annotation-collapse-btn",
-            color='primary'
+            color='light',
+            outline=False
         ),
         dbc.Collapse(
             [
@@ -327,7 +357,8 @@ annotations_block = dbc.Card(
                                             [
                                                 dbc.Button(
                                                     "Store",
-                                                    id="annotation-store-btn"
+                                                    id="annotation-store-btn",
+                                                    color='primary'
                                                 )
                                             ],
                                             addon_type='append'
@@ -350,7 +381,8 @@ annotations_block = dbc.Card(
                                             dbc.InputGroupAddon(
                                                 dbc.Button(
                                                     "Store",
-                                                    id="subset-name-store-btn"
+                                                    id="subset-name-store-btn",
+                                                    color='primary'
                                                 ),
                                                 addon_type='append'
                                             )
@@ -378,7 +410,8 @@ annotations_block = dbc.Card(
                                             dbc.InputGroupAddon(
                                                 dbc.Button(
                                                     "Merge",
-                                                    id="merge-subset-btn"
+                                                    id="merge-subset-btn",
+                                                    color='primary'
                                                 ),
                                                 addon_type='append'
                                             )
@@ -401,9 +434,19 @@ annotations_block = dbc.Card(
 session_block = dbc.Card(
     [
         dbc.Button(
-            "Session",
+            dbc.Row(
+                [
+                    html.Span("Session"),
+                    html.Span(style={'width': '5px'}),
+                    html.I(className="fas fa-chevron-down"),
+                ],
+                align='baseline',
+                justify='center',
+                no_gutters=True
+            ),
             id="session-collapse-btn",
-            color='primary'
+            color='light',
+            outline=False
         ),
         dbc.Collapse(
             [
@@ -413,15 +456,15 @@ session_block = dbc.Card(
                             "Export Session",
                             id='export-session-btn',
                             block=True,
-                            color='secondary',
-                            outline=True
+                            color='primary',
+                            outline=False
                         ),
                         dbc.Button(
                             "Export Annotations Only",
                             id='export-annotations-btn',
                             block=True,
-                            color='secondary',
-                            outline=True
+                            color='primary',
+                            outline=False
                         ),
                         dcc.Loading(
                             dcc.Download("export-session-d"),

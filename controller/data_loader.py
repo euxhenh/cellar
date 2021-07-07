@@ -10,7 +10,7 @@ from .cellar.utils.misc import is_sparse
 
 
 @app.callback(
-    Output("shape-signal-upload", "data"),
+    Output("shape-signal-load", "data"),
     Output("feature-list-signal", "data"),
     Output("dataset-load", "style"),
     Output("data-loaded-plot-signal", "data"),
@@ -42,9 +42,9 @@ def load_dataset(n1, dname, actp):
     Output("no-samples", "children"),
     Output("no-features", "children"),
 
-    Input("shape-signal-upload", "data"),
-    Input("shape-signal-upload-prep", "data"),
-    Input("shape-signal-upload-prep-atac", "data"),
+    Input("shape-signal-load", "data"),
+    Input("shape-signal-load-prep", "data"),
+    Input("shape-signal-load-prep-atac", "data"),
     Input("shape-signal-atoggle", "data"),
 
     State("active-plot", "data"),

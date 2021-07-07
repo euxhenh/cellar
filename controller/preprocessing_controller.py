@@ -61,7 +61,7 @@ def _validate_interval_extension(extend):
 
 
 @app.callback(
-    Output("shape-signal-upload-prep", "data"),
+    Output("shape-signal-load-prep", "data"),
     Output("feature-list-signal-prep", "data"),
     Output("temp-prep-h5", "className"),
     Output("data-loaded-plot-signal-prep", "data"),
@@ -183,7 +183,7 @@ def run_prep(
 
 
 @app.callback(
-    Output("shape-signal-upload-prep-atac", "data"),
+    Output("shape-signal-load-prep-atac", "data"),
     Output("feature-list-signal-prep-atac", "data"),
     Output("temp-prep-h5-atac", "className"),
     Output("data-loaded-plot-signal-prep-atac", "data"),

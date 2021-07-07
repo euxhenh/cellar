@@ -6,12 +6,14 @@ import ZODB.FileStorage
 
 from log import setup_logger
 
+
+# In-memory database. Used for storing AnnData objects
 db = ZODB.DB(None)
 connection = db.open()
 dbroot = connection.root
 dbroot.adatas = BTrees.OOBTree.BTree()
 
-
+# Bootstrap them
 external_stylesheets = [
     dbc.themes.SANDSTONE,
     {

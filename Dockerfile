@@ -13,6 +13,7 @@ RUN useradd -m nonroot
 RUN echo "nonroot ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/nonroot
 USER nonroot
 
+# Install Miniconda
 RUN mkdir /home/nonroot/downloads
 RUN git clone https://aur.archlinux.org/miniconda3.git /home/nonroot/downloads/miniconda3
 RUN cd /home/nonroot/downloads/miniconda3 && makepkg -scri --noconfirm
@@ -22,6 +23,7 @@ RUN ls /opt
 
 COPY env.yml /home/nonroot/downloads/
 
+# Create conda environment
 RUN /opt/miniconda3/bin/conda env create -f /home/nonroot/downloads/env.yml
 ENV PATH /opt/miniconda3/bin:$PATH
 
@@ -29,12 +31,12 @@ ENV PATH /opt/miniconda3/bin:$PATH
 RUN conda clean -a
 RUN rm -rf /home/nonroot/downloads
 
-
+# Init conda and close repo
 RUN conda init bash
 RUN mkdir /home/nonroot/cellar
 ARG VER=unknown
 RUN git clone https://github.com/ferrocactus/CellarV /home/nonroot/cellar
-#COPY . /home/nonroot/cellar
+
 WORKDIR /home/nonroot/cellar
 EXPOSE 8050
 ENTRYPOINT ["conda", "run", "--no-capture-output", "-n", "cellar", "python", "main.py"]

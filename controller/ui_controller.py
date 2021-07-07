@@ -1,4 +1,6 @@
 import dash
+import dash_bootstrap_components as dbc
+import dash_html_components as html
 from dash.dependencies import Input, Output, State
 from dash.exceptions import PreventUpdate
 
@@ -50,7 +52,16 @@ for collapsible_id, button_id in [
 def toggle_dual_mode(n1, is_dual, actp):
     w1, w2 = 12, 0
     d1, d2 = "block-display", "no-display"
-    dm_label = "Dual Mode"
+    dm_label = dbc.Row(
+        [
+            html.Span(style={'width': '15px'}),
+            html.I(className="fas fa-clone"),
+            html.Span("Dual Mode", className="pl-3 pr-3"),
+        ],
+        align='baseline',
+        justify='center',
+        no_gutters=True
+    )
     a1 = a2 = True
 
     ctx = dash.callback_context
@@ -60,7 +71,16 @@ def toggle_dual_mode(n1, is_dual, actp):
     if is_dual is None or not is_dual:
         w1, w2 = 6, 6
         d1, d2 = "block-display", "block-display"
-        dm_label = "Single View"
+        dm_label = dbc.Row(
+            [
+                html.Span(style={'width': '15px'}),
+                html.I(className="fas fa-square"),
+                html.Span("Single View", className="pl-3 pr-3"),
+            ],
+            align='baseline',
+            justify='center',
+            no_gutters=True
+        )
         a1 = a2 = False
     elif is_dual:
         if actp == 2:

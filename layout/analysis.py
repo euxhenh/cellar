@@ -24,7 +24,8 @@ def get_de_card(prefix):
                                         dbc.InputGroupAddon(
                                             dbc.Button(
                                                 "Find DE Genes",
-                                                id=prefix + "-find-de-genes-btn",
+                                                id=prefix+"-find-de-genes-btn",
+                                                color='primary'
                                             ),
                                             addon_type="append"
                                         )
@@ -109,7 +110,8 @@ def get_feature_card(prefix):
                             dbc.Col(
                                 dbc.Button(
                                     "Clear PLOT",
-                                    id=prefix + "-clear-expression-btn"
+                                    id=prefix + "-clear-expression-btn",
+                                    color='primary'
                                 ),
                                 width=2
                             )
@@ -212,7 +214,8 @@ def get_enrich_card(prefix):
                                 dbc.Button(
                                     "Run",
                                     id=prefix + "-run-enrich-btn",
-                                    block=True
+                                    block=True,
+                                    color='primary'
                                 ),
                                 width=2
                             )
@@ -242,7 +245,8 @@ def get_enrich_card(prefix):
                                             style_table={'overflowX': 'auto'},
                                             style_cell_conditional=[
                                                 {
-                                                    'if': {'column_id': 'Genes'},
+                                                    'if': {
+                                                        'column_id': 'Genes'},
                                                     'textAlign': 'left'
                                                 }
                                             ]
@@ -300,6 +304,7 @@ def get_spatial_card(prefix):
                                     ),
                                     dbc.Button(
                                         "Generate Tile",
+                                        color='primary',
                                         id=prefix + "-generate-tile-btn"
                                     )
                                 ],
@@ -338,7 +343,7 @@ def get_spatial_card(prefix):
                 ]
             )
         ],
-        className="mb-2"
+        className="mb-2 analysis-container"
     )
     return spatial
 
@@ -361,8 +366,7 @@ def get_analysis_tabs(prefix):
                 ),
                 label="Analysis"
             ),
-            dbc.Tab(get_spatial_card(prefix),
-                    label="Spatial Data", style={'height': '400px'})
+            dbc.Tab(get_spatial_card(prefix), label="Spatial Data")
         ]
     )
 

@@ -9,7 +9,75 @@ from .preprocessing import prep_tabs
 
 dataset_dict = get_server_dataset_dict(DATA_PATH)
 
-documentation_bar = dbc.Nav(
+cellar_bar = dbc.Nav(
+    [
+        dbc.NavItem(
+            dbc.Button(
+                dbc.Row(
+                    [
+                        html.Span(style={'width': '15px'}),
+                        html.I(className="fas fa-filter"),
+                        html.Span("Preprocessing", className="pl-3 pr-3"),
+                    ],
+                    align='baseline',
+                    justify='center',
+                    no_gutters=True
+                ),
+                id="preprocessing-mode-btn",
+                block=True,
+                color='secondary',
+                outline=False,
+                style={'font-size': '11px'}
+            ),
+            className="mr-2"
+        ),
+        dbc.NavItem(
+            dbc.Button(
+                dbc.Row(
+                    [
+                        html.Span(style={'width': '15px'}),
+                        html.I(className="fas fa-clone"),
+                        html.Span("Dual Mode", className="pl-3 pr-3"),
+                    ],
+                    align='baseline',
+                    justify='center',
+                    no_gutters=True
+                ),
+                id="dual-mode-btn",
+                block=True,
+                color='secondary',
+                outline=False,
+                style={'font-size': '11px'}
+            ),
+            className="mr-2"
+        ),
+        dbc.NavItem(
+            dbc.Button(
+                dbc.Row(
+                    [
+                        html.Span(style={'width': '15px'}),
+                        html.I(className="fas fa-plus-square"),
+                        html.Span("Load Data", className="pl-3 pr-3"),
+                    ],
+                    align='baseline',
+                    justify='center',
+                    no_gutters=True
+                ),
+                id="change-dataset-btn",
+                block=True,
+                color='primary',
+                outline=False,
+                style={'font-size': '13px'}
+            ),
+            className="mr-2"
+        )
+    ],
+    className="ml-auto flex-nowrap mt-3 mt-md-0 m-auto",
+    navbar=True
+)
+
+
+doc_bar = dbc.Nav(
     [
         dbc.NavItem(
             dbc.NavLink(
@@ -19,7 +87,7 @@ documentation_bar = dbc.Nav(
                         html.Span(style={'width': '5px'}),
                         html.Span("Documentation"),
                     ],
-                    align='center',
+                    align='baseline',
                     no_gutters=True
                 ),
                 external_link=True,
@@ -34,7 +102,7 @@ documentation_bar = dbc.Nav(
                         html.Span(style={'width': '5px'}),
                         html.Span("GitHub"),
                     ],
-                    align='center',
+                    align='baseline',
                     no_gutters=True
                 ),
                 external_link=True,
@@ -49,7 +117,7 @@ documentation_bar = dbc.Nav(
                         html.Span(style={'width': '5px'}),
                         html.Span("Demo"),
                     ],
-                    align='center',
+                    align='baseline',
                     no_gutters=True
                 ),
                 external_link=True,
@@ -86,10 +154,18 @@ navbar = dbc.Navbar(
             no_gutters=True,
             className="m-auto"
         ),
-        documentation_bar
+        cellar_bar
     ],
     color='primary',
     dark=True,
+    className='mb-2 shadow-sm'
+)
+
+
+footer = dbc.Navbar(
+    doc_bar,
+    color='light',
+    dark=False,
     className='m-auto shadow-sm'
 )
 
@@ -98,10 +174,6 @@ dataset_bar = dbc.Row(
     [
         dbc.Col(
             [
-                # dcc.Loading(
-                #     id="upload-loading",
-                #     fullscreen=True
-                # ),
                 dcc.Upload(
                     id="upload-dataset",
                     children=[
@@ -109,8 +181,6 @@ dataset_bar = dbc.Row(
                     ],
                     className="mr-2",
                     max_size=1020*1024*1024  # 1 GB
-                    # color='primary',
-                    # disabled=False
                 ),
             ],
             width='auto'
@@ -146,9 +216,9 @@ dataset_bar = dbc.Row(
                         debounce=100
                     ),
                     dbc.Button(
-                        "Load Dataset",
+                        "Load",
                         color="primary",
-                        outline=True,
+                        outline=False,
                         block=True,
                         id='load-dataset-btn'
                     )
@@ -163,35 +233,9 @@ dataset_bar = dbc.Row(
     align='center'
 )
 
-modes = dbc.Nav(
-    [
-        dbc.NavItem(dbc.Card(dbc.Button(
-            "Change Dataset", id="change-dataset-btn",
-            block=True, color='primary', outline=True),
-            className="shadow-sm")),
-        dbc.NavItem(dbc.Card(dbc.Button(
-            "Preprocessing", id="preprocessing-mode-btn",
-            block=True, color='primary', outline=True),
-            className="shadow-sm")),
-        dbc.NavItem(dbc.Card(dbc.Button(
-            "Dual Mode", id="dual-mode-btn",
-            block=True, color='primary', outline=True),
-            className="shadow-sm")),
-        dbc.NavItem(dbc.Card(dbc.Button(
-            "Exploratory Data Analysis Mode", id="exploratory-analysis-btn",
-            block=True, color='primary', outline=True, disabled=True),
-            className="shadow-sm"))
-    ],
-    justified=True,
-    className="mb-2 mt-2",
-    # style={'margin': '5px'},
-    id="modes-nav",
-    # vertical='sm'
-)
 
 modes_bar = html.Div(
     [
-        modes,
         dbc.Collapse(
             dbc.Card(dbc.CardBody(dataset_bar), className="mb-2"),
             id="collapsible-dataset-bar",

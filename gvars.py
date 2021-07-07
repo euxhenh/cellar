@@ -1,5 +1,7 @@
 DATA_PATH = 'data'
+
 CELLAR_LOGO = 'assets/cellar-logo-white.png'
+
 DOCS_URL = 'https://ferrocactus.github.io/cellar/'
 GITHUB_URL = 'https://github.com/ferrocactus/cellar'
 DEMOS_URL = 'https://www.youtube.com/watch?v=6gzR-Zlprx4'

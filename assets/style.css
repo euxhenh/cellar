@@ -149,7 +149,8 @@
 }
 
 .active-plot-bg {
-    /* background-color: powderblue; */
+    background-color: var(--light);
+    color: var(--primary);
 }
 
 .non-active-plot-bg {
@@ -182,7 +183,7 @@ button.export:hover {
 } */
 
 .analysis-container {
-    min-height: 400px;
+    min-height: 200px;
     height: 100%;
 }
 
