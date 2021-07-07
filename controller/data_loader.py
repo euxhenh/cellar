@@ -31,7 +31,6 @@ def load_dataset(n1, dname, actp):
     dbroot.adatas[an]['adata'] = read_adata(dname)
     dbroot.adatas[an]['name'] = os.path.splitext(
         os.path.basename(dname))[0]
-
     logger.info(f"Read {dname} info {an}.")
     if is_sparse(dbroot.adatas[an]['adata'].X):
         logger.info("Found Sparse Matrix.")
