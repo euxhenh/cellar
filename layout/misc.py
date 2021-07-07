@@ -8,7 +8,8 @@ empty_figure = {
         },
         "annotations": [
             {
-                "text": "Nothing to show. Run dimensionality reduction first.",
+                "text": "Nothing to show. Load the data and "
+                        "run dimensionality reduction.",
                 "xref": "paper",
                 "yref": "paper",
                 "showarrow": False,

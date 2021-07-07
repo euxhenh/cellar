@@ -14,7 +14,6 @@ from controller.data_loader import *
 from controller.ui_controller import *
 from controller.operations import *
 from controller.update_plot import *
-from controller.cluster_controller import *
 from controller.annotations import *
 from controller.analysis_controller import *
 from controller.session import *
@@ -45,5 +44,5 @@ if 'SHINYPROXY_PUBLIC_PATH' in os.environ:
     })
 
 if __name__ == "__main__":
-    dev = False  # Set to True if in development
+    dev = True  # Set to True if in development
     app.run_server(debug=dev, use_reloader=dev, host='0.0.0.0')
