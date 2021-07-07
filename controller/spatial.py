@@ -62,9 +62,9 @@ def get_generate_tile_func(an):
             #     raise PreventUpdate
 
             tile = generate_10x_spatial(
-                f'tmp/{an}/s10x/detected_tissue_image.jpg',
-                f'tmp/{an}/s10x/tissue_positions_list.csv',
-                f'tmp/{an}/s10x/scalefactors_json.json',
+                f'tmp/{an}/s10x/spatial/detected_tissue_image.jpg',
+                f'tmp/{an}/s10x/spatial/tissue_positions_list.csv',
+                f'tmp/{an}/s10x/spatial/scalefactors_json.json',
                 adata=dbroot.adatas['a1']['adata'],
                 in_tissue=True)
         elif data_type == 'spatial-codex':
