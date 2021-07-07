@@ -180,7 +180,7 @@ dataset_bar = dbc.Row(
                         dbc.Button("Upload")
                     ],
                     className="mr-2",
-                    max_size=1020*1024*1024  # 1 GB
+                    max_size=1040*1024*1024  # 1 GB
                 ),
             ],
             width='auto'

@@ -4,6 +4,7 @@ import tarfile
 import shutil
 import gc
 
+import anndata
 import scanpy as sc
 from base64 import b64decode
 from dash.dependencies import Input, Output, State
@@ -56,8 +57,19 @@ def upload_data(contents, filename, actp):
 
         del adata
         gc.collect()
+    elif filename.endswith('.csv'):
+        fpath = os.path.join(DATA_PATH, 'uploaded', filename)
+        with open(fpath, "wb") as f:
+            logger.info(f"Writing {filename} into uploaded directory.")
+            f.write(io.BytesIO(decoded).read())
+
+        adata = anndata.read_csv(fpath)
+        adata.write_h5ad(
+            os.path.join(DATA_PATH, 'uploaded', filename[:-4] + '.h5ad'))
+        del adata
+        gc.collect()
     else:
-        logger.warn("File format not implemented.")
+        logger.warn(f"File format {filename} not implemented.")
         raise PreventUpdate
 
     dataset_dict = get_server_dataset_dict(DATA_PATH)

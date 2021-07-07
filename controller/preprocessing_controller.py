@@ -171,6 +171,10 @@ def run_prep(
     filename = f'tmp/{an}/adata.h5ad'
     if os.path.exists(filename):
         os.remove(filename)
+
+    if not os.path.isdir(f'tmp/{an}'):
+        os.mkdir(f'tmp/{an}')
+
     adata.write(filename)
 
     del adata
