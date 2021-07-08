@@ -72,8 +72,12 @@ def get_de_cluster_update_func(prefix, an):
 
             # Append subsets to the cluster list
             clusters_DE = clusters_DE + subsets
-
-        return clusters_DE, value_DE, clusters_ann, value_ann, clusters_DE, []
+        
+        clusters_DE2 = [{'label':'rest','value':'rest'}] + clusters_DE
+        value_DE2 =  'rest'
+        
+        return clusters_DE, value_DE, clusters_DE2, value_DE2, \
+            clusters_ann, value_ann, clusters_DE, []
 
     return _func
 
@@ -83,6 +87,8 @@ for prefix, an in zip(['main', 'side'], ['a1', 'a2']):
     app.callback(
         Output(prefix + '-de-cluster-select', "options"),
         Output(prefix + '-de-cluster-select', "value"),
+        Output(prefix + '-de-cluster-select2', "options"),
+        Output(prefix + '-de-cluster-select2', "value"),
         Output(prefix + '-annotation-select', "options"),
         Output(prefix + '-annotation-select', "value"),
         Output('ssclu-Leiden-' + prefix + '-checklist', "options"),
@@ -97,7 +103,7 @@ for prefix, an in zip(['main', 'side'], ['a1', 'a2']):
 
 # DE genes
 def get_update_de_table_func(prefix, an):
-    def _func(n1, cluster_id):
+    def _func(n1, cluster_id, cluster_id2):
         """
         Given a cluster id or subset name, find the DE genes for that cluster.
 
@@ -113,7 +119,8 @@ def get_update_de_table_func(prefix, an):
             raise PreventUpdate
         if 'adata' not in dbroot.adatas[an]:
             raise PreventUpdate
-
+            
+            
         # If cluster_id starts with prefix + '-subset', than it is a subset,
         # otherwise it is considered a cluster ID and is converted to int.
         if cluster_id.startswith(prefix + '-cluster'):
@@ -125,20 +132,38 @@ def get_update_de_table_func(prefix, an):
                 raise PreventUpdate
         else:
             cluster_id = str(cluster_id[len(prefix + "-subset-"):])
-
-        if 'labels' not in dbroot.adatas[an]['adata'].obs \
-                and isinstance(cluster_id, int):
-            logger.error("No labels found in adata. Cannot find DE "
+            
+        # same thing for cluster_id2
+        if cluster_id2.startswith(prefix + '-cluster'):
+            try:
+                cluster_id2 = int(cluster_id2[len(prefix + "-cluster"):])
+            except Exception as e:
+                logger.error(str(e))
+                logger.error(f"Invalid cluster2 ID found {cluster_id2}.")
+                raise PreventUpdate
+        elif cluster_id2 == 'rest':
+            pass
+        else:
+            cluster_id2 = str(cluster_id2[len(prefix + "-subset-"):])    
+        
+            
+        if 'labels' not in dbroot.adatas[an]['adata'].obs:
+            if (isinstance(cluster_id, int)):
+                logger.error("No labels found in adata. Cannot find DE "
                          f"genes for cluster {cluster_id}.")
-            raise PreventUpdate
-
-        title = f"DE genes for cluster {cluster_id} vs rest"
+                raise PreventUpdate
+            if (isinstance(cluster_id2, int)):
+                logger.error("No labels found in adata. Cannot find DE "
+                         f"genes for cluster {cluster_id2}.")
+                raise PreventUpdate
+                
+        title = f"DE genes for cluster {cluster_id} vs {cluster_id2}"
 
         logger.info("Running t-Test.")
 
         # Run tests
         try:
-            test = ttest(dbroot.adatas[an]['adata'], cluster_id)
+            test = ttest(dbroot.adatas[an]['adata'], cluster_id, cluster_id2)
         except Exception as e:
             logger.error(str(e))
             logger.error("An error occurred while running t-Test.")
@@ -163,6 +188,7 @@ for prefix, an in zip(['main', 'side'], ['a1', 'a2']):
         Output(prefix + "-de-analysis-title", "children"),
         Input(prefix + "-find-de-genes-btn", "n_clicks"),
         State(prefix + "-de-cluster-select", "value"),
+        State(prefix + "-de-cluster-select2", "value"),
         prevent_initial_call=True
     )(get_update_de_table_func(prefix, an))
 

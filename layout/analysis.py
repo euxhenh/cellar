@@ -21,6 +21,10 @@ def get_de_card(prefix):
                                             options=[],
                                             id=prefix + "-de-cluster-select"
                                         ),
+                                        dbc.Select(
+                                            options=[],
+                                            id=prefix + "-de-cluster-select2"
+                                        ),
                                         dbc.InputGroupAddon(
                                             dbc.Button(
                                                 "Find DE Genes",

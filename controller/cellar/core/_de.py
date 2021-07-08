@@ -2,10 +2,14 @@ import diffxpy.api as de
 import numpy as np
 import gseapy as gp
 
+
 from controller.cellar.utils.exceptions import InternalError
 
 
-def ttest(adata, cluster_id, alpha=0.05):
+def ttest(adata, cluster_id, cluster_id2, alpha=0.05):
+    if cluster_id == cluster_id2:
+        raise InternalError("Subsets cannot be the same.")
+
     if 'labels' not in adata.obs and isinstance(cluster_id, int):
         raise InternalError("No labels found in adata.")
 
@@ -19,6 +23,17 @@ def ttest(adata, cluster_id, alpha=0.05):
         grouping[adata.uns['subsets'][cluster_id]] = 1
     else:
         grouping[adata.obs['labels'].to_numpy() == cluster_id] = 1
+        
+    if isinstance(cluster_id2, str):
+        if (cluster_id2 != 'rest') and \
+        (cluster_id2 not in adata.uns['subsets']):
+            raise InternalError("subset2 name not found in adata.")
+
+        if cluster_id2 != 'rest':
+            grouping[adata.uns['subsets'][cluster_id2]] = 1
+    else:
+        grouping[adata.obs['labels'].to_numpy() == cluster_id2] = 1
+
 
     if 'gene_symbols' in adata.var:
         gene_names = adata.var['gene_symbols']
