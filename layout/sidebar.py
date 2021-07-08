@@ -391,6 +391,7 @@ annotations_block = dbc.Card(
                                     )
                                 ),
                                 justify='center',
+                                id="main-annotation-table-row",
                                 no_gutters=True,
                                 className="mb-2"
                             ),
@@ -402,10 +403,22 @@ annotations_block = dbc.Card(
                                         export_format='none',
                                         style_table={
                                             'overflowY': 'auto'
-                                        }
+                                        },
+                                        data=[
+                                            {
+                                                "cluster_id": "N/A",
+                                                "annotation": "N/A"
+                                            }
+                                        ],
+                                        columns=[
+                                            {"name": "ID", "id": "cluster_id"},
+                                            {"name": "Annotation",
+                                                "id": "annotation"}
+                                        ]
                                     )
                                 ),
                                 justify='center',
+                                id="side-annotation-table-row",
                                 no_gutters=True,
                                 className="no-display mb-2"
                             ),

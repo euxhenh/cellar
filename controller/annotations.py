@@ -54,13 +54,20 @@ def signal_annotation_change(n1, id1, id2, value, actp):
 
 def get_update_annotation_table(prefix, an):
     def _func(s1, s2, actp):
+        data = [
+            {
+                "cluster_id": "N/A",
+                "annotation": "N/A"
+            }
+        ]
+
         ctx = dash.callback_context
         if not ctx.triggered:
             raise PreventUpdate
         if an not in dbroot.adatas:
-            raise PreventUpdate
+            return data
         if 'adata' not in dbroot.adatas[an]:
-            raise PreventUpdate
+            return data
 
         # Need labels and annotations keys to be populated
         if 'labels' not in dbroot.adatas[an]['adata'].obs:
