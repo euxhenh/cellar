@@ -448,28 +448,30 @@ annotations_block = dbc.Card(
                             ),
                             dbc.Row(
                                 [
-                                    dbc.InputGroup(
-                                        [
-                                            dbc.Select(
-                                                options=[],
-                                                placeholder="Subset to merge",
-                                                id="main-subset-select"
-                                            ),
-                                            dbc.Select(
-                                                options=[],
-                                                placeholder="Subset to merge",
-                                                className="no-display",
-                                                id="side-subset-select"
-                                            ),
-                                            dbc.InputGroupAddon(
-                                                dbc.Button(
-                                                    "Merge",
-                                                    id="merge-subset-btn",
-                                                    color='primary'
+                                    dbc.Col(
+                                        dcc.Loading(
+                                            dbc.InputGroup([
+                                                dbc.Select(
+                                                    options=[],
+                                                    placeholder="Merge subset",
+                                                    id="main-subset-select"
                                                 ),
-                                                addon_type='append'
-                                            )
-                                        ]
+                                                dbc.Select(
+                                                    options=[],
+                                                    placeholder="Merge subset",
+                                                    className="no-display",
+                                                    id="side-subset-select"
+                                                ),
+                                                dbc.InputGroupAddon(
+                                                    dbc.Button(
+                                                        "Merge",
+                                                        id="merge-subset-btn",
+                                                        color='primary'
+                                                    ),
+                                                    addon_type='append'
+                                                )
+                                            ])
+                                        )
                                     )
                                 ],
                                 no_gutters=True

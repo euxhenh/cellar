@@ -27,7 +27,7 @@ def get_parse_tar_gz_func(an):
             raise PreventUpdate
 
         if filename.endswith('tar.gz'):
-            logger.info("Extracting tar.gz file.")
+            logger.info(f"Extracting tar.gz file at {extract_path}.")
             tar = tarfile.open(fileobj=io.BytesIO(decoded))
             if os.path.isdir(extract_path):
                 shutil.rmtree(extract_path)
@@ -93,7 +93,7 @@ def get_generate_tile_func(an):
 
         ho, wo = tile.shape[:2]
         scaler = 1000 / max(wo, ho)
-        w, h = scaler * wo, scaler * ho
+        w, h = int(scaler * wo), int(scaler * ho)
 
         fig = px.imshow(tile, width=w, height=h)
         fig.update_layout(coloraxis_showscale=False)

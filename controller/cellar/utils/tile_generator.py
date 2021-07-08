@@ -42,6 +42,19 @@ def generate_tile(
     im_names = os.listdir(path_to_tiff)
     im_names = [i for i in im_names if i[-3:] == 'tif']
     ims = [tifffile.imread(os.path.join(path_to_tiff, i)) for i in im_names]
+
+    # In case no z-planes are provided, we add an extra dimension
+    for i in range(len(ims)):
+        if len(ims[i].shape) == 3:
+            ims[i] = np.expand_dims(ims[i], 0)
+    # Tiff files are now assumed to have shape (z-planes, 4, h, w)
+    # The 4 channels stand for
+    # 0) cell seg.filled, 1) nucleus seg. filled
+    # 2) cell seg. outline 3) nucleus seg. outline
+    # We only use channels 0 and 2 to generate a tile
+    CELL_FILL_CH = 0
+    CELL_OUTLINE_CH = 2
+
     data = pd.read_csv(path_to_df)
 
     # Whether to use colors or not
@@ -65,27 +78,34 @@ def generate_tile(
 
             my_cells = data[(data['tile_x'] == x) & (data['tile_y'] == y)]
             # same z for entire tile
-            top_z = my_cells.loc[my_cells.index[0]]['z']
-            tile = (ims[i][top_z, 0]).astype(int)  # filled cells
+            top_z = my_cells.loc[my_cells.index[0]]['z']  # get z of first cell
+            tile = (ims[i][top_z, CELL_FILL_CH]).astype(int)  # filled cells
 
             if has_labels:
-                cell_ids = my_cells.loc[my_cells.index]['id']
+                # cell_ids = my_cells.loc[my_cells.index]['id']
                 cell_rids = my_cells.loc[my_cells.index]['rid']
+                cell_rids = cell_rids[cell_rids < adata.shape[0]]
                 labels = adata.obs['labels'].to_numpy()[cell_rids] + 1
-                labels = np.hstack((0, np.array(labels)))
-                tile = labels[tile]
+                if labels.size > 0:
+                    labels = np.hstack((0, labels))
+                    tile = labels[tile]
+                else:
+                    tile.fill(0)
             else:
                 tile[tile != 0] = -1  # if no labels, fill cells with white
 
-            tile[ims[i][top_z, 2] != 0] = 0  # blackout the cell boundaries
+            # blackout the cell boundaries
+            tile[ims[i][top_z, CELL_OUTLINE_CH] != 0] = 0
 
             # Color tile and append
             grid_row.append(np.array([palr[tile], palb[tile], palg[tile]]))
 
-        grid.append(np.concatenate(grid_row, axis=-1))
+        grid_row = np.concatenate(grid_row, axis=-1)
+        grid.append(grid_row)
         logger.info(f'Finished tile row {y}')
 
-    grid = np.moveaxis(np.hstack(grid), 0, -1)
+    grid = np.hstack(grid)
+    grid = np.moveaxis(grid, 0, -1)
 
     if savepath is not None:
         matplotlib.image.imsave(savepath, grid.astype(np.uint8))
