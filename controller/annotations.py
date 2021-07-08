@@ -53,7 +53,7 @@ def signal_annotation_change(n1, id1, id2, value, actp):
 
 
 def get_update_annotation_table(prefix, an):
-    def _func(s1, s2, actp):
+    def _func(s1, s2, s3):
         data = [
             {
                 "cluster_id": "N/A",
@@ -101,6 +101,6 @@ for prefix, an in zip(['main', 'side'], ['a1', 'a2']):
 
         Input("annotation-signal", "data"),
         Input("data-loaded-annotation-table-signal", "data"),
-        State("active-plot", "data"),
+        Input(prefix + "-cluster-list-signal", "data"),
         prevent_initial_call=True
     )(get_update_annotation_table(prefix, an))
