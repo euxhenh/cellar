@@ -132,6 +132,8 @@ main_page = dbc.Col(
                   data=1, clear_data=True),
         dcc.Store(id="data-loaded-plot-signal-prep-atac",
                   storage_type="memory", data=1, clear_data=True),
+        dcc.Store(id="data-loaded-annotation-table-signal",
+                  storage_type="memory", data=1, clear_data=True),
         main_body
     ],
     id='main-body',

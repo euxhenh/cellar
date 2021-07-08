@@ -3,7 +3,7 @@ import numpy as np
 from dash.dependencies import Input, Output, State
 from dash.exceptions import PreventUpdate
 
-from app import app, dbroot
+from app import app, dbroot, logger
 
 
 def _fill_annotation(adata, cluster_id, value):
@@ -50,3 +50,50 @@ def signal_annotation_change(n1, id1, id2, value, actp):
     _fill_annotation(dbroot.adatas[an]['adata'], cluster_id, value)
 
     return 1
+
+
+def get_update_annotation_table(prefix, an):
+    def _func(s1, s2, actp):
+        ctx = dash.callback_context
+        if not ctx.triggered:
+            raise PreventUpdate
+        if an not in dbroot.adatas:
+            raise PreventUpdate
+        if 'adata' not in dbroot.adatas[an]:
+            raise PreventUpdate
+
+        # Need labels and annotations keys to be populated
+        if 'labels' not in dbroot.adatas[an]['adata'].obs:
+            logger.warn("No labels found in adata.")
+            raise PreventUpdate
+        if 'annotations' not in dbroot.adatas[an]['adata'].obs:
+            logger.warn("No annotations found in adata.")
+            raise PreventUpdate
+
+        # Get cluster ID's and the first index for each
+        # so that we can also get annotations
+        unq_labels, unq_indices = np.unique(
+            dbroot.adatas[an]['adata'].obs['labels'].to_numpy(),
+            return_index=True)
+        unq_annotations = dbroot.adatas[an][
+            'adata'][unq_indices].obs['annotations']
+
+        data = [
+            {'cluster_id': str(i), 'annotation': str(j)}
+            for i, j in zip(unq_labels, unq_annotations)
+            if j != ""
+        ]
+
+        return data
+    return _func
+
+
+for prefix, an in zip(['main', 'side'], ['a1', 'a2']):
+    app.callback(
+        Output(prefix + "-annotation-table", "data"),
+
+        Input("annotation-signal", "data"),
+        Input("data-loaded-annotation-table-signal", "data"),
+        State("active-plot", "data"),
+        prevent_initial_call=True
+    )(get_update_annotation_table(prefix, an))

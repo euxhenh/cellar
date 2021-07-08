@@ -1,6 +1,7 @@
 import dash_bootstrap_components as dbc
 import dash_core_components as dcc
 import dash_html_components as html
+import dash_table
 from controller.methods import (clu_list, dim_list, lbt_list, ssclu_list,
                                 vis_list)
 
@@ -129,18 +130,15 @@ dim_block = dbc.Card(
                                     ]
                                 )
                             ]
-                        )
+                        ),
+                        dbc.Button(
+                            "Run",
+                            block=True,
+                            id="dim-run-btn",
+                            color='primary',
+                            outline=False
+                        ),
                     ]
-                ),
-                dbc.CardFooter(
-                    dbc.Button(
-                        "Run",
-                        block=True,
-                        id="dim-run-btn",
-                        color='primary',
-                        outline=False
-                    ),
-                    className="p-0"
                 )
             ],
             is_open=True,
@@ -286,16 +284,18 @@ label_block = dbc.Card(
         ),
         dbc.Collapse(
             [
-                dbc.CardBody(label_tabs, className="p-0 mt-2"),
-                dbc.CardFooter(
-                    dbc.Button(
-                        "Run",
-                        block=True,
-                        id="label-run-btn",
-                        color='primary',
-                        outline=False
-                    ),
-                    className="p-0"
+                dbc.CardBody(
+                    [
+                        label_tabs,
+                        dbc.Button(
+                            "Run",
+                            block=True,
+                            id="label-run-btn",
+                            color='primary',
+                            outline=False
+                        )
+                    ],
+                    className="mt-2"
                 )
             ],
             is_open=True,
@@ -367,6 +367,47 @@ annotations_block = dbc.Card(
                                 ),
                                 className="mb-2",
                                 no_gutters=True
+                            ),
+                            dbc.Row(
+                                dbc.Col(
+                                    dash_table.DataTable(
+                                        id="main-annotation-table",
+                                        page_size=10,
+                                        export_format='none',
+                                        style_table={
+                                            'overflowY': 'auto'
+                                        },
+                                        data=[
+                                            {
+                                                "cluster_id": "N/A",
+                                                "annotation": "N/A"
+                                            }
+                                        ],
+                                        columns=[
+                                            {"name": "ID", "id": "cluster_id"},
+                                            {"name": "Annotation",
+                                                "id": "annotation"}
+                                        ]
+                                    )
+                                ),
+                                justify='center',
+                                no_gutters=True,
+                                className="mb-2"
+                            ),
+                            dbc.Row(
+                                dbc.Col(
+                                    dash_table.DataTable(
+                                        id="side-annotation-table",
+                                        page_size=10,
+                                        export_format='none',
+                                        style_table={
+                                            'overflowY': 'auto'
+                                        }
+                                    )
+                                ),
+                                justify='center',
+                                no_gutters=True,
+                                className="no-display mb-2"
                             ),
                             dbc.Row(
                                 [

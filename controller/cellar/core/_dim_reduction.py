@@ -1,6 +1,6 @@
 from sklearn.decomposition import PCA, TruncatedSVD, KernelPCA
 from sklearn.manifold import MDS
-from umap import UMAP
+# from umap import UMAP
 from anndata._core.sparse_dataset import SparseDataset
 from scipy.sparse import issparse
 
@@ -10,7 +10,7 @@ func_map = {
     'cl_TruncatedSVD': TruncatedSVD,
     'cl_kPCA': KernelPCA,
     'cl_MDS': MDS,
-    'cl_UMAP': UMAP
+    'cl_UMAP': PCA
 }
 
 

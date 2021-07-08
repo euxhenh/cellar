@@ -14,6 +14,7 @@ from .cellar.utils.misc import is_sparse
     Output("feature-list-signal", "data"),
     Output("dataset-load", "style"),
     Output("data-loaded-plot-signal", "data"),
+    Output("data-loaded-annotation-table-signal", "data"),
 
     Input("load-dataset-btn", "n_clicks"),
     State("dataset-dropdown", "value"),
@@ -35,7 +36,7 @@ def load_dataset(n1, dname, actp):
     if is_sparse(dbroot.adatas[an]['adata'].X):
         logger.info("Found Sparse Matrix.")
 
-    return 1, 1, {}, 1
+    return 1, 1, {}, 1, 1
 
 
 @app.callback(
