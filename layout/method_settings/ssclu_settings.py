@@ -185,7 +185,6 @@ ssclu_leiden_settings_keys = {
 }
 
 
-
 ssclu_uncertainty_settings = dbc.Popover(
     [
         dbc.PopoverHeader("Uncertainty Settings"),
@@ -199,9 +198,6 @@ ssclu_uncertainty_settings = dbc.Popover(
                             options=[
                                 {"label": "Centers",
                                     "value": "centers"}
-                                #,
-                                #{"label": "Neighbors",
-                                #    "value": "neighbors"}
                             ],
                             value="centers"
                         )

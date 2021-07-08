@@ -1,8 +1,7 @@
-from .cellar.core import (cl_Agglomerative, cl_KMeans, cl_KMedoids, cl_kPCA,
-                          cl_Leiden, cl_MDS, cl_PCA, cl_SpectralClustering,
-                          cl_ssLeiden, cl_TruncatedSVD, cl_UMAP, cl_Ingest,
-                          cl_uncertainty
-                          )
+from .cellar.core import (cl_Agglomerative, cl_Ingest, cl_KMeans, cl_KMedoids,
+                          cl_kPCA, cl_Leiden, cl_MDS, cl_PCA,
+                          cl_SpectralClustering, cl_ssLeiden, cl_TruncatedSVD,
+                          cl_UMAP, cl_uncertainty)
 
 dim_list = [
     {'label': 'PCA', 'value': 'dim-PCA', 'func': cl_PCA},
