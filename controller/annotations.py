@@ -72,10 +72,10 @@ def get_update_annotation_table(prefix, an):
         # Need labels and annotations keys to be populated
         if 'labels' not in dbroot.adatas[an]['adata'].obs:
             logger.warn("No labels found in adata.")
-            raise PreventUpdate
+            return data
         if 'annotations' not in dbroot.adatas[an]['adata'].obs:
             logger.warn("No annotations found in adata.")
-            raise PreventUpdate
+            return data
 
         # Get cluster ID's and the first index for each
         # so that we can also get annotations
