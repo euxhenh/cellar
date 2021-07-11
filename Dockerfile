@@ -28,8 +28,7 @@ RUN /opt/miniconda3/bin/conda env create -f /home/nonroot/downloads/env.yml
 ENV PATH /opt/miniconda3/bin:$PATH
 
 # Cleanup
-RUN conda clean -a
-RUN rm -rf /home/nonroot/downloads
+RUN conda clean -a && rm -rf /home/nonroot/downloads
 
 # Init conda and close repo
 RUN conda init bash

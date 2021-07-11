@@ -76,6 +76,10 @@ def generate_tile(
 
             my_cells = data[(data['tile_x'] == x) & (data['tile_y'] == y)]
             # same z for entire tile
+            if len(my_cells) == 0:
+                grid_row.append(np.zeros((3, *ims[i][0, 0].shape)))
+                continue
+
             top_z = my_cells.loc[my_cells.index[0]]['z']  # get z of first cell
             tile = (ims[i][top_z, CELL_FILL_CH]).astype(int)  # filled cells
 
