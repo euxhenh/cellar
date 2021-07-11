@@ -14,10 +14,17 @@ PALETTE = [
 ]
 
 
-def palette_to_rgb(palette=None):
+def get_col_i(pal, i):
+    return pal[i % len(pal)]
+
+
+def palette_to_rgb(palette=None, maxval=None):
     # Colors when labels are provided
     if palette is None:
         palette = PALETTE
+    if maxval is not None:
+        while len(palette) - 1 < maxval:
+            palette += palette
     # add 0 for black and -1 for white
     palette = ["#000000"] + palette + ["#FFFFFF"]
     palr = np.array([int(i[1:3], 16) for i in palette])  # hex string to int

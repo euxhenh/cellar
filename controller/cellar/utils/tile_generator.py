@@ -69,7 +69,6 @@ def generate_tile(
     grid = []
     grid_x_len = np.max(data['tile_x'])  # assuming min = 0
     grid_y_len = np.max(data['tile_y'])  # assuming min = 0
-    palr, palb, palg = palette_to_rgb(palette)
 
     for y in range(grid_y_len+1):  # columns first
         grid_row = []
@@ -98,6 +97,7 @@ def generate_tile(
             tile[ims[i][top_z, CELL_OUTLINE_CH] != 0] = 0
 
             # Color tile and append
+            palr, palb, palg = palette_to_rgb(palette, tile.max())
             grid_row.append(np.array([palr[tile], palb[tile], palg[tile]]))
 
         grid_row = np.concatenate(grid_row, axis=-1)

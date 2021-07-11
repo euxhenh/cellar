@@ -2,11 +2,11 @@ import numpy as np
 import dash_bio as dashbio
 import plotly.graph_objects as go
 import plotly.express as px
-import seaborn as sns
 
 from ..utils.exceptions import InternalError
 from ._tools import cl_add_gene_symbol, cl_get_expression
 from ..utils.misc import is_sparse
+from ..utils.colors import PALETTE, get_col_i
 
 
 def get_dim_figure(adata, title):
@@ -44,9 +44,9 @@ def get_clu_figure(adata, title):
     hover_data = {}
 
     unq_colors = np.unique(adata.obs['labels'].to_numpy())
-    pal = sns.color_palette("Set2", np.max(unq_colors) + 1)
+    maxval = np.max(unq_colors)
     unq_colors = list(unq_colors.astype(str))
-    pal = [px.colors.label_rgb(px.colors.convert_to_RGB_255(i)) for i in pal]
+    pal = [px.colors.convert_colors_to_same_type(i)[0][0] for i in PALETTE]
 
     if 'annotations' in adata.obs:
         hover_data['Annotation'] = adata.obs['annotations'].to_numpy()
@@ -65,7 +65,8 @@ def get_clu_figure(adata, title):
         category_orders={'color': unq_colors},
         opacity=0.8,
         labels={'color': 'Cluster ID'},
-        color_discrete_map={str(i): pal[i] for i in range(len(pal))},
+        color_discrete_map={str(i): get_col_i(pal, i)
+                            for i in range(maxval + 1)},
         render_mode='webgl')
 
     fig.update_layout(
@@ -197,8 +198,7 @@ def get_violin_plot(adata, feature, plot1):
     vect = vect.flatten()
 
     unq_labels = np.unique(adata.obs['labels'])
-    pal = sns.color_palette("Set2", np.max(unq_labels) + 1)
-    pal = [px.colors.label_rgb(px.colors.convert_to_RGB_255(i)) for i in pal]
+    pal = [px.colors.convert_colors_to_same_type(i)[0][0] for i in PALETTE]
 
     if 'gene_symbols' not in adata.var:
         cl_add_gene_symbol(adata)
@@ -212,7 +212,7 @@ def get_violin_plot(adata, feature, plot1):
                 name='Cluster ' + str(label),
                 box_visible=True,
                 meanline_visible=True,
-                marker=go.violin.Marker(color=pal[label])
+                marker=go.violin.Marker(color=get_col_i(pal, label))
             )
         )
 
