@@ -5,10 +5,9 @@ import numpy as np
 import matplotlib
 import json
 import matplotlib.pyplot as plt
-import matplotlib.patches as patches
 
 from .exceptions import InvalidArgument
-from .colors import palette_to_rgb, PALETTE
+from .colors import palette_to_rgb
 from skimage import draw
 from app import logger
 
@@ -113,16 +112,15 @@ def generate_tile(
     return grid.astype(np.uint8)
 
 
-
 def generate_10x_spatial(
         path_to_img, path_to_df, path_to_json,
         adata=None, savepath=None, in_tissue=True):
     '''
-    in_tissue: 
+    in_tissue:
         True: onyl show spots that are in the tissue
         False: show all spots
     '''
-    
+
     has_labels = False
     if adata is not None:
         if 'labels' in adata.obs:
@@ -130,46 +128,43 @@ def generate_10x_spatial(
 
     if has_labels:
         labels = adata.obs['labels']
-    else: 
-    	return
-    
-    if 'json_dict' in adata.uns:
-        dic=adata.uns['json_dict']
     else:
-        json_file = open(path_to_json,'r')
+        return
+
+    if 'json_dict' in adata.uns:
+        dic = adata.uns['json_dict']
+    else:
+        json_file = open(path_to_json, 'r')
         dic = json.load(json_file)
-    scaling_factor=dic['tissue_hires_scalef'] #0.08250825
-    #scaling_factor = 0.053097345
-    #scaling_factor = 2000/24240
-    full_d=dic['spot_diameter_fullres']
-    r=full_d*scaling_factor/2
-    
+    scaling_factor = dic['tissue_hires_scalef']  # 0.08250825
+    full_d = dic['spot_diameter_fullres']
+    r = full_d*scaling_factor/2
+
     if 'image' in adata.uns:
         small_img = adata.uns['image']
     else:
         small_img = np.array(plt.imread(path_to_img))
 
-    #small_img = small_img.astype('int')
-
     if 'spatial_dict' in adata.uns:
-        spatial_dict=adata.uns['spatial_dict']
+        spatial_dict = adata.uns['spatial_dict']
     else:
         spatial_dict = {}
         points = []
         row_col_dict = {}
-        spatial_info = pd.read_csv(path_to_df, delimiter=",", header=None).values
+        spatial_info = pd.read_csv(
+            path_to_df, delimiter=",", header=None).values
         for row in spatial_info:
-            if row[1]==0 and in_tissue==True:
+            if row[1] == 0 and in_tissue:
                 continue
             spatial_dict[row[0]] = [row[-2], row[-1]]
             points.append([row[-2], row[-1]])
             row_col_dict[(row[2], row[3])] = row[0]
 
     # Display the image
-    #small_img.setflags(write=1)
-    label_dict ={}
+    # small_img.setflags(write=1)
+    label_dict = {}
     barcodes = list(adata.obs['barcodes'])
-    R,G,B = palette_to_rgb()
+    R, G, B = palette_to_rgb()
     for i in range(len(adata.obs)):
         # Create a Rectangle patch
 
@@ -177,18 +172,13 @@ def generate_10x_spatial(
         center = np.array(spatial_dict[(barcodes[i])])*scaling_factor
         center = center.astype('int')
 
-        label = labels[i] + 1 # +1 so that dont get white
-        color = np.array( [R[label],G[label],B[label]] )
-        circle = draw.disk(center,r)
-        
-        
-        small_img[circle[0],circle[1],:] = color
-        
-    
+        label = labels[i] + 1  # +1 so that dont get white
+        color = np.array([R[label], G[label], B[label]])
+        circle = draw.disk(center, r)
+
+        small_img[circle[0], circle[1], :] = color
 
     if savepath is not None:
-        plt.imsave(savepath,small_img)
-    
-    
-    return small_img
+        plt.imsave(savepath, small_img)
 
+    return small_img
