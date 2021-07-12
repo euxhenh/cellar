@@ -20,3 +20,7 @@ class InternalError(RuntimeError):
 
 class UserError(RuntimeError):
     pass
+
+
+class UIError(RuntimeError):
+    pass

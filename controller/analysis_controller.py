@@ -165,7 +165,7 @@ def get_update_de_table_func(prefix, an):
         except UserError as ue:
             logger.error(str(ue))
             return [dash.no_update] * 4 + [_prep_notification(
-                str(ue), "danger")]
+                str(ue), "warning")]
         except Exception as e:
             logger.error(str(e))
             error_msg = "An error occurred while running t-Test."
@@ -227,7 +227,7 @@ def get_enrichment_table_func(prefix, an):
             de_genes_no = int(de_genes_no)
         except Exception as e:
             logger.error(str(e))
-            error_msg = "DE genes no. was not an int."
+            error_msg = "Number of DE genes to use was not an integer."
             logger.error(error_msg)
             return [dash.no_update] * 4 + [_prep_notification(
                 error_msg, "warning")]
@@ -253,15 +253,14 @@ def get_enrichment_table_func(prefix, an):
             enr = enrich(dbroot.adatas[an]['adata'], gene_set, de_gene_list)
         except Exception as e:
             logger.error(str(e))
-            error_msg = "Error whle running enrichment analysis for gene " + \
+            error_msg = "Error while running enrichment analysis for gene " + \
                 f"set {gene_set}."
             logger.error(error_msg)
             return [dash.no_update] * 4 + [_prep_notification(
                 error_msg, "danger")]
 
         return [{
-            "name": i.upper(),
-            "id": i
+            "name": i.upper(), "id": i
         } for i in enr.columns], enr.to_dict('records'), 'csv', title,\
             dash.no_update
 
@@ -301,39 +300,43 @@ def get_plot_analysis_func(prefix, an):
             raise PreventUpdate
 
         if 'labels' not in dbroot.adatas[an]['adata'].obs:
-            error_msg = "No labels found. Cannot visualize features."
+            error_msg = "No labels found; cannot visualize features. Run " +\
+                "clustering first."
             logger.info(error_msg)
-            return dash.no_update, _prep_notification(error_msg, "info")
+            return dash.no_update, _prep_notification(error_msg, "warning")
 
         if feature_list is None or len(feature_list) == 0:
             error_msg = "No features selected."
             logger.info(error_msg)
-            return dash.no_update, _prep_notification(error_msg, "info")
+            return dash.no_update, _prep_notification(error_msg, "warning")
 
         button_id = ctx.triggered[0]["prop_id"].split(".")[0]
 
         if button_id == prefix + '-heatmap':
             try:
                 fig = get_heatmap(dbroot.adatas[an]['adata'], feature_list)
+            except UserError as ue:
+                logger.error(str(ue))
+                return dash.no_update, _prep_notification(str(ue), "warning")
             except Exception as e:
                 logger.error(str(e))
-                error_msg = "Error when running heatmap."
+                error_msg = "Error occurred while running heatmap."
                 logger.error(error_msg)
                 return dash.no_update, _prep_notification(error_msg, "danger")
         elif button_id == prefix + '-violin-plot':
             if len(feature_list) > 1:
-                error_msg = "Cannot run violin plot with more " + \
-                    "than one feature."
+                error_msg = "Cannot run violin plot with more than one feature"
                 logger.warn(error_msg)
                 return dash.no_update, _prep_notification(error_msg, "warning")
             try:
-                fig = get_violin_plot(
-                    dbroot.adatas[an]['adata'],
-                    feature_list[0],
-                    plot1=(an == 'a1'))
+                fig = get_violin_plot(dbroot.adatas[an]['adata'],
+                                      feature_list[0], plot1=(an == 'a1'))
+            except UserError as ue:
+                logger.error(str(ue))
+                return dash.no_update, _prep_notification(str(ue), "warning")
             except Exception as e:
                 logger.error(str(e))
-                error_msg = "Error when running violin plot."
+                error_msg = "Error occurred while running violin plot."
                 logger.error(error_msg)
                 return dash.no_update, _prep_notification(error_msg, "danger")
 

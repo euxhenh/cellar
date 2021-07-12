@@ -44,7 +44,7 @@ def load_dataset(n1, dname, actp):
     except Exception as e:
         logger.error(str(e))
         error_msg = "Error encountered while reading file. Maybe the file " +\
-            "is not formatted properly, or invalid entries found."
+            "is not formatted properly, or invalid entries were found."
         logger.error(error_msg)
         return [dash.no_update] * 5 + [_prep_notification(error_msg, "danger")]
 

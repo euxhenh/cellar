@@ -3,7 +3,7 @@ import dash_bio as dashbio
 import plotly.graph_objects as go
 import plotly.express as px
 
-from ..utils.exceptions import InternalError
+from ..utils.exceptions import InternalError, UserError
 from ._tools import cl_add_gene_symbol, cl_get_expression
 from ..utils.misc import is_sparse
 from ..utils.colors import PALETTE, get_col_i
@@ -145,6 +145,9 @@ def get_heatmap(adata, feature_list):
 
     feature_list = np.array(feature_list).flatten()
 
+    if not set(feature_list).issubset(set(adata.var_names.to_numpy())):
+        raise UserError("Some features not found in data.")
+
     unq_labels = np.unique(adata.obs['labels'])
     aves = []
 
@@ -190,7 +193,7 @@ def get_heatmap(adata, feature_list):
 
 def get_violin_plot(adata, feature, plot1):
     if feature not in adata.var_names:
-        raise InternalError(f"Feature {feature} not found in adata.")
+        raise UserError(f"Feature {feature} not found in adata.")
 
     vect = adata[:, feature].X
     if is_sparse(vect):

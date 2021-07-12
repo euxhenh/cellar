@@ -9,7 +9,6 @@ import dash
 import scanpy as sc
 from base64 import b64decode
 from dash.dependencies import Input, Output, State
-from dash.exceptions import PreventUpdate
 
 from app import app, logger
 from gvars import DATA_PATH
@@ -34,7 +33,7 @@ def upload_data(contents, filename, actp):
     an = "a1" if actp == 1 else 'a2'
 
     if filename in os.listdir(os.path.join(DATA_PATH, 'uploaded')):
-        error_msg = f"Dataset {filename} found in path. Skipping..."
+        error_msg = f"Dataset {filename} already exists. Skipping..."
         logger.warn(error_msg)
         return dash.no_update, _prep_notification(error_msg, "warning")
 
@@ -108,7 +107,4 @@ def upload_data(contents, filename, actp):
 
     dataset_dict = get_server_dataset_dict(DATA_PATH)
 
-    return [
-        {'label': dataset_dict[d], 'value': d}
-        for d in dataset_dict
-    ]
+    return [{'label': dataset_dict[d], 'value': d} for d in dataset_dict]
