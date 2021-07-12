@@ -209,7 +209,8 @@ def get_update_plot_func(an):
                 return get_dim_figure(dbroot.adatas[an]['adata'], title), 1,\
                     notif
             notif = _prep_notification(
-                "No embeddings found. Reduce dimensions first.",
+                "No embeddings found. Please, run preprocessing first if " +
+                "needed and then reduce dimensions.",
                 icon="info")
 
             return empty_figure, 1, notif
