@@ -16,3 +16,7 @@ class IncorrectFileFormat(RuntimeError):
 
 class InternalError(RuntimeError):
     pass
+
+
+class UserError(RuntimeError):
+    pass

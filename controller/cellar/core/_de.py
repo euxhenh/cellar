@@ -3,37 +3,48 @@ import numpy as np
 import gseapy as gp
 
 
-from controller.cellar.utils.exceptions import InternalError
+from controller.cellar.utils.exceptions import InternalError, UserError
 
 
 def ttest(adata, cluster_id, cluster_id2, alpha=0.05):
     if cluster_id == cluster_id2:
-        raise InternalError("Subsets cannot be the same.")
+        raise UserError("Subsets cannot be the same.")
 
     if 'labels' not in adata.obs and isinstance(cluster_id, int):
         raise InternalError("No labels found in adata.")
 
-    grouping = np.zeros(adata.shape[0])
     if isinstance(cluster_id, str):
         if 'subsets' not in adata.uns:
             raise InternalError("'subsets' key not found in adata.")
         if cluster_id not in adata.uns['subsets']:
-            raise InternalError("subset name not found in adata.")
+            raise InternalError("Subset name not found in adata.")
 
-        grouping[adata.uns['subsets'][cluster_id]] = 1
+        indices1 = adata.uns['subsets'][cluster_id]
     else:
-        grouping[adata.obs['labels'].to_numpy() == cluster_id] = 1
-        
-    if isinstance(cluster_id2, str):
-        if (cluster_id2 != 'rest') and \
-        (cluster_id2 not in adata.uns['subsets']):
-            raise InternalError("subset2 name not found in adata.")
+        indices1 = np.where(adata.obs['labels'].to_numpy() == cluster_id)[0]
 
-        if cluster_id2 != 'rest':
-            grouping[adata.uns['subsets'][cluster_id2]] = 1
+    if isinstance(cluster_id2, str) and cluster_id2 != 'rest':
+        if 'subsets' not in adata.uns:
+            raise InternalError("'subsets' key not found in adata.")
+        if cluster_id2 not in adata.uns['subsets']:
+            raise InternalError("Subset2 name not found in adata.")
+
+        indices2 = adata.uns['subsets'][cluster_id2]
+    elif cluster_id2 == 'rest':
+        indices2 = None
     else:
-        grouping[adata.obs['labels'].to_numpy() == cluster_id2] = 1
+        indices2 = np.where(adata.obs['labels'].to_numpy() == cluster_id2)[0]
 
+    if indices2 is None:
+        grouping = np.zeros(adata.shape[0])
+        grouping[indices1] = 1
+        data = adata.X
+    else:
+        indices = np.concatenate([indices1, indices2])
+        grouping = np.zeros(len(indices))
+        grouping[:len(indices1)] = 1  # make 1 indices of subset 1, others 0
+        # this will sort the data, subset 1 coming first
+        data = adata[indices].X
 
     if 'gene_symbols' in adata.var:
         gene_names = adata.var['gene_symbols']
@@ -41,7 +52,7 @@ def ttest(adata, cluster_id, cluster_id2, alpha=0.05):
         gene_names = adata.var.index.to_numpy()
 
     test = de.test.t_test(
-        data=adata.X,
+        data=data,
         grouping=grouping,
         gene_names=gene_names,
         is_logged=True
