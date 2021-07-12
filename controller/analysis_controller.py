@@ -5,6 +5,7 @@ from dash.dependencies import Input, Output, State
 from dash.exceptions import PreventUpdate
 
 from .cellar.core import ttest, enrich, get_heatmap, get_violin_plot
+from .cellar.utils.exceptions import UserError
 from .multiplexer import MultiplexerOutput
 from .notifications import _prep_notification
 
@@ -161,12 +162,16 @@ def get_update_de_table_func(prefix, an):
         # Run tests
         try:
             test = ttest(dbroot.adatas[an]['adata'], cluster_id, cluster_id2)
+        except UserError as ue:
+            logger.error(str(ue))
+            return [dash.no_update] * 4 + [_prep_notification(
+                str(ue), "danger")]
         except Exception as e:
             logger.error(str(e))
             error_msg = "An error occurred while running t-Test."
             logger.error(error_msg)
-            notif = _prep_notification(error_msg, "danger")
-            return [dash.no_update] * 4 + [notif]
+            return [dash.no_update] * 4 + [_prep_notification(
+                error_msg, "danger")]
 
         test['id'] = test['gene'].copy()
 

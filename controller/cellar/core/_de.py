@@ -8,7 +8,7 @@ from controller.cellar.utils.exceptions import InternalError, UserError
 
 def ttest(adata, cluster_id, cluster_id2, alpha=0.05):
     if cluster_id == cluster_id2:
-        raise UserError("Subsets cannot be the same.")
+        raise UserError("Selected subsets cannot be the same.")
 
     if 'labels' not in adata.obs and isinstance(cluster_id, int):
         raise InternalError("No labels found in adata.")
