@@ -11,8 +11,10 @@ from dash.dependencies import Input, Output, State
 from dash.exceptions import PreventUpdate
 from anndata import AnnData
 
-from controller.cellar.core import read_adata
-from controller.cellar.utils.exceptions import InvalidArgument
+from .cellar.core import read_adata
+from .cellar.utils.exceptions import InvalidArgument
+from .multiplexer import MultiplexerOutput
+from .notifications import _prep_notification
 
 
 def _infer_bin_prefix(bin_name):
@@ -65,6 +67,7 @@ def _validate_interval_extension(extend):
     Output("feature-list-signal-prep", "data"),
     Output("temp-prep-h5", "className"),
     Output("data-loaded-plot-signal-prep", "data"),
+    MultiplexerOutput("push-notification", "data"),
 
     Input("prep-run-btn", "n_clicks"),
 
@@ -117,6 +120,8 @@ def run_prep(
         raise PreventUpdate
 
     try:
+        # Copy first
+        # In case of error, nothing is updated
         if dbroot.adatas[an]['adata'].raw is not None:
             adata = dbroot.adatas[an]['adata'].to_memory(
             ).raw.to_adata().copy()
@@ -164,9 +169,10 @@ def run_prep(
                 smax = None
             sc.pp.scale(adata, zero_center=sz, max_value=smax)
     except Exception as e:
-        logger.warn("An error occurred in preprocessing.")
-        logger.warn(str(e))
-        raise PreventUpdate
+        logger.error(str(e))
+        error_msg = "An error occurred in preprocessing."
+        logger.error(error_msg)
+        return [dash.no_update] * 4 + [_prep_notification(error_msg, "danger")]
 
     filename = f'tmp/{an}/adata.h5ad'
     if os.path.exists(filename):
@@ -183,7 +189,7 @@ def run_prep(
 
     dbroot.adatas[an]['adata'] = read_adata(filename)
 
-    return 1, 1, "", 1
+    return 1, 1, "", 1, _prep_notification("Finished preprocessing.", "info")
 
 
 @app.callback(
@@ -191,6 +197,7 @@ def run_prep(
     Output("feature-list-signal-prep-atac", "data"),
     Output("temp-prep-h5-atac", "className"),
     Output("data-loaded-plot-signal-prep-atac", "data"),
+    MultiplexerOutput("push-notification", "data"),
 
     Input("prep-atac-run-btn", "n_clicks"),
 
@@ -249,9 +256,10 @@ def run_atac_prep(n1, aop, aei, amei, asb, aoei, amoei, actp):
 
         logger.info(f"Bin to gene matrix has shape {adata.shape}.")
     except Exception as e:
-        logger.warn("An error occurred in preprocessing.")
         logger.warn(str(e))
-        raise PreventUpdate
+        error_msg = "An error occurred while running Bin to Gene."
+        logger.warn(error_msg)
+        return [dash.no_update] * 4 + [_prep_notification(error_msg, "danger")]
 
     filename = f'tmp/{an}/adata.h5ad'
     if os.path.exists(filename):
@@ -264,4 +272,5 @@ def run_atac_prep(n1, aop, aei, amei, asb, aoei, amoei, actp):
 
     dbroot.adatas[an]['adata'] = read_adata(filename)
 
-    return 1, 1, "", 1
+    return 1, 1, "", 1, _prep_notification(
+        "Finished Bin to Gene conversion.", "info")

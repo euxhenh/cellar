@@ -1,4 +1,5 @@
 import os
+import gc
 
 import dash
 from dash.dependencies import Input, Output, State
@@ -7,6 +8,8 @@ from dash.exceptions import PreventUpdate
 from app import app, logger, dbroot
 from .cellar.core import read_adata, cl_add_gene_symbol
 from .cellar.utils.misc import is_sparse
+from .multiplexer import MultiplexerOutput
+from .notifications import _prep_notification
 
 
 @app.callback(
@@ -15,6 +18,7 @@ from .cellar.utils.misc import is_sparse
     Output("dataset-load", "style"),
     Output("data-loaded-plot-signal", "data"),
     Output("data-loaded-annotation-table-signal", "data"),
+    MultiplexerOutput("push-notification", "data"),
 
     Input("load-dataset-btn", "n_clicks"),
     State("dataset-dropdown", "value"),
@@ -22,21 +26,35 @@ from .cellar.utils.misc import is_sparse
     prevent_initial_call=True
 )
 def load_dataset(n1, dname, actp):
+    """
+    Loads dataset to the active plot given its path.
+    """
     ctx = dash.callback_context
     if not ctx.triggered or n1 is None:
         raise PreventUpdate
 
     an = 'a1' if actp == 1 else 'a2'
 
+    # Initialize empty dataset
     dbroot.adatas[an] = {}
-    dbroot.adatas[an]['adata'] = read_adata(dname)
+    gc.collect()
+
+    try:
+        dbroot.adatas[an]['adata'] = read_adata(dname)
+    except Exception as e:
+        logger.error(str(e))
+        error_msg = "Error encountered while reading file. Maybe the file " +\
+            "is not formatted properly, or invalid entries found."
+        logger.error(error_msg)
+        return [dash.no_update] * 5 + [_prep_notification(error_msg, "danger")]
+
     dbroot.adatas[an]['name'] = os.path.splitext(
         os.path.basename(dname))[0]
     logger.info(f"Read {dname} info {an}.")
     if is_sparse(dbroot.adatas[an]['adata'].X):
         logger.info("Found Sparse Matrix.")
 
-    return 1, 1, {}, 1, 1
+    return 1, 1, {}, 1, 1, dash.no_update
 
 
 @app.callback(
@@ -52,6 +70,10 @@ def load_dataset(n1, dname, actp):
     prevent_initial_call=True
 )
 def update_shape(s1, s2, s3, s4, actp):
+    """
+    When a new dataset is loaded, or the active plot is switched,
+    return the shape of the data. Otherwise, return N/A.
+    """
     nos, nof = 'N/A', 'N/A'
 
     ctx = dash.callback_context
@@ -59,9 +81,12 @@ def update_shape(s1, s2, s3, s4, actp):
         raise PreventUpdate
 
     an = 'a1' if actp == 1 else 'a2'
+    if an not in dbroot.adatas:
+        raise PreventUpdate
+    if 'adata' not in dbroot.adatas[an]:
+        raise PreventUpdate
 
-    if an in dbroot.adatas:
-        nos, nof = dbroot.adatas[an]['adata'].shape
+    nos, nof = dbroot.adatas[an]['adata'].shape
 
     return nos, nof
 
@@ -69,6 +94,7 @@ def update_shape(s1, s2, s3, s4, actp):
 @app.callback(
     Output("main-feature-list", "options"),
     Output("side-feature-list", "options"),
+    MultiplexerOutput("push-notification", "data"),
 
     Input("feature-list-signal", "data"),
     Input("feature-list-signal-prep", "data"),
@@ -82,24 +108,33 @@ def update_feature_list(s1, s2, s3, actp):
         raise PreventUpdate
 
     an = 'a1' if actp == 1 else 'a2'
+    if an not in dbroot.adatas:
+        raise PreventUpdate
+    if 'adata' not in dbroot.adatas[an]:
+        raise PreventUpdate
 
-    if an in dbroot.adatas:
-        if dbroot.adatas[an]['adata'].shape[1] > 100000:
-            logger.warn("Too many features found. Skipping feature list.")
-            raise PreventUpdate
+    if dbroot.adatas[an]['adata'].shape[1] > 100000:
+        error_msg = "Too many features found. Skipping feature list."
+        logger.warn(error_msg)
+        return [dash.no_update] * 2 + [
+            _prep_notification(error_msg, "warning")]
 
+    try:
         if 'gene_symbols' not in dbroot.adatas[an]['adata'].var:
             cl_add_gene_symbol(dbroot.adatas[an]['adata'])
+    except Exception as e:
+        logger.error(str(e))
+        error_msg = "Error occurred when adding gene symbols."
+        logger.error(error_msg)
+        return [dash.no_update] * 2 + [_prep_notification(error_msg, "danger")]
 
-        features = dbroot.adatas[an][
-            'adata'].var['gene_symbols'].to_numpy().astype(str)
-        unique_index = \
-            dbroot.adatas[an]['adata'].var_names.to_numpy().astype(str)
+    features = dbroot.adatas[an][
+        'adata'].var['gene_symbols'].to_numpy().astype(str)
+    unique_index = \
+        dbroot.adatas[an]['adata'].var_names.to_numpy().astype(str)
 
-        to_return = [dash.no_update] * 2
-        to_return[actp - 1] = [{'label': f, 'value': g}
-                               for f, g in zip(features, unique_index)]
+    to_return = [dash.no_update] * 2
+    to_return[actp - 1] = [{'label': f, 'value': g}
+                           for f, g in zip(features, unique_index)]
 
-        return to_return
-
-    raise PreventUpdate
+    return to_return + [dash.no_update]

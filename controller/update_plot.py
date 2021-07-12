@@ -13,6 +13,8 @@ from .cellar.utils.exceptions import InternalError
 from .methods import clu_list, dim_list, lbt_list, ssclu_list, vis_list
 from .operations import (clu_filter, dim_reduce_filter, lbt_filter,
                          ssclu_filter, vis_filter)
+from .multiplexer import MultiplexerOutput
+from .notifications import _prep_notification
 
 
 class Signal(int, Enum):
@@ -42,6 +44,7 @@ class Signal(int, Enum):
     Input("data-loaded-plot-signal", "data"),
     Input("data-loaded-plot-signal-prep", "data"),
     Input("data-loaded-plot-signal-prep-atac", "data"),
+
     State("active-plot", "data"),
     State("label-tabs", "active_tab"),
     prevent_initial_call=True
@@ -50,6 +53,12 @@ def signal_plot(
         n1, n2, mexp, sexp, c1, c2, ans, mps, dlps, dlpsp, dlpspa, actp, actt):
     ctx = dash.callback_context
     if not ctx.triggered:
+        raise PreventUpdate
+
+    an = 'a1' if actp == 1 else 'a2'
+    if an not in dbroot.adatas:
+        raise PreventUpdate
+    if 'adata' not in dbroot.adatas[an]:
         raise PreventUpdate
 
     to_return = [dash.no_update] * 2
@@ -107,50 +116,103 @@ def get_update_plot_func(an):
 
         if s_code == Signal.DIM_REDUCE:
             # Reduce dimensions and prepare figure
-            dim_reduce_filter(
-                dbroot.adatas[an]['adata'], dim_method, settings)
-            clear_x_emb_dependends(dbroot.adatas[an]['adata'])
-            vis_filter(
-                dbroot.adatas[an]['adata'], vis_method, settings)
+            try:
+                dim_reduce_filter(
+                    dbroot.adatas[an]['adata'], dim_method, settings)
+                clear_x_emb_dependends(dbroot.adatas[an]['adata'])
+                vis_filter(
+                    dbroot.adatas[an]['adata'], vis_method, settings)
+            except Exception as e:
+                logger.error(str(e))
+                error_msg = "Error occurred during dimensionality reduction."
+                logger.error(error_msg)
+                return [dash.no_update] * 2 + [_prep_notification(
+                    error_msg, "danger")]
 
             return get_dim_figure(dbroot.adatas[an]['adata'], title),\
-                dash.no_update
+                dash.no_update, dash.no_update
         elif s_code == Signal.CLUSTER:
             # Cluster and prepare figure
-            clu_filter(dbroot.adatas[an]['adata'], clu_method, settings)
+            try:
+                clu_filter(dbroot.adatas[an]['adata'], clu_method, settings)
+            except Exception as e:
+                logger.error(str(e))
+                error_msg = "Error occurred during clustering."
+                logger.error(error_msg)
+                return [dash.no_update] * 2 + [_prep_notification(
+                    error_msg, "danger")]
 
-            return get_clu_figure(dbroot.adatas[an]['adata'], title), 1
+            return get_clu_figure(dbroot.adatas[an]['adata'], title), 1,\
+                dash.no_update
         elif s_code == Signal.SS_CLUSTER:
-            ssclu_filter(dbroot.adatas[an]['adata'], ssclu_method, settings,
-                         extras={'actp': 1 if an == 'a1' else 2})
+            try:
+                ssclu_filter(dbroot.adatas[an]['adata'], ssclu_method,
+                             settings, extras={'actp': 1 if an == 'a1' else 2})
+            except Exception as e:
+                logger.error(str(e))
+                error_msg = "Error occurred during semi-supervised clustering."
+                logger.error(error_msg)
+                return [dash.no_update] * 2 + [_prep_notification(
+                    error_msg, "danger")]
 
-            return get_clu_figure(dbroot.adatas[an]['adata'], title), 1
+            return get_clu_figure(dbroot.adatas[an]['adata'], title), 1,\
+                dash.no_update
         elif s_code == Signal.LABEL_TRANSFER:
             ref_an = 'a2' if an == 'a1' else 'a1'
-            lbt_filter(dbroot.adatas[an]['adata'], lbt_method, settings,
-                       extras={'ref': dbroot.adatas[ref_an]['adata']})
+            try:
+                lbt_filter(dbroot.adatas[an]['adata'], lbt_method, settings,
+                           extras={'ref': dbroot.adatas[ref_an]['adata']})
+            except Exception as e:
+                logger.error(str(e))
+                error_msg = "Error occurred during label transfer."
+                logger.error(error_msg)
+                return [dash.no_update] * 2 + [_prep_notification(
+                    error_msg, "danger")]
 
-            return get_clu_figure(dbroot.adatas[an]['adata'], title), 1
+            return get_clu_figure(dbroot.adatas[an]['adata'], title), 1,\
+                dash.no_update
         elif s_code == Signal.FEATURE_EXP:
             # Show gene expression levels and prepare figure
             if feature_list is None:
                 raise PreventUpdate
-            return get_expression_figure(
-                dbroot.adatas[an]['adata'], feature_list), dash.no_update
+            try:
+                exp = get_expression_figure(
+                    dbroot.adatas[an]['adata'], feature_list)
+            except Exception as e:
+                logger.error(str(e))
+                error_msg = "Error occurred when viewing feature expression."
+                logger.error(error_msg)
+                return [dash.no_update] * 2 + [_prep_notification(
+                    error_msg, "danger")]
+
+            return exp, dash.no_update, dash.no_update
         elif s_code == Signal.RESET:
             return get_reset_figure(dbroot.adatas[an]['adata'], title),\
-                dash.no_update
+                dash.no_update, dash.no_update
         elif s_code == Signal.ANNOTATION:
             return get_clu_figure(dbroot.adatas[an]['adata'], title),\
-                dash.no_update
+                dash.no_update, dash.no_update
         elif s_code == Signal.MERGE:
-            return get_clu_figure(dbroot.adatas[an]['adata'], title), 1
+            return get_clu_figure(dbroot.adatas[an]['adata'], title), 1,\
+                dash.no_update
         elif s_code == Signal.DATA_LOAD:
             if 'x_emb_2d' in dbroot.adatas[an]['adata'].obsm:
                 if 'labels' in dbroot.adatas[an]['adata'].obs:
-                    return get_clu_figure(dbroot.adatas[an]['adata'], title), 1
-                return get_dim_figure(dbroot.adatas[an]['adata'], title), 1
-            return empty_figure, 1
+                    notif = _prep_notification(
+                        "Found embeddings and labels.", icon="info")
+
+                    return get_clu_figure(dbroot.adatas[an]['adata'], title),\
+                        1, notif
+                notif = _prep_notification(
+                    "Found embeddings on file.", icon="info")
+
+                return get_dim_figure(dbroot.adatas[an]['adata'], title), 1,\
+                    notif
+            notif = _prep_notification(
+                "No embeddings found. Reduce dimensions first.",
+                icon="info")
+
+            return empty_figure, 1, notif
         else:
             raise InternalError(f"No signal with id {s_code} found.")
 
@@ -162,6 +224,7 @@ for prefix, an in zip(['main', 'side'], ['a1', 'a2']):
     app.callback(
         Output(prefix + "-plot", "figure"),
         Output(prefix + "-cluster-list-signal", "data"),
+        MultiplexerOutput("push-notification", "data"),
 
         Input(prefix + "-plot-signal-code", "data"),
 

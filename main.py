@@ -21,6 +21,7 @@ from controller.preprocessing_controller import *
 from controller.spatial import *
 from controller.subsets import *
 from controller.data_uploader import *
+from controller.notifications import *
 
 app.layout = dbc.Container(
     [
@@ -44,5 +45,5 @@ if 'SHINYPROXY_PUBLIC_PATH' in os.environ:
     })
 
 if __name__ == "__main__":
-    dev = False  # Set to True if in development
+    dev = True  # Set to True if in development
     app.run_server(debug=dev, use_reloader=dev, host='0.0.0.0')

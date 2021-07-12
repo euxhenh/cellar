@@ -2,6 +2,7 @@ import dash_bootstrap_components as dbc
 import dash_core_components as dcc
 import dash_html_components as html
 from controller.cellar.utils.misc import get_server_dataset_dict
+from controller.multiplexer import create_multiplexer
 from gvars import (CELLAR_LOGO, DATA_PATH, DEMOS_URL, DOCS_URL, GITHUB_URL,
                    PAPER_URL)
 
@@ -69,7 +70,32 @@ cellar_bar = dbc.Nav(
                 outline=False,
                 style={'font-size': '13px'}
             ),
-            className="mr-2"
+            className="mr-5"
+        ),
+        dbc.NavItem(
+            [
+                dbc.Button(
+                    html.I(className="fas fa-bell"),
+                    outline=True,
+                    id="toggle-notifications-btn"
+                ),
+                dbc.Toast(
+                    id="notifications-toast",
+                    header="Notifications",
+                    is_open=False,
+                    fade=False,
+                    dismissable=True,
+                    style={
+                        "position": "fixed",
+                        "top": 70, "right": 20, "width": 600
+                    },
+                    duration=5000
+                ),
+                *create_multiplexer('push-notification', 'data', 60),
+                *create_multiplexer('notifications-toast', 'children', 2),
+                *create_multiplexer('notifications-toast', 'is_open', 2),
+                *create_multiplexer('notifications-toast', 'duration', 2)
+            ]
         )
     ],
     className="ml-auto flex-nowrap mt-3 mt-md-0 m-auto",

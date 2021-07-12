@@ -12,6 +12,8 @@ db = ZODB.DB(None)
 connection = db.open()
 dbroot = connection.root
 dbroot.adatas = BTrees.OOBTree.BTree()
+dbroot.MULTIPLEXER_OUTPUTS = BTrees.OOBTree.BTree()
+dbroot.notifications = BTrees.OOBTree.BTree()
 
 # Bootstrap them
 external_stylesheets = [

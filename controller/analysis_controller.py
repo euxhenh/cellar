@@ -5,6 +5,8 @@ from dash.dependencies import Input, Output, State
 from dash.exceptions import PreventUpdate
 
 from .cellar.core import ttest, enrich, get_heatmap, get_violin_plot
+from .multiplexer import MultiplexerOutput
+from .notifications import _prep_notification
 
 
 def get_de_cluster_update_func(prefix, an):
@@ -72,10 +74,10 @@ def get_de_cluster_update_func(prefix, an):
 
             # Append subsets to the cluster list
             clusters_DE = clusters_DE + subsets
-        
-        clusters_DE2 = [{'label':'rest','value':'rest'}] + clusters_DE
-        value_DE2 =  'rest'
-        
+
+        clusters_DE2 = [{'label': 'rest', 'value': 'rest'}] + clusters_DE
+        value_DE2 = 'rest'
+
         return clusters_DE, value_DE, clusters_DE2, value_DE2, \
             clusters_ann, value_ann, clusters_DE, []
 
@@ -119,8 +121,9 @@ def get_update_de_table_func(prefix, an):
             raise PreventUpdate
         if 'adata' not in dbroot.adatas[an]:
             raise PreventUpdate
-            
-            
+        if cluster_id is None:
+            raise PreventUpdate
+
         # If cluster_id starts with prefix + '-subset', than it is a subset,
         # otherwise it is considered a cluster ID and is converted to int.
         if cluster_id.startswith(prefix + '-cluster'):
@@ -132,7 +135,7 @@ def get_update_de_table_func(prefix, an):
                 raise PreventUpdate
         else:
             cluster_id = str(cluster_id[len(prefix + "-subset-"):])
-            
+
         # same thing for cluster_id2
         if cluster_id2.startswith(prefix + '-cluster'):
             try:
@@ -144,19 +147,13 @@ def get_update_de_table_func(prefix, an):
         elif cluster_id2 == 'rest':
             pass
         else:
-            cluster_id2 = str(cluster_id2[len(prefix + "-subset-"):])    
-        
-            
+            cluster_id2 = str(cluster_id2[len(prefix + "-subset-"):])
+
         if 'labels' not in dbroot.adatas[an]['adata'].obs:
-            if (isinstance(cluster_id, int)):
-                logger.error("No labels found in adata. Cannot find DE "
-                         f"genes for cluster {cluster_id}.")
+            if isinstance(cluster_id, int) or isinstance(cluster_id2, int):
+                logger.error("No labels found. Cannot find DE genes.")
                 raise PreventUpdate
-            if (isinstance(cluster_id2, int)):
-                logger.error("No labels found in adata. Cannot find DE "
-                         f"genes for cluster {cluster_id2}.")
-                raise PreventUpdate
-                
+
         title = f"DE genes for cluster {cluster_id} vs {cluster_id2}"
 
         logger.info("Running t-Test.")
@@ -166,8 +163,10 @@ def get_update_de_table_func(prefix, an):
             test = ttest(dbroot.adatas[an]['adata'], cluster_id, cluster_id2)
         except Exception as e:
             logger.error(str(e))
-            logger.error("An error occurred while running t-Test.")
-            raise PreventUpdate
+            error_msg = "An error occurred while running t-Test."
+            logger.error(error_msg)
+            notif = _prep_notification(error_msg, "danger")
+            return [dash.no_update] * 4 + [notif]
 
         test['id'] = test['gene'].copy()
 
@@ -175,7 +174,7 @@ def get_update_de_table_func(prefix, an):
             "name": i.upper(),
             "id": i
         } for i in test.columns if i != 'id'],\
-            test.to_dict('records'), 'csv', title
+            test.to_dict('records'), 'csv', title, dash.no_update
 
     return _func
 
@@ -186,7 +185,10 @@ for prefix, an in zip(['main', 'side'], ['a1', 'a2']):
         Output(prefix + "-de-table", "data"),
         Output(prefix + "-de-table", "export_format"),
         Output(prefix + "-de-analysis-title", "children"),
+        MultiplexerOutput("push-notification", "data"),
+
         Input(prefix + "-find-de-genes-btn", "n_clicks"),
+
         State(prefix + "-de-cluster-select", "value"),
         State(prefix + "-de-cluster-select2", "value"),
         prevent_initial_call=True
@@ -210,20 +212,26 @@ def get_enrichment_table_func(prefix, an):
             raise PreventUpdate
 
         if de_data is None or len(de_data) == 0:
-            logger.info("Empty DE list encountered.")
-            raise PreventUpdate
+            error_msg = "Empty DE list encountered."
+            logger.info(error_msg)
+            return [dash.no_update] * 4 + [_prep_notification(
+                error_msg, "warning")]
 
         # Make sure de_genes_no is an int
         try:
             de_genes_no = int(de_genes_no)
         except Exception as e:
             logger.error(str(e))
-            logger.error("DE genes no. was not an int.")
-            raise PreventUpdate
+            error_msg = "DE genes no. was not an int."
+            logger.error(error_msg)
+            return [dash.no_update] * 4 + [_prep_notification(
+                error_msg, "warning")]
 
         if de_genes_no < 1:
-            logger.error("No. genes to use is less than 1.")
-            raise PreventUpdate
+            error_msg = "No. genes to use is less than 1."
+            logger.error(error_msg)
+            return [dash.no_update] * 4 + [_prep_notification(
+                error_msg, "warning")]
 
         # Gets the gene symbol for every gene and takes top de_genes_no
         de_gene_list = [r['gene'] for r in de_data][:de_genes_no]
@@ -240,14 +248,17 @@ def get_enrichment_table_func(prefix, an):
             enr = enrich(dbroot.adatas[an]['adata'], gene_set, de_gene_list)
         except Exception as e:
             logger.error(str(e))
-            logger.error("Error whle running enrichment analysis for gene "
-                         f"set {gene_set}.")
-            raise PreventUpdate
+            error_msg = "Error whle running enrichment analysis for gene " + \
+                f"set {gene_set}."
+            logger.error(error_msg)
+            return [dash.no_update] * 4 + [_prep_notification(
+                error_msg, "danger")]
 
         return [{
             "name": i.upper(),
             "id": i
-        } for i in enr.columns], enr.to_dict('records'), 'csv', title
+        } for i in enr.columns], enr.to_dict('records'), 'csv', title,\
+            dash.no_update
 
     return _func
 
@@ -258,8 +269,10 @@ for prefix, an in zip(['main', 'side'], ['a1', 'a2']):
         Output(prefix + "-enrich-table", "data"),
         Output(prefix + "-enrich-table", "export_format"),
         Output(prefix + "-enrich-title", "children"),
+        MultiplexerOutput("push-notification", "data"),
 
         Input(prefix + "-run-enrich-btn", "n_clicks"),
+
         State(prefix + "-gene-set-dropdown", "value"),
         State(prefix + "-de-genes-enrich-no", "value"),
         State(prefix + "-de-table", "data"),
@@ -283,12 +296,14 @@ def get_plot_analysis_func(prefix, an):
             raise PreventUpdate
 
         if 'labels' not in dbroot.adatas[an]['adata'].obs:
-            logger.info("No labels found. Cannot visualize features.")
-            raise PreventUpdate
+            error_msg = "No labels found. Cannot visualize features."
+            logger.info(error_msg)
+            return dash.no_update, _prep_notification(error_msg, "info")
 
         if feature_list is None or len(feature_list) == 0:
-            logger.info("No features selected.")
-            raise PreventUpdate
+            error_msg = "No features selected."
+            logger.info(error_msg)
+            return dash.no_update, _prep_notification(error_msg, "info")
 
         button_id = ctx.triggered[0]["prop_id"].split(".")[0]
 
@@ -297,13 +312,15 @@ def get_plot_analysis_func(prefix, an):
                 fig = get_heatmap(dbroot.adatas[an]['adata'], feature_list)
             except Exception as e:
                 logger.error(str(e))
-                logger.error("Error when running heatmap.")
-                raise PreventUpdate
+                error_msg = "Error when running heatmap."
+                logger.error(error_msg)
+                return dash.no_update, _prep_notification(error_msg, "danger")
         elif button_id == prefix + '-violin-plot':
             if len(feature_list) > 1:
-                logger.warn("Cannot run violin plot with "
-                            "more than one feature.")
-                raise PreventUpdate
+                error_msg = "Cannot run violin plot with more " + \
+                    "than one feature."
+                logger.warn(error_msg)
+                return dash.no_update, _prep_notification(error_msg, "warning")
             try:
                 fig = get_violin_plot(
                     dbroot.adatas[an]['adata'],
@@ -311,10 +328,11 @@ def get_plot_analysis_func(prefix, an):
                     plot1=(an == 'a1'))
             except Exception as e:
                 logger.error(str(e))
-                logger.error("Error when running violin plot.")
-                raise PreventUpdate
+                error_msg = "Error when running violin plot."
+                logger.error(error_msg)
+                return dash.no_update, _prep_notification(error_msg, "danger")
 
-        return fig
+        return fig, dash.no_update
 
     return _func
 
@@ -322,6 +340,7 @@ def get_plot_analysis_func(prefix, an):
 for prefix, an in zip(['main', 'side'], ['a1', 'a2']):
     app.callback(
         Output(prefix + "-analysis-plot", "figure"),
+        MultiplexerOutput("push-notification", "data"),
 
         Input(prefix + "-heatmap", "n_clicks"),
         Input(prefix + "-violin-plot", "n_clicks"),

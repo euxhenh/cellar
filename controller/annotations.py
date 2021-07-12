@@ -4,14 +4,20 @@ from dash.dependencies import Input, Output, State
 from dash.exceptions import PreventUpdate
 
 from app import app, dbroot, logger
+from .multiplexer import MultiplexerOutput
+from .notifications import _prep_notification
 
 
 def _fill_annotation(adata, cluster_id, value):
+    """
+    Set the annotation for all points with label 'cluster_id' to 'value'.
+    """
     if isinstance(cluster_id, list):
         cluster_id = cluster_id[0]
     if isinstance(value, list):
         value = value[0]
-    value = str(value)
+
+    value = str(value)[:200]
 
     if cluster_id.startswith('main-cluster'):
         cluster_id = cluster_id[len('main-cluster'):]
@@ -31,6 +37,7 @@ def _fill_annotation(adata, cluster_id, value):
 
 @app.callback(
     Output("annotation-signal", "data"),
+    MultiplexerOutput("push-notification", "data"),
 
     Input("annotation-store-btn", "n_clicks"),
     State("main-annotation-select", "value"),
@@ -44,16 +51,36 @@ def signal_annotation_change(n1, id1, id2, value, actp):
     if not ctx.triggered or n1 is None:
         raise PreventUpdate
 
-    cluster_id = id1 if actp == 1 else id2
     an = 'a1' if actp == 1 else 'a2'
+    if an not in dbroot.adatas:
+        raise PreventUpdate
+    if 'adata' not in dbroot.adatas[an]:
+        raise PreventUpdate
 
-    _fill_annotation(dbroot.adatas[an]['adata'], cluster_id, value)
+    if len(value) == 0:
+        return dash.no_update, _prep_notification(
+            "Empty annotation field.", "warning")
 
-    return 1
+    cluster_id = id1 if actp == 1 else id2
+
+    try:
+        _fill_annotation(dbroot.adatas[an]['adata'], cluster_id, value)
+    except Exception as e:
+        logger.error(str(e))
+        error_msg = "An error occurred when storing annotations."
+        logger.error(error_msg)
+        return dash.no_update, _prep_notification(error_msg, "danger")
+
+    return 1, dash.no_update
 
 
 def get_update_annotation_table(prefix, an):
     def _func(s1, s2, s3):
+        """
+        Return a table of annotations based on the keys
+        obs['labels'] and obs['annotations']. Only the clusters
+        for which annotations exist (i.e., != "") will be displayed.
+        """
         data = [
             {
                 "cluster_id": "N/A",
@@ -71,10 +98,10 @@ def get_update_annotation_table(prefix, an):
 
         # Need labels and annotations keys to be populated
         if 'labels' not in dbroot.adatas[an]['adata'].obs:
-            logger.warn("No labels found in adata.")
+            # logger.warn("No labels found in adata.")
             return data
         if 'annotations' not in dbroot.adatas[an]['adata'].obs:
-            logger.warn("No annotations found in adata.")
+            # logger.warn("No annotations found in adata.")
             return data
 
         # Get cluster ID's and the first index for each
