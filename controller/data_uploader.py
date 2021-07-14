@@ -107,4 +107,5 @@ def upload_data(contents, filename, actp):
 
     dataset_dict = get_server_dataset_dict(DATA_PATH)
 
-    return [{'label': dataset_dict[d], 'value': d} for d in dataset_dict]
+    return [{'label': dataset_dict[d], 'value': d} for d in dataset_dict],\
+        _prep_notification("Dataset uploaded.", "info")
