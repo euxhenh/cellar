@@ -1,0 +1,8 @@
+---
+baseurl: "/cellar"
+url: "https://ferrocactus.github.io"
+exclude: ['README.markdown']
+permalink: ':title'
+highlighter: pygments
+safe: false
+title: 'Cellar Docs'

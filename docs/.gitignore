@@ -1,0 +1,11 @@
+.*
+!.gitignore
+!.gitmodules
+*~
+
+components/
+
+_site/
+_posts/2019*
+_posts/2018*
+_posts/2017*
