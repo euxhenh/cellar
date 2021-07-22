@@ -39,7 +39,8 @@ This menu consists of three tabs for obtaining labels: **UNSUPERVISED**, **SEMI-
         betweeen parentheses ( ) and square brackets [ ]) E.g., $$[4, 8, 16]$$ will
         spawn three instances of the algorithm. Finally, you could use a single
         integer value.
-
+      * There is another special algorithm called Uncertainty clustering. You can only run it after cells are labeled by other algorithms. Uncertainty clustering generates a new cluster (cluster ID -1) with cells having high uncertainty score. The uncertainty score is computed according to cells' distance to the cluster centers in the dimensionality reduced space. After this, re-clustering the new generated uncertain cluster using Constrained Leiden could often improve the clustering results (getting closer to the ground truth) if the original labels are obtained using algorithms based on local neighbors (e.g. Leiden). Intuitively, the improvements come from incorporating the information about the cluster centers, which is not considered in Leiden. 
+        
       [//]:# "* An [Ensemble](https://github.com/GGiecold/Cluster_Ensembles) algorithm"
       [//]:# "  based on Hypergraph Partitioning has been added which allows the"
       [//]:# "  selection and integration of several clustering algorithms into an"
@@ -53,17 +54,15 @@ This menu consists of three tabs for obtaining labels: **UNSUPERVISED**, **SEMI-
 
 
 * **SEMI-SEPERVISED**
-    * Cellar incorporates two additional semi-supervised clustering algorithms.
-    These can be useful when the user intervenes in the data by manually
+    * Cellar incorporates an additional semi-supervised clustering algorithm.
+    This can be useful when the user intervenes in the data by manually
     splitting/merging clusters or after running label transfer (see below).
 
-    * This includes two algorithms [Constrained Leiden], and [Uncertainty Clustering].
+    * This includes an algorithms [Constrained Leiden] for refining clustering results.
         * Constrained Leiden allows the user to "preserve"
         a user-defined set of clusters. These clusters will be left as is, while
         the remaining clusters will be subject to change. To do this, click the setting button on the right of the dropdown menu and select clusters to preserve using the checkboxes for each cluster in the setting menu. 
 
-        * Uncertainty clustering generates a new cluster (cluster ID -1) with cells having high uncertainty score. The uncertainty score is computed according to cells' distance to the cluster centers in the dimensionality reduced space. After this, re-clustering the new generated uncertain cluster using Constrained Leiden could often improve the clustering results (getting closer to the ground truth) if the original labels are obtained using algorithms based on local neighbors (e.g. Leiden). Intuitively, the improvements come from incorporating the information about the cluster centers, which is not considered in Leiden. 
-        
     * <span class="pn">PN<span class="tooltip">Note to Programmers</span></span>
     This step updates the `adata.obs['labels']`, `adata.uns['cluster_info']` and
     `adata.uns['cluster_names']` keys.

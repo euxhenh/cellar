@@ -30,11 +30,7 @@ This menu is where you can add new subsets of cells or annotate existing ones.
 
 
 * **Merge**
-    * This allows the users to select a set of existing clusters that they wish
-    to merge into one. The cluster ID and the cluster name of the first cluster
-    in the list will be assigned to the resulting merged cluster. All other
-    cluster IDs/names will be lost.
-
+    * This allows the users to select a subset and store it as a new cluster. The color in the main plot will also change accordingly.
     * <span class="pn">PN<span class="tooltip">Note to Programmers</span></span>
     Updates the `adata.obs['labels']`, `adata.uns['cluster_info']` and
     `adata.uns['cluster_names']` keys.
