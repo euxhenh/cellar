@@ -29,7 +29,9 @@ clu_list = [
     {'label': 'Spectral Clustering', 'value': 'clu-Spectral-Clustering',
      'func': cl_SpectralClustering},
     {'label': 'Agglomerative Clustering',
-     'value': 'clu-Agglomerative', 'func': cl_Agglomerative}
+     'value': 'clu-Agglomerative', 'func': cl_Agglomerative},
+    {'label': 'Uncertainty Clustering',
+        'value': 'clu-Uncertainty-Clustering', 'func': cl_uncertainty}    
     # {'label': 'Cluster Ensemble', 'value': 'clu-Cluster-Ensemble','func':},
 ]
 
@@ -37,8 +39,7 @@ clu_list = [
 ssclu_list = [
     {'label': 'Constrained Leiden',
         'value': 'ssclu-Constrained-Leiden', 'func': cl_ssLeiden},
-    {'label': 'Uncertainty Clustering',
-        'value': 'ssclu-Uncertainty-Clustering', 'func': cl_uncertainty}
+
     # {'label': 'Constrained KMeans', 'value': 'ssclu-Constrained-KMeans'},
     # {'label': 'Seeded KMeans', 'value': 'ssclu-Seeded-KMeans'},
     # {'label': 'KNN Filter', 'value': 'ssclu-KNN-Filter'}

@@ -185,42 +185,10 @@ ssclu_leiden_settings_keys = {
 }
 
 
-ssclu_uncertainty_settings = dbc.Popover(
-    [
-        dbc.PopoverHeader("Uncertainty Settings"),
-        dbc.PopoverBody(
-            [
-                dbc.FormGroup(
-                    [
-                        dbc.Label("Uncertainty Method"),
-                        dbc.Select(
-                            id="ssclu-Uncertainty-Clustering-method",
-                            options=[
-                                {"label": "Centers",
-                                    "value": "centers"}
-                            ],
-                            value="centers"
-                        )
-                    ]
-                )
-            ]
-        )
-    ],
-    id="ssclu-Uncertainty-Clustering-settings",
-    target="ssclu-Uncertainty-Clustering-btn",
-    trigger="click"
-)
-
-ssclu_uncertainty_settings_keys = {
-    'ssclu-Uncertainty-Clustering-method': 'method'
-}
-
 ssclu_settings = [
-    ssclu_leiden_settings,
-    ssclu_uncertainty_settings
+    ssclu_leiden_settings
 ]
 
 ssclu_settings_keys = {
-    'ssclu-Constrained-Leiden': ssclu_leiden_settings_keys,
-    'ssclu-Uncertainty-Clustering': ssclu_uncertainty_settings_keys
+    'ssclu-Constrained-Leiden': ssclu_leiden_settings_keys
 }

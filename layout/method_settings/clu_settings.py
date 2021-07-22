@@ -646,12 +646,44 @@ clu_agglomerative_settings_keys = {
 }
 
 
+clu_uncertainty_settings = dbc.Popover(
+    [
+        dbc.PopoverHeader("Uncertainty Settings"),
+        dbc.PopoverBody(
+            [
+                dbc.FormGroup(
+                    [
+                        dbc.Label("Uncertainty Method"),
+                        dbc.Select(
+                            id="clu-Uncertainty-Clustering-method",
+                            options=[
+                                {"label": "Centers",
+                                    "value": "centers"}
+                            ],
+                            value="centers"
+                        )
+                    ]
+                )
+            ]
+        )
+    ],
+    id="clu-Uncertainty-Clustering-settings",
+    target="clu-Uncertainty-Clustering-btn",
+    trigger="click"
+)
+
+clu_uncertainty_settings_keys = {
+    'clu-Uncertainty-Clustering-method': 'method'
+}
+
+
 clu_settings = [
     clu_leiden_settings,
     clu_kmeans_settings,
     clu_kmedoids_settings,
     clu_spectral_clustering_settings,
-    clu_agglomerative_settings
+    clu_agglomerative_settings,
+    clu_uncertainty_settings
 ]
 
 clu_settings_keys = {
@@ -659,5 +691,6 @@ clu_settings_keys = {
     'clu-KMeans': clu_kmeans_settings_keys,
     'clu-KMedoids': clu_kmedoids_settings_keys,
     'clu-Spectral-Clustering': clu_spectral_clustering_settings_keys,
-    'clu-Agglomerative': clu_agglomerative_settings_keys
+    'clu-Agglomerative': clu_agglomerative_settings_keys,
+    'clu-Uncertainty-Clustering': clu_uncertainty_settings_keys
 }
