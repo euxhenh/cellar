@@ -9,7 +9,11 @@ This menu consists of three tabs for obtaining labels: **UNSUPERVISED**, **SEMI-
 
 
 
-* **UNSUPERVISED**
+* **UNSUPERVISED**  
+<br>
+![Unsupervised Clustering](images/unsupervised.png)
+<br>
+
     * The clustering dropdown menu includes
     [Leiden](https://www.nature.com/articles/s41598-019-41695-z) (default)
     and several other classical algorithms such as KMeans and Spectral
@@ -40,7 +44,8 @@ This menu consists of three tabs for obtaining labels: **UNSUPERVISED**, **SEMI-
         spawn three instances of the algorithm. Finally, you could use a single
         integer value.
       * There is another special algorithm called Uncertainty clustering. You can only run it after cells are labeled by other algorithms. Uncertainty clustering generates a new cluster (cluster ID -1) with cells having high uncertainty score. The uncertainty score is computed according to cells' distance to the cluster centers in the dimensionality reduced space. After this, re-clustering the new generated uncertain cluster using Constrained Leiden could often improve the clustering results (getting closer to the ground truth) if the original labels are obtained using algorithms based on local neighbors (e.g. Leiden). Intuitively, the improvements come from incorporating the information about the cluster centers, which is not considered in Leiden. 
-        
+
+
       [//]:# "* An [Ensemble](https://github.com/GGiecold/Cluster_Ensembles) algorithm"
       [//]:# "  based on Hypergraph Partitioning has been added which allows the"
       [//]:# "  selection and integration of several clustering algorithms into an"
@@ -54,6 +59,10 @@ This menu consists of three tabs for obtaining labels: **UNSUPERVISED**, **SEMI-
 
 
 * **SEMI-SEPERVISED**
+<br>
+![Semi-supervised Clustering](images/semi-supervised.png)
+<br>
+
     * Cellar incorporates an additional semi-supervised clustering algorithm.
     This can be useful when the user intervenes in the data by manually
     splitting/merging clusters or after running label transfer (see below).
@@ -68,6 +77,10 @@ This menu consists of three tabs for obtaining labels: **UNSUPERVISED**, **SEMI-
     `adata.uns['cluster_names']` keys.
 
 * **LABEL TRANSFER**
+<br>
+![ Label Transfer](images/label-transfer.png)
+<br>
+
   * Label transfer should be used under the dual mode. It can be used to transfer
     the labels from a deactivated reference dataset 
     to the current activated one. Currently Cellar supports label transfer with

@@ -24,6 +24,11 @@ reduction/clustering analysis.
 
     * The checkboxes can be used for selecting the filters to be applied to the dataset.
 
+    <br>
+    ![Preprocessing1](images/preprocessing1.png)
+    <br>
+
+
 * **SCATAC-SEQ**
     * To allow the analysis of scATAC-seq data, we provide an option to convert
     a cell $$\small\times$$ topic matrix to a cell $$\small\times$$ gene one.
@@ -69,6 +74,10 @@ reduction/clustering analysis.
     \cap I_j^u \neq \emptyset\})$$.
     The newly obtained cell $$\small\times$$ gene matrix undergoes basic
     preprocessing and filtering just like in the Preprocess tab.
+
+    <br>
+    ![Preprocessing2](images/preprocessing2.png)
+    <br>
 
 * <span class="warn">!!<span class="tooltip">Attention</span></span>
     Running any preprocessing

@@ -6,6 +6,10 @@ layout: null
 type: ui
 ---
 This menu is where you can add new subsets of cells or annotate existing ones.
+<br>
+![Annotations](images/annotations.png)
+<br>
+
 
 * **Annotation**
     * This is where you select a subset/cluster of cells and annotate them (typically with cell types).

@@ -9,6 +9,11 @@ These panels consist of tools for differentially
 expressed genes analysis, enrichment analysis and visualizations that
 can be used to get a better understanding of the data.
 
+<br>
+![Analysis](images/analysis.png)
+<br>
+
+
 * **DE Analysis**
     * Here you can perform differentially expressed gene analysis.
     First, specify the subset that you wish to find DE genes for.
@@ -22,6 +27,9 @@ can be used to get a better understanding of the data.
     cells. Otherwise, Cellar finds DE genes of Subset 1 vs Subset 2.
     After specifying the subsets, click <span class="mbox">FIND DE GENES</span>.
     A table will be generated for showing the DE genes and relevant information.
+<br>
+![DE](images/de.png)
+<br>
 
 * **Feature Visualization**
     * Three types of feature visualization are implemented: **PLOT EXPRESSION**,
@@ -44,6 +52,21 @@ can be used to get a better understanding of the data.
     for $$p\geq 0$$. In all these three cases we would want the co-expression
     to be $$0$$.
 
+    Plot Gene Expression:
+    <br>
+    ![Plot Expression](images/expression.png)
+    <br>
+
+    Heatmap:
+    <br>
+    ![Heatmap](images/heatmap.png)
+    <br>
+
+    Violin Plot:
+    <br>
+    ![Violin Plot](images/violin.png)
+    <br>
+
 * **Enrichment Anlysis**
     * After DE analysis, this can be used for performing different enrichment analysis via a hypergeometric test. To do this analysis, simply choose a marker
     list in the first dropdown menu, enter the number of DE genes to use for the analysis, and click <span class="mbox">RUN</span>. Then a table will be generated for showing the results. 
@@ -51,3 +74,6 @@ can be used to get a better understanding of the data.
     An <span class="mbox">EXPORT</span> button above the table
     will download the dataframe as a <span class="extension">csv</span> file.<br>
 
+<br>
+![Enrichment](images/enrichment.png)
+<br>

@@ -9,6 +9,11 @@ This menu consists of two components. The data is first reduced by using
 the method chosen under **Obtain Embeddings**. These embeddings are then
 used for both the **Obtain 2D Embeddings** (further data reduction) and **CLUSTERING** steps.
 
+
+<br>
+![Dim Reduction](images/dim-reduction.png)
+<br>
+
 * **Dimensionality Reduction**
     * The default method is PCA. Truncated SVD and UMAP
     can also work with sparse matrices.
