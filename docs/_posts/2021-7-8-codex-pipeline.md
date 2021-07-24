@@ -38,6 +38,12 @@ Next, we show how to visualize cell type annotations with spatial information. T
 <br>
 Note that the colors are consistent with the one in the main plot. This means if you change the labels in the main plot (e.g. by re-clustering, merging clusters), and click <span class='mbutton'>GENERATE TILE</span> again, the color in the spatial image will be changed accordingly.
 
-
+That is all for our functions spatial data. In the end, we would also like to show the results for a 10X Genomics Spatial Transcriptomics dataset [Human Breast Cancer Dataset](https://support.10xgenomics.com/spatial-gene-expression/datasets/1.3.0/Visium_FFPE_Human_Breast_Cancer). You can reproduce the result by going through exactly the same steps metioned above. 
+<br>
+![10x clustering](images/10x-clustering.png)
+<br>
+<br>
+![10x spatial image](images/10x-spatial-image.png)
+<br>
 
 
