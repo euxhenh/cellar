@@ -23,7 +23,17 @@ def get_de_card(prefix):
                                         ),
                                         dbc.Select(
                                             options=[],
-                                            id=prefix + "-de-cluster-select2"
+                                            id=prefix + "-de-cluster-select2",
+                                            className="mr-1"
+                                        ),
+                                        dbc.InputGroupAddon(
+                                            "alpha"
+                                        ),
+                                        dbc.Input(
+                                            value=0.05,
+                                            id=prefix + "-de-analysis-alpha",
+                                            type="number",
+                                            className="mr-1"
                                         ),
                                         dbc.InputGroupAddon(
                                             dbc.Button(

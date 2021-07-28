@@ -13,6 +13,11 @@ def ttest(adata, cluster_id, cluster_id2, alpha=0.05):
     if 'labels' not in adata.obs and isinstance(cluster_id, int):
         raise InternalError("No labels found in adata.")
 
+    try:
+        alpha = float(alpha)
+    except:
+        raise UserError("Incorrect alpha value specified.")
+
     if isinstance(cluster_id, str):
         if 'subsets' not in adata.uns:
             raise InternalError("'subsets' key not found in adata.")

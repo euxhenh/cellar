@@ -516,7 +516,7 @@ session_block = dbc.Card(
                             outline=False
                         ),
                         dbc.Button(
-                            "Export Annotations Only",
+                            "Export Annotations",
                             id='export-annotations-btn',
                             block=True,
                             color='primary',
