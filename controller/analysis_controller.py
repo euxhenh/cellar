@@ -286,7 +286,7 @@ for prefix, an in zip(['main', 'side'], ['a1', 'a2']):
 
 # Analysis plots
 def get_plot_analysis_func(prefix, an):
-    def _func(n1, n2, feature_list):
+    def _func(n1, n2, feature_list, feature_range):
         """
         Given a single or list of features, return a heatmap or violin plot.
         The violin plot can only be run when a single feature is selected.
@@ -324,13 +324,9 @@ def get_plot_analysis_func(prefix, an):
                 logger.error(error_msg)
                 return dash.no_update, _prep_notification(error_msg, "danger")
         elif button_id == prefix + '-violin-plot':
-            if len(feature_list) > 1:
-                error_msg = "Cannot run violin plot with more than one feature"
-                logger.warn(error_msg)
-                return dash.no_update, _prep_notification(error_msg, "warning")
             try:
-                fig = get_violin_plot(dbroot.adatas[an]['adata'],
-                                      feature_list[0], plot1=(an == 'a1'))
+                fig = get_violin_plot(
+                    dbroot.adatas[an]['adata'], feature_list, feature_range)
             except UserError as ue:
                 logger.error(str(ue))
                 return dash.no_update, _prep_notification(str(ue), "warning")
@@ -353,6 +349,7 @@ for prefix, an in zip(['main', 'side'], ['a1', 'a2']):
         Input(prefix + "-heatmap", "n_clicks"),
         Input(prefix + "-violin-plot", "n_clicks"),
         State(prefix + "-feature-list", "value"),
+        State(prefix + "-feature-rangeslider", "value"),
         prevent_initial_call=True
     )(get_plot_analysis_func(prefix, an))
 

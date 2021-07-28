@@ -90,7 +90,6 @@ def get_reset_figure(adata, title):
 
 def get_expression_figure(adata, feature_values, feature_range):
     feature_values = np.array(feature_values, dtype='U200').flatten()
-    single_feature = len(feature_values) == 1
 
     for feat in feature_values:
         if feat not in adata.var_names.to_numpy():
@@ -117,6 +116,7 @@ def get_expression_figure(adata, feature_values, feature_range):
 
     expression = cl_get_expression(adata, feature_values)
 
+    single_feature = len(feature_values) == 1
     if single_feature:
         if feature_range[0] > feature_range[1]:
             raise InternalError("Incorrect feature range found.")
@@ -208,14 +208,30 @@ def get_heatmap(adata, feature_list):
     return fig
 
 
-def get_violin_plot(adata, feature, plot1):
-    if feature not in adata.var_names:
-        raise UserError(f"Feature {feature} not found in adata.")
+def get_violin_plot(adata, feature_values, feature_range):
+    for feature in feature_values:
+        if feature not in adata.var_names:
+            raise UserError(f"Feature {feature} not found in adata.")
 
-    vect = adata[:, feature].X
-    if is_sparse(vect):
-        vect = np.asarray(vect.todense())
-    vect = vect.flatten()
+    symbols = adata[:, feature_values].var['gene_symbols']
+    title = symbols[0]
+    for i in range(1, min(3, len(symbols))):
+        title += ", " + symbols[i]
+    if len(symbols) > 3:
+        title += "..."
+
+    vect = cl_get_expression(adata, feature_values)
+
+    single_feature = len(feature_values) == 1
+    if single_feature:
+        if feature_range[0] > feature_range[1]:
+            raise InternalError("Incorrect feature range found.")
+
+        # hover_data['Normalized Val.'] = vect.copy()
+        new_min = np.min(vect[vect >= feature_range[0]])
+        new_max = np.max(vect[vect <= feature_range[1]])
+        vect[vect < feature_range[0]] = new_min
+        vect[vect > feature_range[1]] = new_max
 
     unq_labels = np.unique(adata.obs['labels'])
     pal = [px.colors.convert_colors_to_same_type(i)[0][0] for i in PALETTE]
@@ -235,9 +251,6 @@ def get_violin_plot(adata, feature, plot1):
                 marker=go.violin.Marker(color=get_col_i(pal, label))
             )
         )
-
-    title = adata[:, feature].var['gene_symbols'].item()
-    title = 'PLOT 1: ' + title if plot1 else 'PLOT 2: ' + title
 
     fig.update_layout(
         title={'text': title},
