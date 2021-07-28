@@ -1,6 +1,8 @@
 from enum import Enum
 
 import dash
+import dash_core_components as dcc
+import plotly
 from app import app, dbroot, logger
 from dash.dependencies import Input, Output, State
 from dash.exceptions import PreventUpdate
@@ -243,3 +245,43 @@ for prefix, an in zip(['main', 'side'], ['a1', 'a2']):
         [State(m['value'] + '-settings', 'children') for m in lbt_list],
         prevent_initial_call=True
     )(get_update_plot_func(an))
+
+
+def get_download_plot_func(an):
+    def _func(n1, figure, im_format, width, height, scale):
+
+        try:
+            width = int(width)
+            height = int(height)
+            scale = float(scale)
+
+            filepath = 'tmp/plot.' + im_format
+
+            plotly.io.write_image(
+                figure, filepath, format=im_format,
+                width=width, height=height, scale=scale)
+        except Exception as e:
+            logger.error(str(e))
+            error_msg = "Error occurred when exporting plot."
+            logger.error(error_msg)
+            return dash.no_update, _prep_notification(error_msg, "danger")
+
+        return dcc.send_file(filepath), dash.no_update
+
+    return _func
+
+
+for prefix, an in zip(['main', 'side'], ['a1', 'a2']):
+    app.callback(
+        Output(prefix + "-download-plot-buf", "data"),
+        MultiplexerOutput("push-notification", "data"),
+
+        Input(prefix + "-plot-download-btn", "n_clicks"),
+
+        State(prefix + "-plot", "figure"),
+        State(prefix + "-plot-download-format", "value"),
+        State(prefix + "-plot-download-width", "value"),
+        State(prefix + "-plot-download-height", "value"),
+        State(prefix + "-plot-download-scale", "value"),
+        prevent_initial_call=True
+    )(get_download_plot_func(an))

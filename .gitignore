@@ -4,6 +4,7 @@
 data/*
 tmp/a1/*
 tmp/a2/*
+tmp/*
 *.h5ad
 Enrichr
 notebooks
