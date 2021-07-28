@@ -47,7 +47,7 @@ for func_name in func_map.keys():
 def clear_x_emb_dependends(adata):
     if 'x_emb_2d' in adata.obsm:
         adata.obsm.pop('x_emb_2d')
-    if 'labels' in adata.obs:
-        adata.obs.pop('labels')
-    if 'annotations' in adata.obs:
-        adata.obs.pop('annotations')
+    # if 'labels' in adata.obs:
+    #     adata.obs.pop('labels')
+    # if 'annotations' in adata.obs:
+    #     adata.obs.pop('annotations')

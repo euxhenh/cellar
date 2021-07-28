@@ -121,6 +121,20 @@ def get_feature_card(prefix):
                             )
                         ],
                         justify='between',
+                        no_gutters=True,
+                        className="mb-2"
+                    ),
+                    dbc.Row(
+                        dbc.Col(
+                            dcc.RangeSlider(
+                                min=0,
+                                max=0,
+                                step=None,
+                                id=prefix + "-feature-rangeslider",
+                                marks={}
+                            )
+                        ),
+                        justify='between',
                         no_gutters=True
                     ),
                     dcc.Loading(

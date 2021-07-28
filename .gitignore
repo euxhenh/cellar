@@ -12,3 +12,4 @@ data/server/*
 !data/uploaded
 !data/codex_tile
 data/codex_tile/*
+experiments

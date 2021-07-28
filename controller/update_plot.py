@@ -104,7 +104,7 @@ def get_update_plot_func(an):
     def update_plot(
             s_code,
             dim_method, vis_method, clu_method, ssclu_method, lbt_method,
-            feature_list,
+            feature_list, feature_range,
             *settings):
         ctx = dash.callback_context
         if not ctx.triggered or s_code is None:
@@ -177,7 +177,7 @@ def get_update_plot_func(an):
                 raise PreventUpdate
             try:
                 exp = get_expression_figure(
-                    dbroot.adatas[an]['adata'], feature_list)
+                    dbroot.adatas[an]['adata'], feature_list, feature_range)
             except Exception as e:
                 logger.error(str(e))
                 error_msg = "Error occurred when viewing feature expression."
@@ -235,6 +235,7 @@ for prefix, an in zip(['main', 'side'], ['a1', 'a2']):
         State("ssclu-methods-select", "value"),
         State("lbt-methods-select", "value"),
         State(prefix + "-feature-list", "value"),
+        State(prefix + "-feature-rangeslider", "value"),
         [State(m['value'] + '-settings', 'children') for m in dim_list],
         [State(m['value'] + '-settings', 'children') for m in clu_list],
         [State(m['value'] + '-settings', 'children') for m in vis_list],

@@ -88,11 +88,16 @@ def get_reset_figure(adata, title):
     return get_dim_figure(adata, title)
 
 
-def get_expression_figure(adata, feature_values):
+def get_expression_figure(adata, feature_values, feature_range):
     feature_values = np.array(feature_values, dtype='U200').flatten()
+    single_feature = len(feature_values) == 1
+
     for feat in feature_values:
         if feat not in adata.var_names.to_numpy():
             raise InternalError(f"Feature {feat} not found in var_names.")
+
+    if 'x_emb_2d' not in adata.obsm:
+        raise InternalError("No 2d embeddings found.")
 
     # Construct title with gene symbols
     # If more than 3 genes were used, we append dots
@@ -111,6 +116,17 @@ def get_expression_figure(adata, feature_values):
         hover_data['Cluster ID'] = adata.obs['labels'].to_numpy()
 
     expression = cl_get_expression(adata, feature_values)
+
+    if single_feature:
+        if feature_range[0] > feature_range[1]:
+            raise InternalError("Incorrect feature range found.")
+
+        hover_data['Normalized Val.'] = expression.copy()
+        new_min = np.min(expression[expression >= feature_range[0]])
+        new_max = np.max(expression[expression <= feature_range[1]])
+        expression[expression < feature_range[0]] = new_min
+        expression[expression > feature_range[1]] = new_max
+
     exp_max = expression.max()
 
     fig = px.scatter(
@@ -121,7 +137,8 @@ def get_expression_figure(adata, feature_values):
         custom_data=[np.arange(adata.shape[0])],  # indices
         color=expression,
         opacity=0.8,
-        labels={'color': 'Normalized Val.'},
+        labels={
+            'color': 'Clipped Val.' if single_feature else 'Normalized Val.'},
         range_color=[expression.min(), 1 if exp_max == 0 else exp_max],
         render_mode='webgl',
         color_continuous_scale=px.colors.sequential.Viridis

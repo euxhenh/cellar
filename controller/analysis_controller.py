@@ -355,3 +355,55 @@ for prefix, an in zip(['main', 'side'], ['a1', 'a2']):
         State(prefix + "-feature-list", "value"),
         prevent_initial_call=True
     )(get_plot_analysis_func(prefix, an))
+
+
+def get_feature_range_func(an):
+    def _func(feature_list):
+        """
+        Updates the range slider to the range of the first feature selected.
+        """
+        ctx = dash.callback_context
+        if not ctx.triggered:
+            raise PreventUpdate
+        if an not in dbroot.adatas:
+            raise PreventUpdate
+        if 'adata' not in dbroot.adatas[an]:
+            raise PreventUpdate
+
+        # More than 1 or 0 features selected
+        if len(feature_list) > 1 or len(feature_list) < 1:
+            return 0, 0, 0, {}, [0, 0]
+
+        feature = feature_list[0]  # Only apply range slider to first feature
+        feature_vec = dbroot.adatas[an]['adata'][:, feature].X.copy()
+        vmin, vmax = float(feature_vec.min()), float(feature_vec.max())
+        rang = vmax - vmin
+        eps = 1e-3
+        marks_step = rang / 5  # 6 marks in total
+        step = rang / 100
+        disp_vmin, disp_vmax = vmin - eps, vmax + eps
+
+        vmins, vmaxs = "{:.2e}".format(disp_vmin), "{:.2e}".format(disp_vmax)
+        marks = {vmin: vmins}
+        for i in range(1, 5):
+            mark_val = vmin + i * marks_step
+            marks[mark_val] = "{:.2e}".format(mark_val)
+        marks[vmax] = vmaxs
+
+        value = [disp_vmin, disp_vmax]
+
+        return disp_vmin, disp_vmax, step, marks, value
+    return _func
+
+
+for prefix, an in zip(['main', 'side'], ['a1', 'a2']):
+    app.callback(
+        Output(prefix + "-feature-rangeslider", "min"),
+        Output(prefix + "-feature-rangeslider", "max"),
+        Output(prefix + "-feature-rangeslider", "step"),
+        Output(prefix + "-feature-rangeslider", "marks"),
+        Output(prefix + "-feature-rangeslider", "value"),
+
+        Input(prefix + "-feature-list", "value"),
+        prevent_initial_call=True
+    )(get_feature_range_func(an))
