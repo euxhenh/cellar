@@ -219,6 +219,7 @@ dataset_bar = dbc.Row(
                         for d in dataset_dict
                     ],
                     className='mw-800',
+                    placeholder="Select dataset",
                     id='dataset-dropdown',
                     style={
                         'height': '32.5px',

@@ -1,5 +1,6 @@
 from .cellar.core import (cl_Agglomerative, cl_Ingest, cl_KMeans, cl_KMedoids,
-                          cl_kPCA, cl_Leiden, cl_MDS, cl_PCA,
+                          cl_kPCA, cl_Leiden, cl_MDS, cl_PCA, cl_TSNE,
+                          cl_Diffmap,
                           cl_SpectralClustering, cl_ssLeiden, cl_TruncatedSVD,
                           cl_UMAP, cl_uncertainty)
 
@@ -8,6 +9,7 @@ dim_list = [
     {'label': 'Truncated SVD', 'value': 'dim-Truncated-SVD',
      'func': cl_TruncatedSVD},
     {'label': 'Kernel PCA', 'value': 'dim-Kernel-PCA', 'func': cl_kPCA},
+    {'label': 'Diffusion Map', 'value': 'dim-Diffmap', 'func': cl_Diffmap},
     {'label': 'MDS', 'value': 'dim-MDS', 'func': cl_MDS},
     {'label': 'UMAP', 'value': 'dim-UMAP', 'func': cl_UMAP},
 ]
@@ -15,10 +17,12 @@ dim_list = [
 
 vis_list = [
     {'label': 'UMAP', 'value': 'vis-UMAP', 'func': cl_UMAP},
+    {'label': 't-SNE', 'value': 'vis-TSNE', 'func': cl_TSNE},
     {'label': 'PCA', 'value': 'vis-PCA', 'func': cl_PCA},
+    {'label': 'Diffusion Map', 'value': 'vis-Diffmap', 'func': cl_Diffmap},
     {'label': 'MDS', 'value': 'vis-MDS', 'func': cl_MDS},
-    # {'label': 'Truncated SVD', 'value': 'vis-Truncated-SVD',
-    #  'func': cl_TruncatedSVD},
+    {'label': 'Truncated SVD', 'value': 'vis-Truncated-SVD',
+     'func': cl_TruncatedSVD},
     {'label': 'Kernel PCA', 'value': 'vis-Kernel-PCA', 'func': cl_kPCA}
 ]
 
@@ -31,7 +35,7 @@ clu_list = [
     {'label': 'Agglomerative Clustering',
      'value': 'clu-Agglomerative', 'func': cl_Agglomerative},
     {'label': 'Uncertainty Clustering',
-        'value': 'clu-Uncertainty-Clustering', 'func': cl_uncertainty}    
+        'value': 'clu-Uncertainty-Clustering', 'func': cl_uncertainty}
     # {'label': 'Cluster Ensemble', 'value': 'clu-Cluster-Ensemble','func':},
 ]
 

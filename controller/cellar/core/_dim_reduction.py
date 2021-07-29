@@ -1,5 +1,6 @@
 from sklearn.decomposition import PCA, TruncatedSVD, KernelPCA
-from sklearn.manifold import MDS
+from sklearn.manifold import MDS, TSNE
+from pydiffmap import diffusion_map as dm
 from umap import UMAP
 from anndata._core.sparse_dataset import SparseDataset
 from scipy.sparse import issparse
@@ -10,13 +11,14 @@ func_map = {
     'cl_TruncatedSVD': TruncatedSVD,
     'cl_kPCA': KernelPCA,
     'cl_MDS': MDS,
-    'cl_UMAP': UMAP
+    'cl_UMAP': UMAP,
+    'cl_TSNE': TSNE,
+    'cl_Diffmap': dm.DiffusionMap.from_sklearn
 }
 
 
 def get_func(func_name):
     def _func(adata, key, x_to_use, **kwargs):
-
         for k in kwargs:
             if kwargs[k] == '':
                 kwargs[k] = None
@@ -31,8 +33,9 @@ def get_func(func_name):
         else:
             x_to_use = adata.obsm['x_emb']
 
-        if 'n_components' not in kwargs:
-            kwargs['n_components'] = 2
+        comp_key = 'n_evecs' if func_name == 'cl_Diffmap' else 'n_components'
+        if comp_key not in kwargs:
+            kwargs[comp_key] = 2
 
         fitter = func_map[func_name](**kwargs)
         adata.obsm[key] = fitter.fit_transform(x_to_use)
@@ -47,7 +50,7 @@ for func_name in func_map.keys():
 def clear_x_emb_dependends(adata):
     if 'x_emb_2d' in adata.obsm:
         adata.obsm.pop('x_emb_2d')
-    # if 'labels' in adata.obs:
-    #     adata.obs.pop('labels')
-    # if 'annotations' in adata.obs:
-    #     adata.obs.pop('annotations')
+    if 'labels' in adata.obs:
+        adata.obs.pop('labels')
+    if 'annotations' in adata.obs:
+        adata.obs.pop('annotations')

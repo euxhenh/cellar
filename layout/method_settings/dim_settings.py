@@ -385,6 +385,123 @@ dim_mds_settings_keys = {
 }
 
 
+dim_diffmap_settings = dbc.Popover(
+    [
+        dbc.PopoverHeader("Diffusion Map Settings"),
+        dbc.PopoverBody(
+            [
+                dbc.FormGroup(
+                    [
+                        dbc.Label("No. of components", html_for="slider"),
+                        dcc.Slider(
+                            id="dim-diffmap-n-evecs",
+                            min=2, max=100, step=1,
+                            value=40,
+                            marks={i: str(i) for i in range(10, 101, 10)},
+                            tooltip={'always_visible': True}
+                        )
+                    ]
+                ),
+                dbc.FormGroup(
+                    [
+                        dbc.Label("alpha"),
+                        dbc.Input(
+                            id="dim-diffmap-alpha",
+                            type="number",
+                            value=0.5
+                        )
+                    ]
+                ),
+                dbc.FormGroup(
+                    [
+                        dbc.Label("No. Nearest Neighbors", html_for="slider"),
+                        dcc.Slider(
+                            id="dim-diffmap-n-neigh",
+                            min=2, max=100, step=1,
+                            value=64,
+                            marks={2: '2', 64: '64', 100: '100'},
+                            tooltip={'always_visible': True}
+                        )
+                    ]
+                ),
+                dbc.FormGroup(
+                    [
+                        dbc.Label("epsilon"),
+                        dbc.Input(
+                            id="dim-diffmap-epsilon",
+                            type="text",
+                            value='bgh'
+                        )
+                    ]
+                ),
+                dbc.FormGroup(
+                    [
+                        dbc.Label("Metric"),
+                        dbc.Select(
+                            id="dim-diffmap-metric",
+                            options=[
+                                {"label": "euclidean", "value": "euclidean"},
+                                {"label": "manhattan", "value": "manhattan"},
+                                {"label": "chebyshev", "value": "chebyshev"},
+                                {"label": "minkowski", "value": "minkowski"},
+                                {"label": "canberra", "value": "canberra"},
+                                {"label": "braycurtis", "value": "braycurtis"},
+                                {"label": "mahalanobis",
+                                 "value": "mahalanobis"},
+                                {"label": "wminkowski", "value": "wminkowski"},
+                                {"label": "seuclidean", "value": "seuclidean"},
+                                {"label": "cosine", "value": "cosine"},
+                                {"label": "correlation",
+                                 "value": "correlation"},
+                                {"label": "haversine", "value": "haversine"},
+                                {"label": "hamming", "value": "hamming"},
+                                {"label": "jaccard", "value": "jaccard"},
+                                {"label": "dice", "value": "dice"},
+                                {"label": "russelrao", "value": "russelrao"},
+                                {"label": "kulsinski", "value": "kulsinski"},
+                                {"label": "ll_dirichlet", "value":
+                                 "ll_dirichlet"},
+                                {"label": "hellinger", "value": "hellinger"},
+                                {"label": "rogerstanimoto",
+                                    "value": "rogerstanimoto"},
+                                {"label": "sokalmichener",
+                                    "value": "sokalmichener"},
+                                {"label": "sokalsneath",
+                                 "value": "sokalsneath"},
+                                {"label": "yule", "value": "yule"}
+                            ],
+                            value="euclidean"
+                        )
+                    ]
+                ),
+                html.P(
+                    [
+                        "Details: ",
+                        html.A("pydiffmap.readthedocs.io/en/master"
+                               "/reference/diffusion_map.html",
+                               href="https://pydiffmap.readthedocs.io/en/"
+                               "master/reference/diffusion_map.html",
+                               target="_blank")
+                    ],
+                    className="small"
+                )
+            ]
+        )
+    ],
+    id="dim-Diffmap-settings",
+    target="dim-Diffmap-btn",
+    trigger="click"
+)
+
+dim_diffmap_settings_keys = {
+    'dim-diffmap-n-evecs': 'n_evecs',
+    'dim-diffmap-alpha': 'alpha',
+    'dim-diffmap-n-neigh': 'k',
+    'dim-diffmap-epsilon': 'epsilon',
+    'dim-diffmap-metric': 'metric'
+}
+
+
 dim_umap_settings = dbc.Popover(
     [
         dbc.PopoverHeader("UMAP Settings"),
@@ -558,7 +675,8 @@ dim_settings = [
     dim_tsvd_settings,
     dim_kpca_settings,
     dim_mds_settings,
-    dim_umap_settings
+    dim_umap_settings,
+    dim_diffmap_settings
 ]
 
 dim_settings_keys = {
@@ -566,5 +684,6 @@ dim_settings_keys = {
     'dim-Truncated-SVD': dim_tsvd_settings_keys,
     'dim-Kernel-PCA': dim_kpca_settings_keys,
     'dim-MDS': dim_mds_settings_keys,
-    'dim-UMAP': dim_umap_settings_keys
+    'dim-UMAP': dim_umap_settings_keys,
+    'dim-Diffmap': dim_diffmap_settings_keys
 }

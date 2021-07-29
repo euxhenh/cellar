@@ -6,7 +6,9 @@ RUN pacman -Syyu --noconfirm
 RUN pacman -S --noconfirm\
         base-devel\
         git\
-        vim
+        vim\
+        wget\
+        xorg-server-xvfb
 RUN pacman -Scc --noconfirm
 
 RUN useradd -m nonroot
@@ -20,13 +22,6 @@ RUN cd /home/nonroot/downloads/miniconda3 && makepkg -scri --noconfirm
 RUN echo "[ -f /opt/miniconda3/etc/profile.d/conda.sh ] && source /opt/miniconda3/etc/profile.d/conda.sh" >> ~/.bashrc
 RUN source ~/.bashrc
 RUN ls /opt
-
-# Install orca
-RUN wget https://github.com/plotly/orca/releases/download/v1.1.1/orca-1.1.1-x86_64.AppImage -P /opt
-RUN chmod 777 /opt/orca-1.1.1-x86_64.AppImage
-RUN cd /opt && /opt/orca-1.1.1-x86_64.AppImage --appimage-extract
-RUN printf '#!/bin/bash \nxvfb-run --auto-servernum --server-args "-screen 0 640x480x24" /opt/squashfs-root/app/orca "$@"' > /usr/bin/orca
-RUN chmod 777 /usr/bin/orca
 
 COPY env.yml /home/nonroot/downloads/
 

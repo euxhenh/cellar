@@ -17,6 +17,7 @@ from .operations import (clu_filter, dim_reduce_filter, lbt_filter,
                          ssclu_filter, vis_filter)
 from .multiplexer import MultiplexerOutput
 from .notifications import _prep_notification
+from scipy.sparse.linalg.eigen.arpack import ArpackNoConvergence
 
 plotly.io.orca.config.use_xvfb = True
 
@@ -126,6 +127,13 @@ def get_update_plot_func(an):
                 clear_x_emb_dependends(dbroot.adatas[an]['adata'])
                 vis_filter(
                     dbroot.adatas[an]['adata'], vis_method, settings)
+            except ArpackNoConvergence as anc:
+                logger.error(str(anc))
+                error_msg = "No eigenvectors converged for Diffusion Map. " +\
+                    "Try using a different method."
+                logger.warn(error_msg)
+                return [dash.no_update] * 2 + [_prep_notification(
+                    error_msg, "warning")]
             except Exception as e:
                 logger.error(str(e))
                 error_msg = "Error occurred during dimensionality reduction."

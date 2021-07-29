@@ -474,18 +474,281 @@ vis_umap_settings_keys = {
 }
 
 
+vis_tsne_settings = dbc.Popover(
+    [
+        dbc.PopoverHeader("t-SNE Settings"),
+        dbc.PopoverBody(
+            [
+                dbc.FormGroup(
+                    [
+                        dbc.Label("Perplexity"),
+                        dcc.Slider(
+                            id="vis-TSNE-perplexity",
+                            min=5, max=50, step=1,
+                            value=30,
+                            marks={5: '5', 30: '30', 50: '50'},
+                            tooltip={'always_visible': True}
+                        )
+                    ]
+                ),
+                dbc.FormGroup(
+                    [
+                        dbc.Label("Early Exaggeration"),
+                        dcc.Slider(
+                            id="vis-TSNE-early-exaggeration",
+                            min=1, max=100, step=1,
+                            value=12,
+                            marks={1: '1', 12: '12', 100: '100'},
+                            tooltip={'always_visible': True}
+                        )
+                    ]
+                ),
+                dbc.FormGroup(
+                    [
+                        dbc.Label("Learning Rate"),
+                        dcc.Slider(
+                            id="vis-TSNE-learning-rate",
+                            min=10, max=1000, step=10,
+                            value=200,
+                            marks={10: '10', 200: '200', 1000: '1000'},
+                            tooltip={'always_visible': True}
+                        )
+                    ]
+                ),
+                dbc.FormGroup(
+                    [
+                        dbc.Label("No. Iterations"),
+                        dcc.Slider(
+                            id="vis-TSNE-n-iter",
+                            min=250, max=5000, step=10,
+                            value=1000,
+                            marks={250: '250', 1000: '1000', 5000: '5000'},
+                            tooltip={'always_visible': True}
+                        )
+                    ]
+                ),
+                dbc.FormGroup(
+                    [
+                        dbc.Label("No. Iterations without Progress"),
+                        dcc.Slider(
+                            id="vis-TSNE-n-iter-wo-progress",
+                            min=50, max=1000, step=50,
+                            value=300,
+                            marks={50: '50', 300: '300', 1000: '1000'},
+                            tooltip={'always_visible': True}
+                        )
+                    ]
+                ),
+                dbc.FormGroup(
+                    [
+                        dbc.Label("Metric"),
+                        dbc.Select(
+                            id="vis-TSNE-metric",
+                            options=[
+                                {"label": "euclidean", "value": "euclidean"},
+                                {"label": "manhattan", "value": "manhattan"},
+                                {"label": "chebyshev", "value": "chebyshev"},
+                                {"label": "minkowski", "value": "minkowski"},
+                                {"label": "canberra", "value": "canberra"},
+                                {"label": "braycurtis", "value": "braycurtis"},
+                                {"label": "mahalanobis", "value": "mahalanobis"},
+                                {"label": "wminkowski", "value": "wminkowski"},
+                                {"label": "seuclidean", "value": "seuclidean"},
+                                {"label": "cosine", "value": "cosine"},
+                                {"label": "correlation", "value": "correlation"},
+                                {"label": "haversine", "value": "haversine"},
+                                {"label": "hamming", "value": "hamming"},
+                                {"label": "jaccard", "value": "jaccard"},
+                                {"label": "dice", "value": "dice"},
+                                {"label": "russelrao", "value": "russelrao"},
+                                {"label": "kulsinski", "value": "kulsinski"},
+                                {"label": "ll_dirichlet", "value": "ll_dirichlet"},
+                                {"label": "hellinger", "value": "hellinger"},
+                                {"label": "rogerstanimoto",
+                                    "value": "rogerstanimoto"},
+                                {"label": "sokalmichener",
+                                    "value": "sokalmichener"},
+                                {"label": "sokalsneath", "value": "sokalsneath"},
+                                {"label": "yule", "value": "yule"}
+                            ],
+                            value="euclidean"
+                        )
+                    ]
+                ),
+                dbc.FormGroup(
+                    [
+                        dbc.Label("Init"),
+                        dbc.RadioItems(
+                            id="vis-TSNE-init",
+                            options=[
+                                {"label": "random", "value": "random"},
+                                {"label": "pca", "value": "pca"},
+                            ],
+                            value="random",
+                            inline=True
+                        )
+                    ]
+                ),
+                dbc.FormGroup(
+                    [
+                        dbc.Label("Random State"),
+                        dbc.Input(
+                            id="vis-TSNE-random-state",
+                            placeholder="Leave empty if None",
+                            type="number",
+                            value=""
+                        )
+                    ]
+                ),
+                html.P(
+                    [
+                        "Details: ",
+                        html.A("scikit-learn.org/stable/modules/generated/sklearn.manifold.TSNE.html",
+                               href="https://scikit-learn.org/stable/modules/generated/sklearn.manifold.TSNE.html",
+                               target="_blank")
+                    ],
+                    className="small"
+                )
+            ]
+        )
+    ],
+    id="vis-TSNE-settings",
+    target="vis-TSNE-btn",
+    trigger="click"
+)
+
+vis_tsne_settings_keys = {
+    'vis-TSNE-perplexity': 'perplexity',
+    'vis-TSNE-early-exaggeration': 'early_exaggeration',
+    'vis-TSNE-learning-rate': 'learning_rate',
+    'vis-TSNE-n-iter': 'n_iter',
+    'vis-TSNE-n-iter-wo-progress': 'n_iter_without_progress',
+    'vis-TSNE-metric': 'metric',
+    'vis-TSNE-init': 'init',
+    'vis-TSNE-random-state': 'random_state'
+}
+
+
+vis_diffmap_settings = dbc.Popover(
+    [
+        dbc.PopoverHeader("Diffusion Map Settings"),
+        dbc.PopoverBody(
+            [
+                dbc.FormGroup(
+                    [
+                        dbc.Label("alpha"),
+                        dbc.Input(
+                            id="vis-diffmap-alpha",
+                            type="number",
+                            value=0.5
+                        )
+                    ]
+                ),
+                dbc.FormGroup(
+                    [
+                        dbc.Label("No. Nearest Neighbors", html_for="slider"),
+                        dcc.Slider(
+                            id="vis-diffmap-n-neigh",
+                            min=2, max=100, step=1,
+                            value=64,
+                            marks={2: '2', 64: '64', 100: '100'},
+                            tooltip={'always_visible': True}
+                        )
+                    ]
+                ),
+                dbc.FormGroup(
+                    [
+                        dbc.Label("epsilon"),
+                        dbc.Input(
+                            id="vis-diffmap-epsilon",
+                            type="text",
+                            value='bgh'
+                        )
+                    ]
+                ),
+                dbc.FormGroup(
+                    [
+                        dbc.Label("Metric"),
+                        dbc.Select(
+                            id="vis-diffmap-metric",
+                            options=[
+                                {"label": "euclidean", "value": "euclidean"},
+                                {"label": "manhattan", "value": "manhattan"},
+                                {"label": "chebyshev", "value": "chebyshev"},
+                                {"label": "minkowski", "value": "minkowski"},
+                                {"label": "canberra", "value": "canberra"},
+                                {"label": "braycurtis", "value": "braycurtis"},
+                                {"label": "mahalanobis",
+                                 "value": "mahalanobis"},
+                                {"label": "wminkowski", "value": "wminkowski"},
+                                {"label": "seuclidean", "value": "seuclidean"},
+                                {"label": "cosine", "value": "cosine"},
+                                {"label": "correlation",
+                                 "value": "correlation"},
+                                {"label": "haversine", "value": "haversine"},
+                                {"label": "hamming", "value": "hamming"},
+                                {"label": "jaccard", "value": "jaccard"},
+                                {"label": "dice", "value": "dice"},
+                                {"label": "russelrao", "value": "russelrao"},
+                                {"label": "kulsinski", "value": "kulsinski"},
+                                {"label": "ll_dirichlet", "value":
+                                 "ll_dirichlet"},
+                                {"label": "hellinger", "value": "hellinger"},
+                                {"label": "rogerstanimoto",
+                                    "value": "rogerstanimoto"},
+                                {"label": "sokalmichener",
+                                    "value": "sokalmichener"},
+                                {"label": "sokalsneath",
+                                 "value": "sokalsneath"},
+                                {"label": "yule", "value": "yule"}
+                            ],
+                            value="euclidean"
+                        )
+                    ]
+                ),
+                html.P(
+                    [
+                        "Details: ",
+                        html.A("pydiffmap.readthedocs.io/en/master"
+                               "/reference/diffusion_map.html",
+                               href="https://pydiffmap.readthedocs.io/en/"
+                               "master/reference/diffusion_map.html",
+                               target="_blank")
+                    ],
+                    className="small"
+                )
+            ]
+        )
+    ],
+    id="vis-Diffmap-settings",
+    target="vis-Diffmap-btn",
+    trigger="click"
+)
+
+vis_diffmap_settings_keys = {
+    'vis-diffmap-alpha': 'alpha',
+    'vis-diffmap-n-neigh': 'k',
+    'vis-diffmap-epsilon': 'epsilon',
+    'vis-diffmap-metric': 'metric'
+}
+
+
 vis_settings = [
     vis_umap_settings,
+    vis_tsne_settings,
     vis_pca_settings,
-    # vis_tsvd_settings,
+    vis_tsvd_settings,
     vis_kpca_settings,
-    vis_mds_settings
+    vis_mds_settings,
+    vis_diffmap_settings
 ]
 
 vis_settings_keys = {
     'vis-UMAP': vis_umap_settings_keys,
+    'vis-TSNE': vis_tsne_settings_keys,
     'vis-PCA': vis_pca_settings_keys,
-    # 'vis-Truncated-SVD': vis_tsvd_settings_keys,
+    'vis-Truncated-SVD': vis_tsvd_settings_keys,
     'vis-Kernel-PCA': vis_kpca_settings_keys,
-    'vis-MDS': vis_mds_settings_keys
+    'vis-MDS': vis_mds_settings_keys,
+    'vis-Diffmap': vis_diffmap_settings_keys,
 }
