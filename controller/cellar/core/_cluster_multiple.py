@@ -1,16 +1,15 @@
-import logging
-
 import numpy as np
 from joblib import Parallel, delayed
-from app import  logger
+from app import logger
 
-from ._evaluation import Eval_Silhouette
+from ._evaluation import get_eval_obj
 from ..utils.validation import _validate_n_jobs
 
 
 def cluster_multiple(x, obj_def, k_list=np.array([2, 4, 8, 16]),
-                     attribute_name='n_clusters', eval_obj=None, x_eval=None,
-                     method_name='fit_predict', n_jobs=None, **kwargs):
+                     attribute_name='n_clusters', eval_obj='Silhouette',
+                     x_eval=None, method_name='fit_predict',
+                     n_jobs=None, **kwargs):
     """
     Runs clustering for multiple n_clusters.
 
@@ -55,8 +54,8 @@ def cluster_multiple(x, obj_def, k_list=np.array([2, 4, 8, 16]),
     """
 
     # Default evaluation object
-    if eval_obj is None:
-        eval_obj = Eval_Silhouette()
+    if isinstance(eval_obj, str):
+        eval_obj = get_eval_obj(eval_obj)
 
     # If n_jobs = -1, run all threads
     n_jobs = _validate_n_jobs(n_jobs)

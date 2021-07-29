@@ -5,6 +5,9 @@ import tarfile
 from base64 import b64decode
 
 import dash
+import dash_core_components as dcc
+import numpy as np
+import matplotlib
 import plotly.express as px
 from app import app, dbroot, logger
 from dash.dependencies import Input, Output, State
@@ -122,6 +125,9 @@ def get_generate_tile_func(an):
 
         logger.info(f"Generated tile with shape {tile.shape}. Scaling...")
 
+        matplotlib.image.imsave(
+            f'tmp/spatial_{an}_tile.png', tile.astype(np.uint8))
+
         ho, wo = tile.shape[:2]
         scaler = 1000 / max(wo, ho)
         w, h = int(scaler * wo), int(scaler * ho)
@@ -145,3 +151,32 @@ for prefix, an in zip(["main", "side"], ["a1", "a2"]):
         State(prefix + "-spatial-type-dropdown", "value"),
         prevent_initial_call=True
     )(get_generate_tile_func(an))
+
+
+def get_download_tile_func(an):
+    def _func(n1):
+        ctx = dash.callback_context
+        if not ctx.triggered:
+            raise PreventUpdate
+        if an not in dbroot.adatas:
+            raise PreventUpdate
+
+        filepath = f'tmp/spatial_{an}_tile.png'
+
+        if not os.path.isfile(filepath):
+            return dash.no_update, _prep_notification(
+                "No tile image found.")
+
+        return dcc.send_file(filepath), dash.no_update
+
+    return _func
+
+
+for prefix, an in zip(["main", "side"], ["a1", "a2"]):
+    app.callback(
+        Output(prefix + "-download-tile-buf", "data"),
+        MultiplexerOutput("push-notification", "data"),
+
+        Input(prefix + "-download-tile-btn", "n_clicks"),
+        prevent_initial_call=True
+    )(get_download_tile_func(an))

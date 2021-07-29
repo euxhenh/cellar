@@ -91,7 +91,7 @@ cellar_bar = dbc.Nav(
                     },
                     duration=5000
                 ),
-                *create_multiplexer('push-notification', 'data', 60),
+                *create_multiplexer('push-notification', 'data', 80),
                 *create_multiplexer('notifications-toast', 'children', 2),
                 *create_multiplexer('notifications-toast', 'is_open', 2),
                 *create_multiplexer('notifications-toast', 'duration', 2)

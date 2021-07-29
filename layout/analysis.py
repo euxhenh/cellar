@@ -333,7 +333,17 @@ def get_spatial_card(prefix):
                                     dbc.Button(
                                         "Generate Tile",
                                         color='primary',
+                                        className="mr-2",
                                         id=prefix + "-generate-tile-btn"
+                                    ),
+                                    dcc.Loading(
+                                        dcc.Download(
+                                            id=prefix + "-download-tile-buf")
+                                    ),
+                                    dbc.Button(
+                                        "Download Tile",
+                                        color='primary',
+                                        id=prefix + "-download-tile-btn"
                                     )
                                 ],
                                 no_gutters=True

@@ -181,6 +181,23 @@ clu_kmeans_settings = dbc.Popover(
                 ),
                 dbc.FormGroup(
                     [
+                        dbc.Label("Evaluation Method"),
+                        dbc.Select(
+                            options=[
+                                {"label": "Silhouette Score",
+                                    "value": "Silhouette"},
+                                {"label": "Davies Bouldin Score",
+                                    "value": "DaviesBouldin"},
+                                {"label": "Calinski Harabasz Score",
+                                    "value": "CalinskiHarabasz"}
+                            ],
+                            id="clu-KMeans-eval",
+                            value='Silhouette'
+                        ),
+                    ]
+                ),
+                dbc.FormGroup(
+                    [
                         dbc.Label("Initialization"),
                         dbc.Select(
                             options=[
@@ -265,6 +282,7 @@ clu_kmeans_settings = dbc.Popover(
 
 clu_kmeans_settings_keys = {
     'clu-KMeans-n-clusters': 'n_clusters',
+    'clu-KMeans-eval': 'eval_obj',
     'clu-KMeans-init': 'init',
     'clu-KMeans-n-init': 'n_init',
     'clu-KMeans-max-iter': 'max_iter',
@@ -286,6 +304,23 @@ clu_kmedoids_settings = dbc.Popover(
                             type="text",
                             value='[4, 6, 8, 10, 12, 14, 16]'
                         )
+                    ]
+                ),
+                dbc.FormGroup(
+                    [
+                        dbc.Label("Evaluation Method"),
+                        dbc.Select(
+                            options=[
+                                {"label": "Silhouette Score",
+                                    "value": "Silhouette"},
+                                {"label": "Davies Bouldin Score",
+                                    "value": "DaviesBouldin"},
+                                {"label": "Calinski Harabasz Score",
+                                    "value": "CalinskiHarabasz"}
+                            ],
+                            id="clu-KMedoids-eval",
+                            value='Silhouette'
+                        ),
                     ]
                 ),
                 dbc.FormGroup(
@@ -405,6 +440,7 @@ clu_kmedoids_settings = dbc.Popover(
 
 clu_kmedoids_settings_keys = {
     'clu-KMedoids-n-clusters': 'n_clusters',
+    'clu-KMedoids-eval': 'eval_obj',
     'clu-KMedoids-metric': 'metric',
     'clu-KMedoids-method': 'method',
     'clu-KMedoids-init': 'init',
@@ -426,6 +462,23 @@ clu_spectral_clustering_settings = dbc.Popover(
                             type="text",
                             value='[4, 6, 8, 10, 12, 14, 16]'
                         )
+                    ]
+                ),
+                dbc.FormGroup(
+                    [
+                        dbc.Label("Evaluation Method"),
+                        dbc.Select(
+                            options=[
+                                {"label": "Silhouette Score",
+                                    "value": "Silhouette"},
+                                {"label": "Davies Bouldin Score",
+                                    "value": "DaviesBouldin"},
+                                {"label": "Calinski Harabasz Score",
+                                    "value": "CalinskiHarabasz"}
+                            ],
+                            id="clu-SpectralClustering-eval",
+                            value='Silhouette'
+                        ),
                     ]
                 ),
                 dbc.FormGroup(
@@ -563,6 +616,7 @@ clu_spectral_clustering_settings = dbc.Popover(
 
 clu_spectral_clustering_settings_keys = {
     'clu-SpectralClustering-n-clusters': 'n_clusters',
+    'clu-SpectralClustering-eval': 'eval_obj',
     'clu-SpectralClustering-eigen-solver': 'eigen_solver',
     'clu-SpectralClustering-n-components': 'n_components',
     # 'clu-SpectralClustering-gamma': 'gamma',
@@ -587,6 +641,23 @@ clu_agglomerative_settings = dbc.Popover(
                             type="text",
                             value='[4, 6, 8, 10, 12, 14, 16]'
                         )
+                    ]
+                ),
+                dbc.FormGroup(
+                    [
+                        dbc.Label("Evaluation Method"),
+                        dbc.Select(
+                            options=[
+                                {"label": "Silhouette Score",
+                                    "value": "Silhouette"},
+                                {"label": "Davies Bouldin Score",
+                                    "value": "DaviesBouldin"},
+                                {"label": "Calinski Harabasz Score",
+                                    "value": "CalinskiHarabasz"}
+                            ],
+                            id="clu-Agglomerative-eval",
+                            value='Silhouette'
+                        ),
                     ]
                 ),
                 dbc.FormGroup(
@@ -641,6 +712,7 @@ clu_agglomerative_settings = dbc.Popover(
 
 clu_agglomerative_settings_keys = {
     'clu-Agglomerative-n-clusters': 'n_clusters',
+    'clu-Agglomerative-eval': 'eval_obj',
     'clu-Agglomerative-affinity': 'affinity',
     'clu-Agglomerative-linkage': 'linkage'
 }
