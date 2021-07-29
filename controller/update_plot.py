@@ -18,6 +18,8 @@ from .operations import (clu_filter, dim_reduce_filter, lbt_filter,
 from .multiplexer import MultiplexerOutput
 from .notifications import _prep_notification
 
+plotly.io.orca.config.use_xvfb = True
+
 
 class Signal(int, Enum):
     DIM_REDUCE = 101
