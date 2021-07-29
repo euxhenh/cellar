@@ -19,8 +19,6 @@ from .multiplexer import MultiplexerOutput
 from .notifications import _prep_notification
 from scipy.sparse.linalg.eigen.arpack import ArpackNoConvergence
 
-plotly.io.orca.config.use_xvfb = True
-
 
 class Signal(int, Enum):
     DIM_REDUCE = 101

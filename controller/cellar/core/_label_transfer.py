@@ -27,8 +27,19 @@ def cl_Ingest(
     vars_common = np.intersect1d(vars_main, vars_ref)
 
     logger.info(f"Found {len(vars_common)} common variables.")
+    if len(vars_common) <= 1:
+        raise InternalError(
+            "Not enough common genes found to run label transfer.")
+
     adata_main = adata[:, vars_common].to_memory().copy()
     adata_ref = extras['ref'][:, vars_common].to_memory().copy()
+
+    # Add neighbors
+    sc.pp.pca(adata_main)
+    sc.pp.pca(adata_ref)
+    sc.pp.neighbors(adata_main)
+    sc.pp.neighbors(adata_ref)
+    sc.tl.umap(adata_ref)
 
     sc.tl.ingest(adata_main, adata_ref, obs='labels')
 
