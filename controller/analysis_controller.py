@@ -1,4 +1,6 @@
 import dash
+import os
+import pandas as pd
 import numpy as np
 from app import app, dbroot, logger
 from dash.dependencies import Input, Output, State
@@ -406,3 +408,48 @@ for prefix, an in zip(['main', 'side'], ['a1', 'a2']):
         Input(prefix + "-feature-list", "value"),
         prevent_initial_call=True
     )(get_feature_range_func(an))
+
+
+def get_asct_table_func():
+    def _func(val):
+        ctx = dash.callback_context
+        if not ctx.triggered:
+            raise PreventUpdate
+
+        df = pd.read_csv(
+            os.path.join('data/ASCT-B_tables', val),
+            skiprows=10,
+            encoding="ISO-8859-1")
+
+        # df.drop([
+        #     'AS/1/LABEL', 'cell type general label', 'AS/3/LABEL',
+        #     'CT/1/LABEL'
+        # ], axis=1, inplace=True, errors='ignore')
+        # for i in range(15):
+        #     df.drop([
+        #         f"BG/{i}", f"BG/{i}/LABEL", f"BG/{i}/ID"
+        #     ], axis=1, inplace=True, errors='ignore')
+        #     df.drop([
+        #         f"BP/{i}", f"BP/{i}/LABEL", f"BP/{i}/ID"
+        #     ], axis=1, inplace=True, errors='ignore')
+        # df.drop([
+        #     'FTU', 'REF/1', 'REF/1/DOI', 'REF/1/NOTES',
+        #     'REF/2', 'REF/2/DOI', 'REF/2/NOTES'
+        # ], axis=1, inplace=True, errors='ignore')
+
+        columns = [{"name": i, "id": i} for i in df.columns]
+        data = df.to_dict('records')
+
+        return columns, data
+
+    return _func
+
+
+for prefix in ['main', 'side']:
+    app.callback(
+        Output(prefix + "-asct-table", "columns"),
+        Output(prefix + "-asct-table", "data"),
+
+        Input(prefix + "-asct-select", "value"),
+        prevent_initial_call=True
+    )(get_asct_table_func())

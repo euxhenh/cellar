@@ -141,7 +141,7 @@ def get_plot(prefix):
                                 'autosizable': True,
                                 'displaylogo': False,
                                 'edits': {
-                                    # 'titleText': True,
+                                    'titleText': True,
                                     'legendText': True,
                                     'colorbarTitleText': True
                                 },

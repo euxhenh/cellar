@@ -33,7 +33,8 @@ empty_analysis_figure = {
         },
         "annotations": [
             {
-                "text": "No heatmap or dotplot to show. Select genes first.",
+                "text": "No heatmap or violin plot to show. " +
+                "Select genes first.",
                 "xref": "paper",
                 "yref": "paper",
                 "showarrow": False,

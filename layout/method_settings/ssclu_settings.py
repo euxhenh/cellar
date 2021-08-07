@@ -10,7 +10,7 @@ ssclu_leiden_settings = dbc.Popover(
             [
                 dbc.FormGroup(
                     [
-                        dbc.Label("Merge Subsets"),
+                        dbc.Label("Constrained Subsets"),
                         dbc.Checklist(
                             options=[],
                             id="ssclu-Leiden-main-checklist",
@@ -114,6 +114,20 @@ ssclu_leiden_settings = dbc.Popover(
                 ),
                 dbc.FormGroup(
                     [
+                        dbc.Label("Fix Membership for Constraints"),
+                        dbc.RadioItems(
+                            options=[
+                                {"label": "True", "value": True},
+                                {"label": "False", "value": False},
+                            ],
+                            value=True,
+                            id="ssclu-Leiden-fix-membership",
+                            inline=True
+                        )
+                    ]
+                ),
+                dbc.FormGroup(
+                    [
                         dbc.Label("Construct Weighted Graph"),
                         dbc.RadioItems(
                             options=[
@@ -179,6 +193,7 @@ ssclu_leiden_settings_keys = {
     'ssclu-Leiden-max-comm': 'max_comm_size',
     'ssclu-Leiden-graph-method': 'graph_method',
     'ssclu-Leiden-nneigh': 'n_neighbors',
+    'ssclu-Leiden-fix-membership': 'fix_membership',
     'ssclu-Leiden-weights': 'use_weights',
     'ssclu-Leiden-directed': 'directed',
     'ssclu-Leiden-random-state': 'seed'

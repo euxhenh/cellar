@@ -1,3 +1,5 @@
+import os
+
 import dash_bootstrap_components as dbc
 import dash_html_components as html
 import dash_core_components as dcc
@@ -386,6 +388,46 @@ def get_spatial_card(prefix):
     return spatial
 
 
+def get_asct_tables(prefix):
+    tables = {
+        "Brain": "ASCT-B_Allen_Brain.csv",
+        "Lymph Node": "ASCT-B_NIH_Lymph_Node.csv",
+        "Bone Marrow / Blood / Pelvis": "ASCT-B_VH_BM_Blood_Pelvis.csv",
+        "Heart": "ASCT-B_VH_Heart.csv",
+        "Large Intestine": "ASCT-B_VH_Intestine_Large.csv",
+        "Kidney": "ASCT-B_VH_Kidney.csv",
+        "Lung": "ASCT-B_VH_Lung.csv",
+        "Skin": "ASCT-B_VH_Skin.csv",
+        "Spleen": "ASCT-B_VH_Spleen.csv",
+        "Thymus": "ASCT-B_VH_Thymus.csv",
+        "Vasculature": "ASCT-B_VH_Vasculature.csv"
+    }
+
+    asct_table = dbc.Card([
+        dbc.CardBody([
+            html.H5("Anatomical Structures, Cell Types, and Biomarkers Tables",
+                    className="card-title"),
+            dbc.Select(
+                id=prefix + "-asct-select",
+                options=[{
+                    "label": key, "value": value
+                } for key, value in tables.items()]
+            ),
+            dash_table.DataTable(
+                id=prefix + "-asct-table",
+                page_size=10,
+                export_format='csv',
+                style_table={
+                    'overflowX': 'auto'
+                },
+                style_cell={'padding': '5px'}
+            ),
+        ])
+    ], className="mb-2 analysis-container")
+
+    return asct_table
+
+
 def get_analysis_tabs(prefix):
     analysis_tabs = dbc.Tabs(
         [
@@ -404,7 +446,8 @@ def get_analysis_tabs(prefix):
                 ),
                 label="Analysis"
             ),
-            dbc.Tab(get_spatial_card(prefix), label="Spatial Data")
+            dbc.Tab(get_spatial_card(prefix), label="Spatial Data"),
+            dbc.Tab(get_asct_tables(prefix), label="ASCT-B")
         ]
     )
 

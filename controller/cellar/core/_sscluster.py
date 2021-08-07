@@ -12,7 +12,8 @@ def cl_ssLeiden(
         partition_type='RBConfigurationVertexPartition', directed=False,
         graph_method='auto', n_neighbors=15, use_weights=False,
         resolution_parameter=1, n_iterations=-1, max_comm_size=0, seed=None,
-        main_constraints=None, side_constraints=None, extras=None):
+        fix_membership=True, main_constraints=None, side_constraints=None,
+        extras=None):
     if clear_annotations:
         if 'annotations' in adata.obs:
             adata.obs.pop('annotations')
@@ -55,7 +56,8 @@ def cl_ssLeiden(
 
             first_label = initial_membership[cell_indices[0]]
             initial_membership[cell_indices] = first_label
-            is_membership_fixed[cell_indices] = 1
+            if fix_membership:
+                is_membership_fixed[cell_indices] = 1
 
     is_membership_fixed = is_membership_fixed.astype(bool)
 
@@ -77,5 +79,3 @@ def cl_ssLeiden(
     part.renumber_communities()
 
     adata.obs[key] = np.array(part.membership, dtype=int)
-
-

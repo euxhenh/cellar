@@ -34,9 +34,8 @@ def cl_Ingest(
     adata_main = adata[:, vars_common].to_memory().copy()
     adata_ref = extras['ref'][:, vars_common].to_memory().copy()
 
-    # Add neighbors
-    sc.pp.pca(adata_main)
-    sc.pp.pca(adata_ref)
+    sc.pp.pca(adata_main, min(40, len(vars_common) - 1))
+    sc.pp.pca(adata_ref, min(40, len(vars_common) - 1))
     sc.pp.neighbors(adata_main)
     sc.pp.neighbors(adata_ref)
     sc.tl.umap(adata_ref)

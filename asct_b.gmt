@@ -1,0 +1,72 @@
+Bone marrow : B lineage	CD19	PAX5	IGHM	IGHD
+Blood: B lineage	CD19	PAX5	IGHM	MS4A1
+Bone marrow : B lineage	CD19	PAX5	IGHM	MS4A1
+Blood: B lineage	CD19	MS4A1	IGHA1	IGHG1	CD82	SELL	CD27
+Bone marrow : B lineage	CD19	MS4A1	IGHA1	IGHG1	CD82	SELL	CD27
+Blood: B lineage	CD19	PAX5	IGHM	MS4A1	CD40	FCER2
+Bone marrow : B lineage	CD19	PAX5	IGHM	MS4A1	CD40	FCER2
+Bone marrow : B lineage	SDC1	DERL3	MZB1	IGKC	SEC11C	IGHG1	IGHA1	TNFRSF17
+Bone marrow : B lineage	DNTT	MME	VPREB1	RAG1
+Blood: B lineage	IGLL5	SOX4	BCL7A	TCL1A	FCRLA	CD24
+Bone marrow : B lineage	IGLL5	SOX4	BCL7A	TCL1A	FCRLA	CD24
+Blood: dendritic cell (DC)	CLEC9A	CADM1	XCR1
+Bone marrow : dendritic cell (DC)	CLEC9A	CADM1	XCR1
+Blood: dendritic cell (DC)	CD1C	FCER1A	CLEC10A	HLA-DQA2	HLA-DPB1	FCGR2B
+Bone marrow : dendritic cell (DC)	CD1C	FCER1A	CLEC10A	HLA-DQA2	HLA-DPB1	FCGR2B
+Blood: dendritic cell (DC)	CD1C	FCER1A	CLEC10A	S100A8	S100A9	CD36	CD163
+Bone marrow : dendritic cell (DC)	CD1C	FCER1A	CLEC10A	S100A8	S100A9	CD36	CD163
+Blood: dendritic cell (DC)	GZMB	JCHAIN	SERPINF1
+Bone marrow : dendritic cell (DC)	GZMB	JCHAIN	SERPINF1
+Blood: dendritic cell (DC)	AXL	SIGLEC6	CD22
+Bone marrow : dendritic cell (DC)	AXL	SIGLEC6	CD22
+Bone marrow : erythroid	MYC	APOC1	PRSS57	KCNH2	EPCAM	CD36	KLF1	GATA1
+Bone marrow : erythroid	CD36	KLF1	TSPO2	RHAG	RHCE	SPTA1
+Bone marrow : erythroid	HBB	ALAS2	BPGM	HBA2	HBG1	DCAF12	ADIPOR1	
+Bone marrow : Megakaryocyte (MK)	GP9	CAVIN2	PPBP	LAT	PF4	CLEC1B	ITGA2B
+Bone marrow : Megakaryocyte (MK)	GATA2	FCER1A	PLEK	SDPR	PDLIM1
+Bone marrow : hemopoietic stem cell/multipotent progenitor (HSC/MPP)	CD34	SPINK2	PRSS57	GATA2	TESPA1	IL1B	CTNNBL1	GATA1
+Bone marrow : hemopoietic stem cell/multipotent progenitor (HSC/MPP)	CYGB	ADA	PRDX1	LAT2	UMODL1	CD200
+Bone marrow : hemopoietic stem cell/multipotent progenitor (HSC/MPP)	HPGDS	GATA2	CYTL1	SERPINB1	MEST
+Bone marrow : hemopoietic stem cell/multipotent progenitor (HSC/MPP)	CD34	CALR	CLEC11A	MPO	AZU1
+Bone marrow : hemopoietic stem cell/multipotent progenitor (HSC/MPP)	AVP. CRHBP	NPR3	BEX1	PROM1	CD34	HLF
+Bone marrow : hemopoietic stem cell/multipotent progenitor (HSC/MPP)	CD34	BCL11A	IL2RG	JCHAIN	SOX4	SYK
+Bone marrow : hemopoietic stem cell/multipotent progenitor (HSC/MPP)	CD34	SPINK2	FLT3
+Blood: monocyte	VCAN	CST3	CD14	S100A8	S100A9	FCN
+Bone marrow : monocyte	VCAN	CST3	CD14	S100A8	S100A9	FCN
+Blood: monocyte	HES4	MS4A7	IFITM3	FCGR3A	CXCL16	LST1
+Bone marrow : monocyte	HES4	MS4A7	IFITM3	FCGR3A	CXCL16	LST1
+Bone marrow : monocyte	CX3CR1	CCR2	HLA-DRA	S100A4	S100A6	CST3
+Bone marrow : monocyte	SPI1	IRF8	CEBPB	KLF4
+Bone marrow : neutrophilic granulocyte	LCN2	CAMP	LTF	STOM	CEACAM8
+Blood: neutrophilic granulocyte	ITGAM	MMP9	PGLYRP1	ORM1	S100A12	FCN1
+Bone marrow : neutrophilic granulocyte	ITGAM	MMP9	PGLYRP1	ORM1	S100A12	FCN1
+Bone marrow : neutrophilic granulocyte	MPO	ELANE	CTSG	PRTN3	AZU1
+Blood: granulocyte	HDC	CLC	CPA3	IL5RA	GATA2	MS4A3	HPGDS
+Bone marrow : granulocyte	HDC	CLC	CPA3	IL5RA	GATA2	MS4A3	HPGDS
+Blood: granulocyte	HDC	CLC	CPA3	IL5RA	GATA2	MS4A3	IL3RA
+Bone marrow : granulocyte	HDC	CLC	CPA3	IL5RA	GATA2	MS4A3	IL3RA
+Bone marrow : granulocyte	HDC	CLC	CPA3	IL5RA	GATA2	MS4A3	HPGDS	TPSAB1	KIT
+Blood: T lymphocytes	CD3D	TRAC	TRBC1	IL7R	TRAT1	LTB	AQP3	CD40LG
+Bone marrow : T lymphocytes	CD3D	TRAC	TRBC1	IL7R	TRAT1	LTB	AQP3	CD40LG
+Blood: T lymphocytes	CD3D	TRAC	IFI6	LGALS3	PDZD8	ANXA2	CRIP1
+Bone marrow : T lymphocytes	CD3D	TRAC	IFI6	LGALS3	PDZD8	ANXA2	CRIP1
+Blood: T lymphocytes	CD3D	TRAC	IL4R	STAT1	MAL	SOCS1	IL2	ODC1	PSAT1	WARS	PYCR1	TNF	NME1
+Bone marrow : T lymphocytes	CD3D	TRAC	IL4R	STAT1	MAL	SOCS1	IL2	ODC1	PSAT1	WARS	PYCR1	TNF	NME1
+Blood: T lymphocytes	CD3D	TRAC	IL4R	STAT1	MAL	SOCS1	IL2	ODC1	PSAT1	WARS	PYCR1	TNF	NME1
+Bone marrow : T lymphocytes	CD3D	TRAC	IL4R	STAT1	MAL	SOCS1	IL2	ODC1	PSAT1	WARS	PYCR1	TNF	NME1
+Blood: T lymphocytes	CD3D	TRAC	AQP3	IL7R
+Bone marrow : T lymphocytes	CD3D	TRAC	AQP3	IL7R
+Blood: T lymphocytes	PDZD8	CXCR6	PRF1	CRIP1	ITGA1	GZMB
+Bone marrow : T lymphocytes	PDZD8	CXCR6	PRF1	CRIP1	ITGA1	GZMB
+Blood: T lymphocytes	CD3D	TRAC	CCL3	CCL4	HOPX	GZMB
+Bone marrow : T lymphocytes	CD3D	TRAC	CCL3	CCL4	HOPX	GZMB
+Blood: T lymphocytes	CD3D	TRAC	PRF1	HOPX	NKG7	GNLY	IFIT3	KLRD1	CCL5
+Bone marrow : T lymphocytes	CD3D	TRAC	PRF1	HOPX	NKG7	GNLY	IFIT3	KLRD1	CCL5
+Blood: T lymphocytes	CCL5	GZMH	IL32	CD8A	DUSP2	KLRG1	TRGC2	GZMK
+Bone marrow : T lymphocytes	CCL5	GZMH	IL32	CD8A	DUSP2	KLRG1	TRGC2	GZMK
+Blood: NK lymphocytes	TRDC	KLRB1	CLIC3	CST7	XCL1	GZMK
+Bone marrow : NK lymphocytes	TRDC	KLRB1	CLIC3	CST7	XCL1	GZMK
+Blood: NK lymphocytes	TRDC	KLRB1	CLIC3	CST7	GZMA	GZMB	PRF1	FCGR3A
+Bone marrow : NK lymphocytes	TRDC	KLRB1	CLIC3	CST7	GZMA	GZMB	PRF1	FCGR3A
+Blood: T lymphocytes	TRAC	TRBC1	IL7R	TRAT1	LTB	AQP3	FOXP3	TNFRSF25	TIGIT	CCR6	TNFRSF4
+Bone marrow : T lymphocytes	TRAC	TRBC1	IL7R	TRAT1	LTB	AQP3	FOXP3	TNFRSF25	TIGIT	CCR6	TNFRSF4
