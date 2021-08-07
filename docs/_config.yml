@@ -1,8 +1,0 @@
----
-baseurl: "/cellar"
-url: "https://JingtaoWang22.github.io"
-exclude: ['README.markdown']
-permalink: ':title'
-highlighter: pygments
-safe: false
-title: 'Cellar Docs'
