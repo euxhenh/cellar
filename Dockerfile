@@ -17,8 +17,7 @@ USER nonroot
 RUN mkdir /home/nonroot/downloads
 RUN git clone https://aur.archlinux.org/miniconda3.git /home/nonroot/downloads/miniconda3
 RUN cd /home/nonroot/downloads/miniconda3 && makepkg -scri --noconfirm
-RUN echo "[ -f /opt/miniconda3/etc/profile.d/conda.sh ] && source /opt/miniconda3/etc/profile.d/conda.sh" >> ~/.bashrc
-RUN source ~/.bashrc
+RUN echo "[ -f /opt/miniconda3/etc/profile.d/conda.sh ] && source /opt/miniconda3/etc/profile.d/conda.sh" >> ~/.bashrc && source ~/.bashrc
 
 RUN wget -P /home/nonroot/downloads/ https://raw.githubusercontent.com/ferrocactus/CellarV/master/env.yml && \
         wget -P /home/nonroot/downloads/ https://raw.githubusercontent.com/ferrocactus/CellarV/master/install_Rdeps.py

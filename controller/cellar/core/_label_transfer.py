@@ -86,8 +86,6 @@ def cl_SingleR(
     else:
         x_to_use = adata.obsm[x_to_use]
 
-    logger.info("Running SingleR.")
-
     vars_main = adata.var_names.to_numpy().astype('str')
     vars_ref = extras['ref'].var_names.to_numpy().astype('str')
     vars_common = np.intersect1d(vars_main, vars_ref)
@@ -127,6 +125,8 @@ def cl_SingleR(
     r('BiocParallel::register(BiocParallel::SerialParam())')
     s = importr('SingleR')
 
+    logger.info("Running SingleR.")
+
     labels = s.SingleR(
         test=mat,
         ref=mat2,
@@ -138,6 +138,8 @@ def cl_SingleR(
 
     del adata_main
     del adata_ref
+    del mat
+    del mat2
     gc.collect()
 
     # Also transfer annotations if they are present

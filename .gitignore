@@ -12,5 +12,6 @@ shinyproxy
 data/server/*
 !data/uploaded
 !data/codex_tile
+!data/ASCT-B_tables
 data/codex_tile/*
 experiments
