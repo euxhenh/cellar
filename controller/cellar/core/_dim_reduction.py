@@ -95,7 +95,8 @@ def cl_cisTopic(
         returnType='selectedModel')
 
     cellassign = cisTopic.modelMatSelection(cc, 'cell', 'Probability')
-    cellassign = np.array(cellassign).T.copy()  # Transpose back
+    # Transpose back and convert to float32
+    cellassign = np.array(cellassign).T.copy().astype(np.float32)
 
     adata.obsm[key] = cellassign
 
