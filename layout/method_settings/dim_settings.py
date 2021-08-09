@@ -669,6 +669,62 @@ dim_umap_settings_keys = {
     'dim-UMAP-random-state': 'random_state'
 }
 
+dim_cistopic_settings = dbc.Popover(
+    [
+        dbc.PopoverHeader("cisTopic Settings"),
+        dbc.PopoverBody(
+            [
+                dbc.FormGroup(
+                    [
+                        dbc.Label("No. of components", html_for="slider"),
+                        dcc.Slider(
+                            id="dim-cisTopic-n-components",
+                            min=10, max=100, step=1,
+                            value=40,
+                            marks={i: str(i) for i in range(10, 101, 10)},
+                            tooltip={'always_visible': True}
+                        )
+                    ]
+                ),
+                dbc.FormGroup(
+                    [
+                        dbc.Label("Iterations", html_for="slider"),
+                        dcc.Slider(
+                            id="dim-cisTopic-iterations",
+                            min=50, max=500, step=10,
+                            value=150,
+                            marks={i: str(i) for i in range(50, 501, 50)},
+                            tooltip={'always_visible': True}
+                        )
+                    ]
+                ),
+                html.P(
+                    [
+                        "Details: ",
+                        html.A("htmlpreview.github.io/?https://github.com"
+                               "/aertslab/cisTopic/blob/master/"
+                               "vignettes/WarpLDA_10X_workflow.html",
+                               href="http://htmlpreview.github.io/?https"
+                               "://github.com/aertslab/cisTopic"
+                               "/blob/master/vignettes/"
+                               "WarpLDA_10X_workflow.html",
+                               target="_blank")
+                    ],
+                    className="small"
+                )
+            ]
+        )
+    ],
+    id="dim-cisTopic-settings",
+    target="dim-cisTopic-btn",
+    trigger="click"
+)
+
+dim_cistopic_settings_keys = {
+    'dim-cisTopic-n-components': 'topics',
+    'dim-cisTopic-iterations': 'iterations'
+}
+
 
 dim_settings = [
     dim_pca_settings,
@@ -676,7 +732,8 @@ dim_settings = [
     dim_kpca_settings,
     dim_mds_settings,
     dim_umap_settings,
-    dim_diffmap_settings
+    dim_diffmap_settings,
+    dim_cistopic_settings
 ]
 
 dim_settings_keys = {
@@ -685,5 +742,6 @@ dim_settings_keys = {
     'dim-Kernel-PCA': dim_kpca_settings_keys,
     'dim-MDS': dim_mds_settings_keys,
     'dim-UMAP': dim_umap_settings_keys,
-    'dim-Diffmap': dim_diffmap_settings_keys
+    'dim-Diffmap': dim_diffmap_settings_keys,
+    'dim-cisTopic': dim_cistopic_settings_keys
 }

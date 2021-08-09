@@ -113,7 +113,7 @@ def update_feature_list(s1, s2, s3, actp):
     if 'adata' not in dbroot.adatas[an]:
         raise PreventUpdate
 
-    if dbroot.adatas[an]['adata'].shape[1] > 100000:
+    if dbroot.adatas[an]['adata'].shape[1] > 30000:
         error_msg = "Too many features found. Skipping feature list."
         logger.warn(error_msg)
         to_return = [dash.no_update] * 2

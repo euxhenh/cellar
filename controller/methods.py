@@ -1,6 +1,6 @@
 from .cellar.core import (cl_Agglomerative, cl_Ingest, cl_KMeans, cl_KMedoids,
                           cl_kPCA, cl_Leiden, cl_MDS, cl_PCA, cl_TSNE,
-                          cl_Diffmap, cl_SingleR,
+                          cl_Diffmap, cl_SingleR, cl_cisTopic,
                           cl_SpectralClustering, cl_ssLeiden, cl_TruncatedSVD,
                           cl_UMAP, cl_uncertainty)
 
@@ -12,6 +12,7 @@ dim_list = [
     {'label': 'Diffusion Map', 'value': 'dim-Diffmap', 'func': cl_Diffmap},
     {'label': 'MDS', 'value': 'dim-MDS', 'func': cl_MDS},
     {'label': 'UMAP', 'value': 'dim-UMAP', 'func': cl_UMAP},
+    {'label': 'cisTopic', 'value': 'dim-cisTopic', 'func': cl_cisTopic}
 ]
 
 

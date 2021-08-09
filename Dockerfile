@@ -26,7 +26,7 @@ RUN wget -P /home/nonroot/downloads/ https://raw.githubusercontent.com/ferrocact
 ENV PATH /opt/miniconda3/bin:$PATH
 RUN conda env create -f /home/nonroot/downloads/env.yml && \
         cd /home/nonroot/downloads && \
-        conda run --no-capture-output -n cellarv python install_Rdeps.py && \
+        conda run --no-capture-output -n cellar python install_Rdeps.py && \
         conda clean -a && rm -rf /home/nonroot/downloads
 
 RUN mkdir /home/nonroot/cellar
@@ -35,4 +35,4 @@ RUN git clone https://github.com/ferrocactus/CellarV /home/nonroot/cellar
 
 WORKDIR /home/nonroot/cellar
 EXPOSE 8050
-ENTRYPOINT ["conda", "run", "--no-capture-output", "-n", "cellarv", "python", "main.py"]
+ENTRYPOINT ["conda", "run", "--no-capture-output", "-n", "cellar", "python", "main.py"]

@@ -6,6 +6,7 @@ kaleido
 pandas
 numpy
 joblib
+igraph
 leidenalg
 scipy
 scikit-learn
