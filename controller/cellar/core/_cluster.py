@@ -10,6 +10,7 @@ from ..utils.validation import _validate_clu_n_clusters
 from ._cluster_multiple import cluster_multiple
 from ._evaluation import get_eval_obj
 from ._neighbors import faiss_knn, knn_auto
+from ..utils.exceptions import UserError
 
 
 def cl_Leiden(
@@ -19,6 +20,11 @@ def cl_Leiden(
     if clear_annotations:
         if 'annotations' in adata.obs:
             adata.obs.pop('annotations')
+
+    if x_to_use not in adata.obsm:
+        raise UserError("No embeddings found. Please " +
+                        "run dimensionality reduction first.")
+
     if x_to_use == 'x':
         x_to_use = adata.X
     else:
@@ -119,6 +125,11 @@ def cl_KMeans(
     if clear_annotations:
         if 'annotations' in adata.obs:
             adata.obs.pop('annotations')
+
+    if x_to_use not in adata.obsm:
+        raise UserError("No embeddings found. Please " +
+                        "run dimensionality reduction first.")
+
     if x_to_use == 'x':
         x_to_use = adata.X
     else:
@@ -149,6 +160,11 @@ def cl_KMedoids(
     if clear_annotations:
         if 'annotations' in adata.obs:
             adata.obs.pop('annotations')
+
+    if x_to_use not in adata.obsm:
+        raise UserError("No embeddings found. Please " +
+                        "run dimensionality reduction first.")
+
     if x_to_use == 'x':
         x_to_use = adata.X
     else:
@@ -179,6 +195,11 @@ def cl_SpectralClustering(
     if clear_annotations:
         if 'annotations' in adata.obs:
             adata.obs.pop('annotations')
+
+    if x_to_use not in adata.obsm:
+        raise UserError("No embeddings found. Please " +
+                        "run dimensionality reduction first.")
+
     if x_to_use == 'x':
         x_to_use = adata.X
     else:
@@ -220,10 +241,14 @@ def cl_SpectralClustering(
 def cl_Agglomerative(
         adata, key='labels', x_to_use='x_emb', clear_annotations=True,
         eval_obj='Silhouette', **kwargs):
-
     if clear_annotations:
         if 'annotations' in adata.obs:
             adata.obs.pop('annotations')
+
+    if x_to_use not in adata.obsm:
+        raise UserError("No embeddings found. Please " +
+                        "run dimensionality reduction first.")
+
     if x_to_use == 'x':
         x_to_use = adata.X
     else:
@@ -261,6 +286,11 @@ def cl_uncertainty(
     if clear_annotations:
         if 'annotations' in adata.obs:
             adata.obs.pop('annotations')
+
+    if x_to_use not in adata.obsm:
+        raise UserError("No embeddings found. Please " +
+                        "run dimensionality reduction first.")
+
     if x_to_use == 'x':
         x_to_use = adata.X
     else:

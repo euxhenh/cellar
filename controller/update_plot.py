@@ -11,7 +11,7 @@ from layout.misc import empty_figure
 from .cellar.core import (clear_x_emb_dependends, get_clu_figure,
                           get_dim_figure, get_expression_figure,
                           get_reset_figure)
-from .cellar.utils.exceptions import InternalError
+from .cellar.utils.exceptions import InternalError, InvalidArgument, UserError
 from .methods import clu_list, dim_list, lbt_list, ssclu_list, vis_list
 from .operations import (clu_filter, dim_reduce_filter, lbt_filter,
                          ssclu_filter, vis_filter)
@@ -117,115 +117,86 @@ def get_update_plot_func(an):
 
         logger.info(f"Code {s_code}.")
 
-        if s_code == Signal.DIM_REDUCE:
-            # Reduce dimensions and prepare figure
-            try:
+        try:
+            if s_code == Signal.DIM_REDUCE:
+                # Reduce dimensions and prepare figure
                 dim_reduce_filter(
                     dbroot.adatas[an]['adata'], dim_method, settings)
                 clear_x_emb_dependends(dbroot.adatas[an]['adata'])
                 vis_filter(
                     dbroot.adatas[an]['adata'], vis_method, settings)
-            except ArpackNoConvergence as anc:
-                logger.error(str(anc))
-                error_msg = "No eigenvectors converged for Diffusion Map. " +\
-                    "Try using a different method."
-                logger.warn(error_msg)
-                return [dash.no_update] * 2 + [_prep_notification(
-                    error_msg, "warning")]
-            except Exception as e:
-                logger.error(str(e))
-                error_msg = "Error occurred during dimensionality reduction."
-                logger.error(error_msg)
-                return [dash.no_update] * 2 + [_prep_notification(
-                    error_msg, "danger")]
-
-            return get_dim_figure(dbroot.adatas[an]['adata'], title),\
-                dash.no_update, dash.no_update
-        elif s_code == Signal.CLUSTER:
-            # Cluster and prepare figure
-            try:
+                return get_dim_figure(dbroot.adatas[an]['adata'], title),\
+                    dash.no_update, dash.no_update
+            elif s_code == Signal.CLUSTER:
+                # Cluster and prepare figure
                 clu_filter(dbroot.adatas[an]['adata'], clu_method, settings)
-            except Exception as e:
-                logger.error(str(e))
-                error_msg = "Error occurred during clustering."
-                logger.error(error_msg)
-                return [dash.no_update] * 2 + [_prep_notification(
-                    error_msg, "danger")]
-
-            return get_clu_figure(dbroot.adatas[an]['adata'], title), 1,\
-                dash.no_update
-        elif s_code == Signal.SS_CLUSTER:
-            try:
+                return get_clu_figure(dbroot.adatas[an]['adata'], title), 1,\
+                    dash.no_update
+            elif s_code == Signal.SS_CLUSTER:
                 ssclu_filter(dbroot.adatas[an]['adata'], ssclu_method,
                              settings, extras={'actp': 1 if an == 'a1' else 2})
-            except Exception as e:
-                logger.error(str(e))
-                error_msg = "Error occurred during semi-supervised clustering."
-                logger.error(error_msg)
-                return [dash.no_update] * 2 + [_prep_notification(
-                    error_msg, "danger")]
-
-            return get_clu_figure(dbroot.adatas[an]['adata'], title), 1,\
-                dash.no_update
-        elif s_code == Signal.LABEL_TRANSFER:
-            ref_an = 'a2' if an == 'a1' else 'a1'
-            try:
+                return get_clu_figure(dbroot.adatas[an]['adata'], title), 1,\
+                    dash.no_update
+            elif s_code == Signal.LABEL_TRANSFER:
+                ref_an = 'a2' if an == 'a1' else 'a1'
                 lbt_filter(dbroot.adatas[an]['adata'], lbt_method, settings,
                            extras={'ref': dbroot.adatas[ref_an]['adata']})
-            except Exception as e:
-                logger.error(str(e))
-                error_msg = "Error occurred during label transfer."
-                logger.error(error_msg)
-                return [dash.no_update] * 2 + [_prep_notification(
-                    error_msg, "danger")]
-
-            return get_clu_figure(dbroot.adatas[an]['adata'], title), 1,\
-                dash.no_update
-        elif s_code == Signal.FEATURE_EXP:
-            # Show gene expression levels and prepare figure
-            if feature_list is None:
-                raise PreventUpdate
-            try:
+                return get_clu_figure(dbroot.adatas[an]['adata'], title), 1,\
+                    dash.no_update
+            elif s_code == Signal.FEATURE_EXP:
+                # Show gene expression levels and prepare figure
+                if feature_list is None:
+                    raise PreventUpdate
                 exp = get_expression_figure(
                     dbroot.adatas[an]['adata'], feature_list, feature_range)
-            except Exception as e:
-                logger.error(str(e))
-                error_msg = "Error occurred when viewing feature expression."
-                logger.error(error_msg)
-                return [dash.no_update] * 2 + [_prep_notification(
-                    error_msg, "danger")]
+                return exp, dash.no_update, dash.no_update
+            elif s_code == Signal.RESET:
+                return get_reset_figure(dbroot.adatas[an]['adata'], title),\
+                    dash.no_update, dash.no_update
+            elif s_code == Signal.ANNOTATION:
+                return get_clu_figure(dbroot.adatas[an]['adata'], title),\
+                    dash.no_update, dash.no_update
+            elif s_code == Signal.MERGE:
+                return get_clu_figure(dbroot.adatas[an]['adata'], title), 1,\
+                    dash.no_update
+            elif s_code == Signal.DATA_LOAD:
+                if 'x_emb_2d' in dbroot.adatas[an]['adata'].obsm:
+                    if 'labels' in dbroot.adatas[an]['adata'].obs:
+                        notif = _prep_notification(
+                            "Found embeddings and labels.", icon="info")
 
-            return exp, dash.no_update, dash.no_update
-        elif s_code == Signal.RESET:
-            return get_reset_figure(dbroot.adatas[an]['adata'], title),\
-                dash.no_update, dash.no_update
-        elif s_code == Signal.ANNOTATION:
-            return get_clu_figure(dbroot.adatas[an]['adata'], title),\
-                dash.no_update, dash.no_update
-        elif s_code == Signal.MERGE:
-            return get_clu_figure(dbroot.adatas[an]['adata'], title), 1,\
-                dash.no_update
-        elif s_code == Signal.DATA_LOAD:
-            if 'x_emb_2d' in dbroot.adatas[an]['adata'].obsm:
-                if 'labels' in dbroot.adatas[an]['adata'].obs:
+                        return get_clu_figure(dbroot.adatas[an]['adata'], title),\
+                            1, notif
                     notif = _prep_notification(
-                        "Found embeddings and labels.", icon="info")
+                        "Found embeddings on file.", icon="info")
 
-                    return get_clu_figure(dbroot.adatas[an]['adata'], title),\
+                    return get_dim_figure(dbroot.adatas[an]['adata'], title),\
                         1, notif
                 notif = _prep_notification(
-                    "Found embeddings on file.", icon="info")
+                    "No embeddings found. Please, run preprocessing first if " +
+                    "needed and then reduce dimensions.",
+                    icon="info")
 
-                return get_dim_figure(dbroot.adatas[an]['adata'], title), 1,\
-                    notif
-            notif = _prep_notification(
-                "No embeddings found. Please, run preprocessing first if " +
-                "needed and then reduce dimensions.",
-                icon="info")
-
-            return empty_figure, 1, notif
-        else:
-            raise InternalError(f"No signal with id {s_code} found.")
+                return empty_figure, 1, notif
+            else:
+                raise InternalError(f"No signal with id {s_code} found.")
+        except ArpackNoConvergence as anc:
+            logger.error(str(anc))
+            error_msg = "No eigenvectors converged. Try a different method."
+            logger.warn(error_msg)
+            return [dash.no_update] * 2 + [_prep_notification(
+                error_msg, "warning")]
+        except (InternalError, InvalidArgument, UserError) as e:
+            logger.error(str(e))
+            error_msg = str(e)
+            return [dash.no_update] * 2 + [_prep_notification(
+                error_msg, "danger")]
+        except Exception as e:
+            logger.error(str(e))
+            error_msg = "Could not process request."
+            logger.error(error_msg)
+            return [dash.no_update] * 2 + [_prep_notification(
+                error_msg, "danger")]
 
     return update_plot
 

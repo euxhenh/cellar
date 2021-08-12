@@ -2,7 +2,7 @@ import anndata
 import numpy as np
 import pandas as pd
 from app import logger
-from controller.cellar.utils.exceptions import InternalError
+from controller.cellar.utils.exceptions import InternalError, InvalidArgument
 from controller.cellar.utils.exceptions import IncorrectFileFormat
 from controller.cellar.utils.misc import is_sparse
 
@@ -26,6 +26,10 @@ def cl_get_expression(adata, var_names, op='min'):
     all participating features for every sample point.
     """
     var_names = np.array(var_names, dtype=str).flatten()
+    all_vars = adata.var_names.to_numpy().astype(str)
+    for vname in var_names:
+        if vname not in all_vars:
+            raise InvalidArgument(f"Feature {vname} not found in data object.")
 
     if len(var_names) == 1:  # Don't normalize if single feature
         x = adata[:, var_names[0]].X

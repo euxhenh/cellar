@@ -1,11 +1,12 @@
 import anndata2ri
 import numpy as np
 import rpy2.robjects as ro
-from rpy2.robjects import r, numpy2ri
-from rpy2.robjects.packages import importr
 from anndata._core.sparse_dataset import SparseDataset
+from controller.cellar.utils.exceptions import InvalidArgument
 from pydiffmap import diffusion_map as dm
-from scipy.sparse import issparse, csr_matrix
+from rpy2.robjects import numpy2ri, r
+from rpy2.robjects.packages import importr
+from scipy.sparse import csr_matrix, issparse
 from sklearn.decomposition import PCA, KernelPCA, TruncatedSVD
 from sklearn.manifold import MDS, TSNE
 from umap import UMAP
@@ -40,6 +41,12 @@ def get_func(func_name):
         comp_key = 'n_evecs' if func_name == 'cl_Diffmap' else 'n_components'
         if comp_key not in kwargs:
             kwargs[comp_key] = 2
+
+        mins = min(x_to_use.shape[0], x_to_use.shape[1])
+        if kwargs[comp_key] >= mins:
+            raise InvalidArgument(
+                "Number of components is higher than " +
+                f"min(samples, features) = {mins}.")
 
         fitter = func_map[func_name](**kwargs)
         adata.obsm[key] = fitter.fit_transform(x_to_use)
