@@ -164,6 +164,9 @@ def run_prep(
                 nt = None
             sc.pp.normalize_total(adata, target_sum=nt, max_fraction=nmax)
 
+        if clog is not None and clog:
+            sc.pp.log1p(adata)
+
         if cscale is not None and cscale:
             if smax == "":
                 smax = None
