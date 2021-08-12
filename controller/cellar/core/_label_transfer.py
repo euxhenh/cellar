@@ -27,8 +27,6 @@ def cl_Ingest(
     else:
         x_to_use = adata.obsm[x_to_use]
 
-    logger.info("Running Scanpy Ingest.")
-
     vars_main = adata.var_names.to_numpy().astype('str')
     vars_ref = extras['ref'].var_names.to_numpy().astype('str')
     vars_common = np.intersect1d(vars_main, vars_ref)
@@ -41,6 +39,7 @@ def cl_Ingest(
     adata_main = adata[:, vars_common].to_memory().copy()
     adata_ref = extras['ref'][:, vars_common].to_memory().copy()
 
+    logger.info("Running Scanpy Ingest.")
     sc.pp.pca(adata_main, min(40, len(vars_common) - 1))
     sc.pp.pca(adata_ref, min(40, len(vars_common) - 1))
     sc.pp.neighbors(adata_main)
@@ -72,12 +71,11 @@ def cl_Ingest(
 
 def cl_SingleR(
         adata, key='labels', x_to_use='x', clear_annotations=True, extras={}):
-    '''
     if 'ref' not in extras:
         raise InternalError("No reference adata found.")
     if 'labels' not in extras['ref'].obs:
         raise InternalError("No labels found in reference dataset.")
-    '''
+
     if clear_annotations:
         if 'annotations' in adata.obs:
             adata.obs.pop('annotations')
