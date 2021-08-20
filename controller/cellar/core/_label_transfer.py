@@ -1,5 +1,6 @@
 import gc
 import numpy as np
+import pandas as pd
 import scanpy as sc
 from app import logger
 from controller.cellar.utils.exceptions import InternalError
@@ -10,6 +11,47 @@ from rpy2.robjects import numpy2ri, r
 import rpy2.robjects as ro
 import anndata2ri
 import scipy.sparse as sp
+
+
+def cl_ExactLT(
+        adata, key='labels', x_to_use='x', clear_annotations=True, extras={}):
+    """
+    Exact label transfer based on Cell IDs. Cell IDs between the reference
+    and main datasets should match.
+    """
+    if 'ref' not in extras:
+        raise InternalError("No reference adata found.")
+    if 'labels' not in extras['ref'].obs:
+        raise InternalError("No labels found in reference dataset.")
+
+    if clear_annotations:
+        if 'annotations' in adata.obs:
+            adata.obs.pop('annotations')
+
+    main_df = pd.DataFrame(index=adata.obs_names.to_numpy().astype(str))
+
+    if 'annotations' in extras['ref'].obs:
+        annotations = extras['ref'].obs['annotations'].to_numpy()
+    else:
+        annotations = np.array(
+            [""] * extras['ref'].shape[0], dtype='U200')
+
+    ref_df = pd.DataFrame(
+        index=extras['ref'].obs_names.to_numpy().astype(str),
+        columns=['labels', 'annotations'])
+    ref_df['labels'] = extras['ref'].obs['labels'].to_numpy()
+    ref_df['annotations'] = annotations
+
+    df = pd.merge(
+        left=main_df, right=ref_df, how='left',
+        left_index=True, right_index=True)
+
+    df['labels'].fillna(
+        np.max(extras['ref'].obs['labels'].to_numpy()) + 1, inplace=True)
+    df['annotations'].fillna("No Matching ID", inplace=True)
+
+    adata.obs['labels'] = df['labels'].to_numpy().astype(int)
+    adata.obs['annotations'] = df['annotations'].to_numpy().astype('U200')
 
 
 def cl_Ingest(

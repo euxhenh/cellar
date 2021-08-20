@@ -21,6 +21,7 @@ for collapsible_id, button_id in [
     ("dim-reduce-collapse", "dim-reduce-collapse-btn"),
     ("clustering-collapse", "clustering-collapse-btn"),
     ("annotation-collapse", "annotation-collapse-btn"),
+    ("tools-collapse", "tools-collapse-btn"),
     ("session-collapse", "session-collapse-btn")
 ]:
     app.callback(

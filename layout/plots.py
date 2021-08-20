@@ -137,12 +137,13 @@ def get_plot(prefix):
                         children=[dcc.Graph(
                             id=prefix + '-plot',
                             figure=empty_figure,
+                            loading_state={'component_name': prefix + '-plot'},
                             config={
                                 'autosizable': True,
                                 'displaylogo': False,
                                 'edits': {
                                     'titleText': True,
-                                    'legendText': True,
+                                    # 'legendText': True,
                                     'colorbarTitleText': True
                                 },
                                 'toImageButtonOptions': {

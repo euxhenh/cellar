@@ -59,13 +59,40 @@ lbt_singler_settings_keys = {
 
 }
 
+lbt_exact_settings = dbc.Popover(
+    [
+        dbc.PopoverHeader("Cell ID Based label transfer"),
+
+        dbc.PopoverBody(
+            [
+                html.P(
+                    [
+                        "Transfers labels from one dataset to the other "
+                        "in case the cell IDs match. Cells without "
+                        "a match are assigned a new cluster."
+                    ]
+                )
+            ]
+        )
+    ],
+    id="lbt-exact-settings",
+    target="lbt-exact-btn",
+    trigger="click"
+)
+
+lbt_exact_settings_keys = {
+
+}
+
 
 lbt_settings = [
     lbt_ingest_settings,
-    lbt_singler_settings
+    lbt_singler_settings,
+    lbt_exact_settings
 ]
 
 lbt_settings_keys = {
     'lbt-Scanpy-Ingest': lbt_ingest_settings_keys,
     'lbt-SingleR': lbt_singler_settings_keys,
+    'lbt-exact': lbt_exact_settings_keys
 }

@@ -421,60 +421,6 @@ annotations_block = dbc.Card(
                                 id="side-annotation-table-row",
                                 no_gutters=True,
                                 className="no-display mb-2"
-                            ),
-                            dbc.Row(
-                                [
-                                    dbc.InputGroup(
-                                        [
-                                            dbc.Input(
-                                                value="",
-                                                placeholder="Subset Name",
-                                                type="text",
-                                                id="subset-name-input"
-                                            ),
-                                            dbc.InputGroupAddon(
-                                                dbc.Button(
-                                                    "Store",
-                                                    id="subset-name-store-btn",
-                                                    color='primary'
-                                                ),
-                                                addon_type='append'
-                                            )
-                                        ]
-                                    )
-                                ],
-                                className="mb-2",
-                                no_gutters=True
-                            ),
-                            dbc.Row(
-                                [
-                                    dbc.Col(
-                                        dcc.Loading(
-                                            dbc.InputGroup([
-                                                dbc.Select(
-                                                    options=[],
-                                                    placeholder="Merge subset",
-                                                    id="main-subset-select"
-                                                ),
-                                                dbc.Select(
-                                                    options=[],
-                                                    placeholder="Merge subset",
-                                                    className="no-display",
-                                                    id="side-subset-select"
-                                                ),
-                                                dbc.InputGroupAddon(
-                                                    dbc.Button(
-                                                        "Merge",
-                                                        id="merge-subset-btn",
-                                                        color='primary'
-                                                    ),
-                                                    addon_type='append'
-                                                )
-                                            ])
-                                        )
-                                    )
-                                ],
-                                no_gutters=True
                             )
                         ]
                     )
@@ -482,6 +428,89 @@ annotations_block = dbc.Card(
             ],
             is_open=True,
             id="annotation-collapse"
+        )
+    ],
+    className="shadow-sm panel mb-2",
+)
+
+tools_block = dbc.Card(
+    [
+        dbc.Button(
+            dbc.Row(
+                [
+                    html.Span("Tools"),
+                    html.Span(style={'width': '5px'}),
+                    html.I(className="fas fa-chevron-down"),
+                ],
+                align='baseline',
+                justify='center',
+                no_gutters=True
+            ),
+            id="tools-collapse-btn",
+            color='light',
+            outline=False
+        ),
+        dbc.Collapse(
+            dbc.CardBody(
+                [
+                    dbc.Row(
+                        [
+                            dbc.InputGroup(
+                                [
+                                    dbc.Input(
+                                        value="",
+                                        placeholder="Subset Name",
+                                        type="text",
+                                        id="subset-name-input"
+                                    ),
+                                    dbc.InputGroupAddon(
+                                        dbc.Button(
+                                            "Store",
+                                            id="subset-name-store-btn",
+                                            color='primary'
+                                        ),
+                                        addon_type='append'
+                                    )
+                                ]
+                            )
+                        ],
+                        className="mb-2",
+                        no_gutters=True
+                    ),
+                    dbc.Row(
+                        [
+                            dbc.Col(
+                                dcc.Loading(
+                                    dbc.InputGroup([
+                                        dbc.Select(
+                                            options=[],
+                                            placeholder="Merge subset",
+                                            id="main-subset-select"
+                                        ),
+                                        dbc.Select(
+                                            options=[],
+                                            placeholder="Merge subset",
+                                            className="no-display",
+                                            id="side-subset-select"
+                                        ),
+                                        dbc.InputGroupAddon(
+                                            dbc.Button(
+                                                "Merge",
+                                                id="merge-subset-btn",
+                                                color='primary'
+                                            ),
+                                            addon_type='append'
+                                        )
+                                    ])
+                                )
+                            )
+                        ],
+                        no_gutters=True
+                    )
+                ]
+            ),
+            is_open=True,
+            id="tools-collapse"
         )
     ],
     className="shadow-sm panel mb-2",
@@ -546,5 +575,6 @@ sidebar = [
     dim_block,
     label_block,
     annotations_block,
+    tools_block,
     session_block
 ]
