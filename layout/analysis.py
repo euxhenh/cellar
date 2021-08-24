@@ -155,7 +155,7 @@ def get_feature_card(prefix):
                             figure=empty_analysis_figure,
                             config={'autosizable': True,
                                     'displaylogo': False,
-                                    'displayModeBar': False}
+                                    'displayModeBar': True}
                         ),
                         type="circle"
                     )

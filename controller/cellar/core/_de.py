@@ -68,7 +68,7 @@ def ttest(adata, cluster_id, cluster_id2, alpha=0.05):
     test = test.sort_values(by='log2fc', ascending=False)
     test = test.round(3)
 
-    adata.uns['de_genes'] = test['gene'].copy()
+    # adata.uns['de_genes'] = test['gene'].copy()
     return test
 
 

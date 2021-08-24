@@ -178,11 +178,12 @@ def run_prep(
         return [dash.no_update] * 4 + [_prep_notification(error_msg, "danger")]
 
     filename = f'tmp/{an}/adata.h5ad'
-    if os.path.exists(filename):
-        os.remove(filename)
-
+    if not os.path.isdir('tmp'):
+        os.mkdir('tmp')
     if not os.path.isdir(f'tmp/{an}'):
         os.mkdir(f'tmp/{an}')
+    if os.path.exists(filename):
+        os.remove(filename)
 
     adata.write(filename)
 
@@ -265,6 +266,11 @@ def run_atac_prep(n1, aop, aei, amei, asb, aoei, amoei, actp):
         return [dash.no_update] * 4 + [_prep_notification(error_msg, "danger")]
 
     filename = f'tmp/{an}/adata.h5ad'
+
+    if not os.path.isdir('tmp'):
+        os.mkdir('tmp')
+    if not os.path.isdir(f'tmp/{an}'):
+        os.mkdir(f'tmp/{an}')
     if os.path.exists(filename):
         os.remove(filename)
     adata.write(filename)

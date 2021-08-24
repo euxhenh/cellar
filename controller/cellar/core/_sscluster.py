@@ -14,9 +14,15 @@ def cl_ssLeiden(
         resolution_parameter=1, n_iterations=-1, max_comm_size=0, seed=None,
         fix_membership=True, main_constraints=None, side_constraints=None,
         extras=None):
+    annts = False
     if clear_annotations:
         if 'annotations' in adata.obs:
-            adata.obs.pop('annotations')
+            annts = True
+    if annts:
+        annos_cp = adata.obs['annotations'].to_numpy().copy()
+        adata.obs['annotations'] = np.array(
+            [""] * adata.shape[0], dtype="U200")
+
     if x_to_use == 'x':
         x_to_use = adata.X
     else:
@@ -41,11 +47,16 @@ def cl_ssLeiden(
 
     labels = adata.obs[key].to_numpy()
 
+    if annts:
+        ant_dict = {}
+
     if constraints is not None:
         for constraint in constraints:
             if constraint.startswith(prefix + '-cluster'):
                 cluster_id = int(constraint[len(prefix + '-cluster'):])
                 cell_indices = np.where(labels == cluster_id)[0]
+                if annts:
+                    ant_dict[annos_cp[cell_indices][0]] = cell_indices
             else:
                 subset_name = constraint[len(prefix + '-subset-'):]
                 if subset_name not in adata.uns['subsets']:
@@ -79,3 +90,10 @@ def cl_ssLeiden(
     part.renumber_communities()
 
     adata.obs[key] = np.array(part.membership, dtype=int)
+
+    if annts:
+        labels = adata.obs[key].to_numpy()
+        for key in ant_dict:
+            ci = ant_dict[key][0]
+            ci_label = labels[ci]
+            adata.obs['annotations'][labels == ci_label] = key

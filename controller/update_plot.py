@@ -68,7 +68,7 @@ def signal_plot(
     index = 0 if actp == 1 else 1
     button_id = ctx.triggered[0]["prop_id"].split(".")[0]
 
-    logger.info(f"Running button with id {button_id}.")
+    # logger.info(f"Running button with id {button_id}.")
 
     if button_id == "dim-run-btn":
         to_return[index] = Signal.DIM_REDUCE
@@ -115,7 +115,7 @@ def get_update_plot_func(an):
 
         title = dbroot.adatas[an]['name']
 
-        logger.info(f"Code {s_code}.")
+        # logger.info(f"Code {s_code}.")
 
         try:
             if s_code == Signal.DIM_REDUCE:

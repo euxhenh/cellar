@@ -33,6 +33,10 @@ def get_func(func_name):
             # Load sparse matrix to memory since cannot work with
             # HDF5 in backed mode
             if isinstance(adata.X, SparseDataset) or issparse(adata.X):
+                if func_name not in ['cl_TruncatedSVD', 'cl_UMAP']:
+                    raise InvalidArgument(
+                        "Sparse data is not supported using the selected" +
+                        " method. Please choose TruncatedSVD or UMAP.")
                 if adata.isbacked:
                     x_to_use = x_to_use.to_memory()
         else:
@@ -92,11 +96,11 @@ def cl_cisTopic(
     cc = cisTopic.createcisTopicObject(mat)
     print('Created cisTopic object.')
 
-    print('Running LDA Models...')
+    print('Running LDA Models. This may take a while...')
     cc = cisTopic.runWarpLDAModels(
         cc,
         topic=numpy2ri.py2rpy(topic_list),
-        nCores=min(4, len(topic_list)),
+        nCores=1,
         iterations=iterations,
         addModels=False,
         returnType='selectedModel')
