@@ -65,6 +65,7 @@ def cl_add_gene_symbol(adata, spliton='.'):
 
     var_names_trimmed = adata.var_names.to_numpy().astype(str)
     var_names_trimmed = [v.split(spliton)[0] for v in var_names_trimmed]
+    var_names_trimmed = [i.upper() for i in var_names_trimmed]
 
     # determine format
     if var_names_trimmed[0][:4] == 'ENSG':
