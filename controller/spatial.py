@@ -75,11 +75,12 @@ def get_generate_tile_func(an):
         if 'adata' not in dbroot.adatas[an]:
             raise PreventUpdate
 
-        if (data_type == 'spatial-10x'):
+        owner = None
+        if data_type == 'spatial-10x':
             # if not os.path.isdir(f'tmp/{an}/s10x'):
             #     raise PreventUpdate
             try:
-                tile = generate_10x_spatial(
+                tile, owner = generate_10x_spatial(
                     f'tmp/{an}/s10x/spatial/detected_tissue_image.jpg',
                     f'tmp/{an}/s10x/spatial/tissue_positions_list.csv',
                     f'tmp/{an}/s10x/spatial/scalefactors_json.json',
@@ -98,7 +99,7 @@ def get_generate_tile_func(an):
                 if fname in tile_list:
                     logger.info("Found CODEX tile locally.")
 
-                    tile = generate_tile(
+                    tile, owner = generate_tile(
                         f'data/codex_tile/{fname}/images',
                         f'data/codex_tile/{fname}/data.csv',
                         adata=dbroot.adatas[an]['adata'])
@@ -106,7 +107,7 @@ def get_generate_tile_func(an):
                     if not os.path.isdir(f'tmp/{an}/codex'):
                         raise PreventUpdate
 
-                    tile = generate_tile(
+                    tile, owner = generate_tile(
                         f'tmp/{an}/codex/images',
                         f'tmp/{an}/codex/data.csv',
                         adata=dbroot.adatas[an]['adata'])
@@ -133,6 +134,16 @@ def get_generate_tile_func(an):
         w, h = int(scaler * wo), int(scaler * ho)
 
         fig = px.imshow(tile, width=w, height=h)
+
+        if owner is not None and 'labels' in dbroot.adatas[an]['adata'].obs:
+            owner_cp = owner.copy()
+            owner[owner < 0] = 0
+            customdata = dbroot.adatas[an][
+                'adata'].obs['labels'].to_numpy()[owner]
+            customdata[owner_cp < 0] = -1
+            fig.update(data=[{
+                'customdata': customdata,
+                'hovertemplate': 'Cluster ID: %{customdata}'}])
         fig.update_layout(coloraxis_showscale=False)
         fig.update_xaxes(showticklabels=False)
         fig.update_yaxes(showticklabels=False)

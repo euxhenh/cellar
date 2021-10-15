@@ -66,11 +66,13 @@ def generate_tile(
 
     # Begin Grid Construction
     grid = []
+    owner = []
     grid_x_len = np.max(data['tile_x'])  # assuming min = 0
     grid_y_len = np.max(data['tile_y'])  # assuming min = 0
 
     for y in range(grid_y_len+1):  # columns first
         grid_row = []
+        owner_row = []
         for x in range(grid_x_len+1):
             i = get_name_index(x, y, im_names)
 
@@ -78,19 +80,31 @@ def generate_tile(
             # same z for entire tile
             if len(my_cells) == 0:
                 grid_row.append(np.zeros((3, *ims[i][0, 0].shape)))
+                owner_row.append(np.zeros(ims[i][0, 0].shape) - 1)
                 continue
 
             top_z = my_cells.loc[my_cells.index[0]]['z']  # get z of first cell
             tile = (ims[i][top_z, CELL_FILL_CH]).astype(int)  # filled cells
+            tile_cp = tile.copy()
 
             if has_labels:
                 # cell_ids = my_cells.loc[my_cells.index]['id']
                 cell_rids = my_cells.loc[my_cells.index]['rid']
+                cell_ids = my_cells.loc[my_cells.index]['id']
+
+                sort_idx = np.argsort(cell_ids.to_numpy() + 1)
+                idx = np.searchsorted(
+                    cell_ids.to_numpy(), tile, sorter = sort_idx)
+                tile = np.arange(len(cell_ids))[sort_idx][idx]
+                rid_tile = cell_rids.to_numpy()[tile]
+                rid_tile[tile_cp == 0] = -1 # remove empty pixels
+
                 cell_rids = cell_rids[cell_rids < adata.shape[0]]
                 labels = adata.obs['labels'].to_numpy()[cell_rids] + 1
+
                 if labels.size > 0:
-                    labels = np.hstack((0, labels))
-                    tile = labels[tile]
+                    # since 0 means no cell
+                    tile[tile != 0] = labels[tile[tile != 0]]
                 else:
                     tile.fill(0)
             else:
@@ -102,18 +116,22 @@ def generate_tile(
             # Color tile and append
             palr, palb, palg = palette_to_rgb(palette, tile.max())
             grid_row.append(np.array([palr[tile], palb[tile], palg[tile]]))
+            owner_row.append(rid_tile)
 
         grid_row = np.concatenate(grid_row, axis=-1)
+        owner_row = np.hstack(owner_row)
         grid.append(grid_row)
+        owner.append(owner_row)
         logger.info(f'Finished tile row {y}')
 
     grid = np.hstack(grid)
     grid = np.moveaxis(grid, 0, -1)
+    owner = np.vstack(owner)
 
     if savepath is not None:
         matplotlib.image.imsave(savepath, grid.astype(np.uint8))
 
-    return grid.astype(np.uint8)
+    return grid.astype(np.uint8), owner.astype(int)
 
 
 def generate_10x_spatial(
@@ -164,15 +182,10 @@ def generate_10x_spatial(
             points.append([row[-2], row[-1]])
             row_col_dict[(row[2], row[3])] = row[0]
 
-    # Display the image
-    # small_img.setflags(write=1)
-    label_dict = {}
+    owner = np.zeros(small_img.shape[:2]) - 1
     barcodes = list(adata.obs['barcodes'])
     R, G, B = palette_to_rgb()
     for i in range(len(adata.obs)):
-        # Create a Rectangle patch
-
-        label_dict[barcodes[i]] = labels[i]
         center = np.array(spatial_dict[(barcodes[i])])*scaling_factor
         center = center.astype('int')
 
@@ -181,8 +194,9 @@ def generate_10x_spatial(
         circle = draw.disk(center, r)
 
         small_img[circle[0], circle[1], :] = color
+        owner[circle[0], circle[1]] = i
 
     if savepath is not None:
         plt.imsave(savepath, small_img)
 
-    return small_img
+    return small_img, owner.astype(int)
