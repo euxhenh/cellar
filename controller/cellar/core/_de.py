@@ -60,7 +60,7 @@ def ttest(adata, cluster_id, cluster_id2, alpha=0.05):
         data=data,
         grouping=grouping,
         gene_names=gene_names,
-        is_logged=True
+        is_logged=not (np.min(adata.X) == 0)
     )
 
     test = test.summary(qval_thres=alpha, fc_upper_thres=1)
@@ -70,8 +70,8 @@ def ttest(adata, cluster_id, cluster_id2, alpha=0.05):
     else:
         other_means = adata.X[indices2].mean(axis=0)
 
-    test['norm_mean_set1'] = means[test.index.to_numpy()].astype(float)
-    test['norm_mean_set2'] = other_means[test.index.to_numpy()].astype(float)
+    test['mean_set1'] = means[test.index.to_numpy()].astype(float)
+    test['mean_set2'] = other_means[test.index.to_numpy()].astype(float)
     test = test.drop(['zero_mean', 'zero_variance', 'mean'], axis=1)
     test = test.sort_values(by='log2fc', ascending=False)
     test = test.round(3)
