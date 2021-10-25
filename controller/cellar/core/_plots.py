@@ -138,7 +138,7 @@ def get_expression_figure(adata, feature_values, feature_range):
         color=expression,
         opacity=0.8,
         labels={
-            'color': 'Clipped Val.' if single_feature else 'Normalized Val.'},
+            'color': 'Clipped Val.' if single_feature else 'Min Co-Exp.'},
         range_color=[expression.min(), 1 if exp_max == 0 else exp_max],
         render_mode='webgl',
         color_continuous_scale=px.colors.sequential.Viridis
