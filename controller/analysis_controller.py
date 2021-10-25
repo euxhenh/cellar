@@ -2,6 +2,7 @@ import dash
 import os
 import pandas as pd
 import numpy as np
+from scipy.cluster.hierarchy import cut_tree
 from app import app, dbroot, logger
 from dash.dependencies import Input, Output, State
 from dash.exceptions import PreventUpdate
@@ -297,6 +298,66 @@ for prefix, an in zip(['main', 'side'], ['a1', 'a2']):
         State(prefix + "-de-table", "data"),
         prevent_initial_call=True
     )(get_enrichment_table_func(prefix, an))
+
+
+# Paste active DE genes
+def get_paste_de_genes_func(prefix, an):
+    def _func(n1, cells, clean, de_data, cur_page, page_size, options):
+        ctx = dash.callback_context
+        if not ctx.triggered:
+            raise PreventUpdate
+        if an not in dbroot.adatas:
+            raise PreventUpdate
+        if 'adata' not in dbroot.adatas[an]:
+            raise PreventUpdate
+
+        vals = [i['label'] for i in options]
+
+        if cur_page is None:
+            cur_page = 0
+
+        button_id = ctx.triggered[0]["prop_id"].split(".")[0]
+        if button_id == prefix + "-data-load-clean":
+            return [], dash.no_update
+        elif button_id == prefix + "-paste-de-genes":
+            if de_data is None or len(de_data) == 0:
+                return dash.no_update, _prep_notification(
+                    "DE table is empty", "warning"
+                )
+            return [
+                options[vals.index(row['gene'])]['value'] for row in
+                de_data[cur_page * page_size: (cur_page + 1) * page_size]
+            ], dash.no_update
+        elif button_id == prefix + "-de-table":
+            labels = [
+                de_data[cur_page * page_size + cell['row']]['gene']
+                for cell in cells
+            ]
+            labels = np.unique(labels)
+            return [
+                options[vals.index(label)]['value']
+                for label in labels
+            ], dash.no_update
+
+        return [], dash.no_update
+    return _func
+
+
+for prefix, an in zip(['main', 'side'], ['a1', 'a2']):
+    app.callback(
+        Output(prefix + "-feature-list", "value"),
+        MultiplexerOutput("push-notification", "data"),
+
+        Input(prefix + "-paste-de-genes", "n_clicks"),
+        Input(prefix + "-de-table", "selected_cells"),
+        Input(prefix + "-data-load-clean", "data"),
+
+        State(prefix + "-de-table", "data"),
+        State(prefix + '-de-table', "page_current"),
+        State(prefix + "-de-table", "page_size"),
+        State(prefix + "-feature-list", "options"),
+        prevent_initial_call=True
+    )(get_paste_de_genes_func(prefix, an))
 
 
 # Analysis plots

@@ -94,6 +94,23 @@ def get_feature_card(prefix):
                     dbc.Row(
                         [
                             dbc.Col(
+                                dbc.Button(
+                                    dbc.Row(
+                                        [
+                                            html.Span("DE"),
+                                            html.Span(style={'width': '5px'}),
+                                            html.I(className="fas fa-chevron-right"),
+                                        ],
+                                        align='baseline',
+                                        justify='center',
+                                        no_gutters=True
+                                    ),
+                                    id=prefix + "-paste-de-genes",
+                                    color='secondary'
+                                ),
+                                width=1
+                            ),
+                            dbc.Col(
                                 dcc.Loading(
                                     dcc.Dropdown(
                                         options=[],
@@ -101,7 +118,7 @@ def get_feature_card(prefix):
                                         id=prefix + '-feature-list',
                                         placeholder="Search gene by symbol",
                                     ), type="circle"),
-                                width=8
+                                width=7
                             ),
                             dbc.Col(
                                 dbc.DropdownMenu(
