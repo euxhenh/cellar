@@ -81,6 +81,12 @@ main_page = dbc.Col(
         dcc.Store(id="shape-signal-atoggle", storage_type="memory",
                   data=1, clear_data=True),
 
+        # Used to clean analysis tables upon dataset switch
+        dcc.Store(id="main-data-load-clean", storage_type="memory",
+                  data=1, clear_data=True),
+        dcc.Store(id="side-data-load-clean", storage_type="memory",
+                  data=1, clear_data=True),
+
         # Signals cluster list to change after running any for of clustering,
         # including cluster, ss_cluster, label_transfer, subset_merge
         dcc.Store(id="main-cluster-list-signal", storage_type="memory",

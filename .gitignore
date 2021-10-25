@@ -16,3 +16,5 @@ data/server/*
 data/codex_tile/*
 experiments
 PaperImages
+.idea
+.DS_Store

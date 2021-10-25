@@ -175,7 +175,8 @@ clu_kmeans_settings = dbc.Popover(
                         dbc.Input(
                             id="clu-KMeans-n-clusters",
                             type="text",
-                            value='[4, 6, 8, 10, 12, 14, 16]'
+                            value='8',
+                            placeholder='e.g.  [4, 8, 16] or (3, 7) or 8'
                         )
                     ]
                 ),
@@ -302,7 +303,8 @@ clu_kmedoids_settings = dbc.Popover(
                         dbc.Input(
                             id="clu-KMedoids-n-clusters",
                             type="text",
-                            value='[4, 6, 8, 10, 12, 14, 16]'
+                            value='8',
+                            placeholder='e.g.  [4, 8, 16] or (3, 7) or 8'
                         )
                     ]
                 ),
@@ -460,7 +462,8 @@ clu_spectral_clustering_settings = dbc.Popover(
                         dbc.Input(
                             id="clu-SpectralClustering-n-clusters",
                             type="text",
-                            value='[4, 6, 8, 10, 12, 14, 16]'
+                            value='8',
+                            placeholder='e.g.  [4, 8, 16] or (3, 7) or 8'
                         )
                     ]
                 ),
@@ -639,7 +642,8 @@ clu_agglomerative_settings = dbc.Popover(
                         dbc.Input(
                             id="clu-Agglomerative-n-clusters",
                             type="text",
-                            value='[4, 6, 8, 10, 12, 14, 16]'
+                            value='8',
+                            placeholder='e.g.  [4, 8, 16] or (3, 7) or 8'
                         )
                     ]
                 ),

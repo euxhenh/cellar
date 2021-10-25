@@ -10,6 +10,7 @@ from .cellar.core import ttest, enrich, get_heatmap, get_violin_plot
 from .cellar.utils.exceptions import UserError
 from .multiplexer import MultiplexerOutput
 from .notifications import _prep_notification
+from layout.misc import empty_analysis_figure
 
 
 def get_de_cluster_update_func(prefix, an):
@@ -108,7 +109,7 @@ for prefix, an in zip(['main', 'side'], ['a1', 'a2']):
 
 # DE genes
 def get_update_de_table_func(prefix, an):
-    def _func(n1, cluster_id, cluster_id2, alpha):
+    def _func(n1, clean, cluster_id, cluster_id2, alpha):
         """
         Given a cluster id or subset name, find the DE genes for that cluster.
 
@@ -126,6 +127,10 @@ def get_update_de_table_func(prefix, an):
             raise PreventUpdate
         if cluster_id is None:
             raise PreventUpdate
+
+        if ctx.triggered[0]["prop_id"].split(".")[0] == \
+                prefix + "-data-load-clean":
+            return None, None, None, None, dash.no_update
 
         # If cluster_id starts with prefix + '-subset', than it is a subset,
         # otherwise it is considered a cluster ID and is converted to int.
@@ -196,6 +201,7 @@ for prefix, an in zip(['main', 'side'], ['a1', 'a2']):
         MultiplexerOutput("push-notification", "data"),
 
         Input(prefix + "-find-de-genes-btn", "n_clicks"),
+        Input(prefix + "-data-load-clean", "data"),
 
         State(prefix + "-de-cluster-select", "value"),
         State(prefix + "-de-cluster-select2", "value"),
@@ -206,7 +212,7 @@ for prefix, an in zip(['main', 'side'], ['a1', 'a2']):
 
 # Enrichment
 def get_enrichment_table_func(prefix, an):
-    def _func(n1, gene_set, de_genes_no, de_data):
+    def _func(n1, clean, gene_set, de_genes_no, de_data):
         """
         Runs enrichment analysis for gene_set given a list of DE genes.
         Since we obtain the full list of DE genes, an additional
@@ -219,6 +225,10 @@ def get_enrichment_table_func(prefix, an):
             raise PreventUpdate
         if 'adata' not in dbroot.adatas[an]:
             raise PreventUpdate
+
+        if ctx.triggered[0]["prop_id"].split(".")[0] == \
+                prefix + "-data-load-clean":
+            return None, None, None, None, dash.no_update
 
         if de_data is None or len(de_data) == 0:
             error_msg = "Empty DE list encountered."
@@ -280,6 +290,7 @@ for prefix, an in zip(['main', 'side'], ['a1', 'a2']):
         MultiplexerOutput("push-notification", "data"),
 
         Input(prefix + "-run-enrich-btn", "n_clicks"),
+        Input(prefix + "-data-load-clean", "data"),
 
         State(prefix + "-gene-set-dropdown", "value"),
         State(prefix + "-de-genes-enrich-no", "value"),
@@ -290,7 +301,7 @@ for prefix, an in zip(['main', 'side'], ['a1', 'a2']):
 
 # Analysis plots
 def get_plot_analysis_func(prefix, an):
-    def _func(n1, n2, feature_list, feature_range):
+    def _func(n1, n2, clean, feature_list, feature_range):
         """
         Given a single or list of features, return a heatmap or violin plot.
         The violin plot can only be run when a single feature is selected.
@@ -302,6 +313,10 @@ def get_plot_analysis_func(prefix, an):
             raise PreventUpdate
         if 'adata' not in dbroot.adatas[an]:
             raise PreventUpdate
+
+        if ctx.triggered[0]["prop_id"].split(".")[0] == \
+                prefix + "-data-load-clean":
+            return empty_analysis_figure, dash.no_update
 
         if 'labels' not in dbroot.adatas[an]['adata'].obs:
             error_msg = "No labels found; cannot visualize features. Run " +\
@@ -352,6 +367,7 @@ for prefix, an in zip(['main', 'side'], ['a1', 'a2']):
 
         Input(prefix + "-heatmap", "n_clicks"),
         Input(prefix + "-violin-plot", "n_clicks"),
+        Input(prefix + "-data-load-clean", "data"),
         State(prefix + "-feature-list", "value"),
         State(prefix + "-feature-rangeslider", "value"),
         prevent_initial_call=True

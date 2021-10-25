@@ -18,6 +18,8 @@ from .notifications import _prep_notification
     Output("dataset-load", "style"),
     Output("data-loaded-plot-signal", "data"),
     Output("data-loaded-annotation-table-signal", "data"),
+    Output("main-data-load-clean", "data"),
+    Output("side-data-load-clean", "data"),
     MultiplexerOutput("push-notification", "data"),
 
     Input("load-dataset-btn", "n_clicks"),
@@ -46,7 +48,7 @@ def load_dataset(n1, dname, actp):
         error_msg = "Error encountered while reading file. Maybe the file " +\
             "is not formatted properly, or invalid entries were found."
         logger.error(error_msg)
-        return [dash.no_update] * 5 + [_prep_notification(error_msg, "danger")]
+        return [dash.no_update] * 7 + [_prep_notification(error_msg, "danger")]
 
     dbroot.adatas[an]['name'] = os.path.splitext(
         os.path.basename(dname))[0]
@@ -54,7 +56,10 @@ def load_dataset(n1, dname, actp):
     if is_sparse(dbroot.adatas[an]['adata'].X):
         logger.info("Found Sparse Matrix.")
 
-    return 1, 1, {}, 1, 1, dash.no_update
+    mclean = 1 if an == 'a1' else dash.no_update
+    sclean = 1 if an == 'a2' else dash.no_update
+
+    return 1, 1, {}, 1, 1, mclean, sclean, dash.no_update
 
 
 @app.callback(
