@@ -98,8 +98,8 @@ def get_feature_card(prefix):
                                     dbc.Row(
                                         [
                                             html.Span("DE"),
-                                            html.Span(style={'width': '5px'}),
-                                            html.I(className="fas fa-chevron-right"),
+                                            # html.Span(style={'width': '5px'}),
+                                            # html.I(className="fas fa-chevron-right"),
                                         ],
                                         align='baseline',
                                         justify='center',

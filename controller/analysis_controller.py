@@ -311,7 +311,7 @@ def get_paste_de_genes_func(prefix, an):
         if 'adata' not in dbroot.adatas[an]:
             raise PreventUpdate
 
-        vals = [i['label'] for i in options]
+        vals = {opt['label']: i for i, opt in enumerate(options)}
 
         if cur_page is None:
             cur_page = 0
@@ -325,7 +325,7 @@ def get_paste_de_genes_func(prefix, an):
                     "DE table is empty", "warning"
                 )
             return [
-                options[vals.index(row['gene'])]['value'] for row in
+                options[vals[row['gene']]]['value'] for row in
                 de_data[cur_page * page_size: (cur_page + 1) * page_size]
             ], dash.no_update
         elif button_id == prefix + "-de-table":
@@ -335,7 +335,7 @@ def get_paste_de_genes_func(prefix, an):
             ]
             labels = np.unique(labels)
             return [
-                options[vals.index(label)]['value']
+                options[vals[label]]['value']
                 for label in labels
             ], dash.no_update
 
