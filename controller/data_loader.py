@@ -1,9 +1,12 @@
 import os
 import gc
 
+import numpy as np
 import dash
 from dash.dependencies import Input, Output, State
 from dash.exceptions import PreventUpdate
+import dash_html_components as html
+import dash_bootstrap_components as dbc
 
 from app import app, logger, dbroot
 from .cellar.core import read_adata, cl_add_gene_symbol
@@ -62,9 +65,75 @@ def load_dataset(n1, dname, actp):
     return 1, 1, {}, 1, 1, mclean, sclean, dash.no_update
 
 
+def _prettify_time(s):
+    s = int(np.round(s))
+    hrs, s = divmod(s, 3600)
+    m, s = divmod(s, 60)
+    t = f"{hrs}h " if hrs > 0 else ""
+    t += f"{m}m " if m > 0 else ""
+    t += f"{s}s"
+    return t
+
+
+def _get_run_times(nos, nof):
+    nos /= 1000
+    nof /= 1000
+
+    table_header = [
+        html.Thead(html.Tr([html.Th("Method"), html.Th("Est. Runtime")]))
+    ]
+
+    # Assume quadratic model on data
+    umap = 5 if nos < 5 else 0.002 * nos**2 + 0.21 * nos + 8
+    if nof > 10:
+        umap *= (nof / 5)
+    umaprow = html.Tr([html.Td("PCA (40 PC) + UMAP"), html.Td(
+        _prettify_time(umap))])
+
+    # Assume quadratic model on data
+    tsne = 15 if nos < 5 else 0.02 * nos**2 + 0.13 * nos + 20
+    if nof > 10:
+        tsne *= (nof / 5)
+    tsnerow = html.Tr([html.Td("PCA (40 PC) + t-SNE"), html.Td(
+        _prettify_time(tsne))])
+
+    pca = 1 if nos < 5 else 0.00031 * nos ** 2 + 0.0465 * nos + 0.97
+    if nof > 10:
+        pca *= (nof / 5)
+    pcarow = html.Tr([html.Td("PCA (40 PC) + PCA"), html.Td(
+        _prettify_time(pca))])
+
+    # Assume linear model on data (since using approx nn)
+    leiden = 2 if nos < 5 else 0.7 * nos
+    leidenrow = html.Tr([html.Td("Leiden Clustering (auto graph)"), html.Td(
+        _prettify_time(leiden))])
+
+    # Assume linear model on data
+    de = 1 if nos < 5 else 1.4 * nos
+    if nof > 5:
+        de *= (nof / 5)
+    derow = html.Tr([html.Td("DE Analysis (1 vs rest)"), html.Td(
+        _prettify_time(de))])
+
+    # Need to run 2 pca's and 2 umaps so this should be a good approx
+    scanpyrow = html.Tr([html.Td("Scanpy Ingest (Label Transfer)"), html.Td(
+        _prettify_time(2 * umap) + " - " + _prettify_time(4 * umap))])
+
+    # Assume quadratic model on data
+    singler = 120 if nos < 5 else 0.18 * nos**2 + 17 * nos + 28
+    singlerrow = html.Tr([html.Td("SingleR (Label Transfer)"), html.Td(
+        _prettify_time(singler) + " - " + _prettify_time(2 * singler))])
+
+    table_body = [html.Tbody([
+        umaprow, tsnerow, pcarow, leidenrow, derow, scanpyrow, singlerrow])]
+    table = dbc.Table(table_header + table_body, bordered=False)
+    return table
+
+
 @app.callback(
     Output("no-samples", "children"),
     Output("no-features", "children"),
+    Output("run-time-popover-body", "children"),
 
     Input("shape-signal-load", "data"),
     Input("shape-signal-load-prep", "data"),
@@ -93,7 +162,11 @@ def update_shape(s1, s2, s3, s4, actp):
 
     nos, nof = dbroot.adatas[an]['adata'].shape
 
-    return nos, nof
+    return nos, nof, [
+        html.Span("Rough estimates based on similar datasets"),
+        html.Br(), html.Br(),
+        _get_run_times(nos, nof)
+    ]
 
 
 @app.callback(

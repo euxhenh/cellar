@@ -6,7 +6,7 @@ import gseapy as gp
 from controller.cellar.utils.exceptions import InternalError, UserError
 
 
-def ttest(adata, cluster_id, cluster_id2, alpha=0.05):
+def ttest(adata, cluster_id, cluster_id2, alpha=0.05, fc_thresh=1):
     if cluster_id == cluster_id2:
         raise UserError("Selected subsets cannot be the same.")
 
@@ -63,7 +63,7 @@ def ttest(adata, cluster_id, cluster_id2, alpha=0.05):
         is_logged=not (np.min(adata.X) == 0)
     )
 
-    test = test.summary(qval_thres=alpha, fc_upper_thres=1)
+    test = test.summary(qval_thres=alpha, fc_upper_thres=fc_thresh)
     means = adata.X[indices1].mean(axis=0)
     if indices2 is None:
         other_means = np.delete(adata.X, indices1, axis=0).mean(axis=0)

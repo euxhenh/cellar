@@ -1,7 +1,6 @@
 import dash_bootstrap_components as dbc
 import dash_core_components as dcc
 
-# from .greeting import greeting_page
 from .plots import plots
 from .sidebar import sidebar
 from .analysis import main_analysis_tabs, side_analysis_tabs
@@ -150,6 +149,4 @@ main_page = dbc.Col(
     # className="no-display"
 )
 
-
-# container = dbc.Row([greeting_page, main_page], id='container')
 container = dbc.Row([main_page], id='container')

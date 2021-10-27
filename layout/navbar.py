@@ -79,6 +79,10 @@ cellar_bar = dbc.Nav(
                     outline=True,
                     id="toggle-notifications-btn"
                 ),
+                dbc.Tooltip(
+                    "Notifications",
+                    target="toggle-notifications-btn",
+                ),
                 dbc.Toast(
                     id="notifications-toast",
                     header="Notifications",

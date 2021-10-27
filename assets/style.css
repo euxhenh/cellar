@@ -27,21 +27,6 @@
     color: var(--secondary);
 }
 
-#greeting-welcome {
-    /* margin-top: 200px; */
-    font-size: 60px;
-    color: var(--dark-font);
-}
-
-#greeting-load {
-    font-size: 20px;
-    color: var(--dark-font);
-}
-
-#greeting-page {
-    margin-top: 200px;
-}
-
 #toggle-notifications-btn {
     color: white;
     font-size: 20px;
@@ -93,27 +78,6 @@
     font-weight: 500;
     background-color: var(--primary);
     color: white;
-}
-
-.sidebar .panel {
-    /* position: fixed; */
-    /* min-width: 440px; */
-    /* width: 100%; */
-    /* width: 27rem; */
-    /* width: 440px;
-    max-width: 100%; */
-    /* min-width: 440px; */
-    /* flex: 0 0 440px; */
-}
-
-.main-body {
-    /* width: 100%; */
-    /* max-width: 1500px; */
-    /* width: calc(100% - 440px); */
-    /* width: 75%; */
-    /* min-width: 700px; */
-    /* flex: 0 0 440px; */
-    /* flex: 1 0 75%; */
 }
 
 .sidebar .list-group-item-text {
@@ -196,13 +160,6 @@ button.export:hover {
     border-color: transparent;
 }
 
-/* #clusters-body {
-    min-height: 50px;
-    max-height: 300px;
-    overflow-y: auto;
-    margin-right: 0;
-} */
-
 .analysis-container {
     min-height: 200px;
     height: 100%;
@@ -212,16 +169,9 @@ button.export:hover {
     height: 100%;
 }
 
-/* .prep-ckb {
-    -ms-transform: scale(2); /* IE */
--moz-transform: scale(2);
-/* FF */
--webkit-transform: scale(2);
-/* Safari and Chrome */
--o-transform: scale(2);
-/* Opera */
-transform: scale(2);
-padding: 7px;
+.no-arrow {
+    -moz-appearance: textfield !important;
+    -webkit-appearance: none;
+    margin: 0;
+    padding-right: 0;
 }
-
-*/

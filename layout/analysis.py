@@ -29,13 +29,30 @@ def get_de_card(prefix):
                                             className="mr-1"
                                         ),
                                         dbc.InputGroupAddon(
-                                            "alpha"
+                                            u"\u03B1"
                                         ),
                                         dbc.Input(
                                             value=0.05,
                                             id=prefix + "-de-analysis-alpha",
                                             type="number",
-                                            className="mr-1"
+                                            className="no-arrow"
+                                        ),
+                                        dbc.Tooltip(
+                                            "q-value threshold",
+                                            target=prefix + "-de-analysis-alpha",
+                                        ),
+                                        dbc.InputGroupAddon(
+                                            "FC"
+                                        ),
+                                        dbc.Input(
+                                            value=1,
+                                            id=prefix + "-de-analysis-fc",
+                                            type="number",
+                                            className="no-arrow"
+                                        ),
+                                        dbc.Tooltip(
+                                            "Fold-Change threshold",
+                                            target=prefix + "-de-analysis-fc",
                                         ),
                                         dbc.InputGroupAddon(
                                             dbc.Button(
@@ -97,9 +114,7 @@ def get_feature_card(prefix):
                                 dbc.Button(
                                     dbc.Row(
                                         [
-                                            html.Span("DE"),
-                                            # html.Span(style={'width': '5px'}),
-                                            # html.I(className="fas fa-chevron-right"),
+                                            html.Span("DE")
                                         ],
                                         align='baseline',
                                         justify='center',
@@ -142,7 +157,7 @@ def get_feature_card(prefix):
                             ),
                             dbc.Col(
                                 dbc.Button(
-                                    "Clear PLOT",
+                                    "Clear",
                                     id=prefix + "-clear-expression-btn",
                                     color='primary'
                                 ),

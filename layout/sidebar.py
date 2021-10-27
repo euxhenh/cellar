@@ -47,11 +47,37 @@ dataset_shape = dbc.Row(
                     ]
                 )
             ]
+        ),
+        dbc.Col(
+            [
+                dbc.Button(
+                    html.I(className="far fa-lightbulb"),
+                    id="run-time-btn",
+                    color="info",
+                    outline=True
+                ),
+                dbc.Tooltip(
+                    "Runtime Estimates",
+                    target="run-time-btn",
+                ),
+                dbc.Popover(
+                    [
+                        dbc.PopoverHeader("Run-Time Estimates"),
+                        dbc.PopoverBody([
+                            "No dataset loaded."
+                        ], id="run-time-popover-body")
+                    ],
+                    id="run-time-popover",
+                    target="run-time-btn",
+                    trigger="click"
+                )
+            ],
+            width=1
         )
     ],
     no_gutters=True,
     justify='between',
-    className="panel mb-2"
+    className="mb-2"
 )
 
 dim_block = dbc.Card(
