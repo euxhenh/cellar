@@ -217,7 +217,7 @@ row_1 = dbc.Row([
                                 dbc.Checkbox(
                                     "prep-high-var-checkbox",
                                     className="mr-3 prep-ckb",
-                                    checked=True
+                                    checked=False
                                 ),
                                 html.H5("Highly Variable Genes",
                                         className="card-title")
