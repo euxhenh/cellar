@@ -94,10 +94,10 @@ def generate_tile(
 
                 sort_idx = np.argsort(cell_ids.to_numpy() + 1)
                 idx = np.searchsorted(
-                    cell_ids.to_numpy(), tile, sorter = sort_idx)
+                    cell_ids.to_numpy(), tile, sorter=sort_idx)
                 tile = np.arange(len(cell_ids))[sort_idx][idx]
                 rid_tile = cell_rids.to_numpy()[tile]
-                rid_tile[tile_cp == 0] = -1 # remove empty pixels
+                rid_tile[tile_cp == 0] = -1  # remove empty pixels
 
                 cell_rids = cell_rids[cell_rids < adata.shape[0]]
                 labels = adata.obs['labels'].to_numpy()[cell_rids] + 1
@@ -136,7 +136,7 @@ def generate_tile(
 
 def generate_10x_spatial(
         path_to_img, path_to_df, path_to_json,
-        adata=None, savepath=None, in_tissue=True):
+        adata=None, savepath=None, in_tissue=True, palette=None):
     '''
     in_tissue:
         True: onyl show spots that are in the tissue
@@ -184,7 +184,7 @@ def generate_10x_spatial(
 
     owner = np.zeros(small_img.shape[:2]) - 1
     barcodes = list(adata.obs['barcodes'])
-    R, G, B = palette_to_rgb()
+    R, G, B = palette_to_rgb(palette)
     for i in range(len(adata.obs)):
         center = np.array(spatial_dict[(barcodes[i])])*scaling_factor
         center = center.astype('int')

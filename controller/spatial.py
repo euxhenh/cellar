@@ -65,7 +65,7 @@ for prefix, an in zip(["main", "side"], ["a1", "a2"]):
     )(get_parse_tar_gz_func(an))
 
 
-def get_generate_tile_func(an):
+def get_generate_tile_func(an, prefix):
     def _func(n1, data_type):
         ctx = dash.callback_context
         if not ctx.triggered:
@@ -85,7 +85,8 @@ def get_generate_tile_func(an):
                     f'tmp/{an}/s10x/spatial/tissue_positions_list.csv',
                     f'tmp/{an}/s10x/spatial/scalefactors_json.json',
                     adata=dbroot.adatas['a1']['adata'],
-                    in_tissue=True)
+                    in_tissue=True,
+                    palette=dbroot.palettes[prefix])
             except Exception as e:
                 logger.error(str(e))
                 error_msg = "Error occurred when generating 10x spatial tile."
@@ -102,7 +103,8 @@ def get_generate_tile_func(an):
                     tile, owner = generate_tile(
                         f'data/codex_tile/{fname}/images',
                         f'data/codex_tile/{fname}/data.csv',
-                        adata=dbroot.adatas[an]['adata'])
+                        adata=dbroot.adatas[an]['adata'],
+                        palette=dbroot.palettes[prefix])
                 else:
                     if not os.path.isdir(f'tmp/{an}/codex'):
                         raise PreventUpdate
@@ -110,7 +112,8 @@ def get_generate_tile_func(an):
                     tile, owner = generate_tile(
                         f'tmp/{an}/codex/images',
                         f'tmp/{an}/codex/data.csv',
-                        adata=dbroot.adatas[an]['adata'])
+                        adata=dbroot.adatas[an]['adata'],
+                        palette=dbroot.palettes[prefix])
             except Exception as e:
                 logger.error(str(e))
                 error_msg = "Error occurred when generating CODEX tile."
@@ -161,7 +164,7 @@ for prefix, an in zip(["main", "side"], ["a1", "a2"]):
         Input(prefix + "-generate-tile-btn", "n_clicks"),
         State(prefix + "-spatial-type-dropdown", "value"),
         prevent_initial_call=True
-    )(get_generate_tile_func(an))
+    )(get_generate_tile_func(an, prefix))
 
 
 def get_download_tile_func(an):

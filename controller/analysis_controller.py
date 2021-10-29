@@ -411,7 +411,8 @@ def get_plot_analysis_func(prefix, an):
         elif button_id == prefix + '-violin-plot':
             try:
                 fig = get_violin_plot(
-                    dbroot.adatas[an]['adata'], feature_list, feature_range)
+                    dbroot.adatas[an]['adata'], feature_list, feature_range,
+                    palette=dbroot.palettes[prefix])
             except UserError as ue:
                 logger.error(str(ue))
                 return dash.no_update, _prep_notification(str(ue), "warning")

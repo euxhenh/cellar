@@ -5,6 +5,7 @@ import ZODB
 import ZODB.FileStorage
 
 from log import setup_logger
+from controller.cellar.utils.colors import PALETTE
 
 
 # In-memory database. Used for storing AnnData objects
@@ -14,8 +15,11 @@ dbroot = connection.root
 dbroot.adatas = BTrees.OOBTree.BTree()
 dbroot.MULTIPLEXER_OUTPUTS = BTrees.OOBTree.BTree()
 dbroot.notifications = BTrees.OOBTree.BTree()
+dbroot.palettes = BTrees.OOBTree.BTree()
+dbroot.palettes['main'] = PALETTE.copy()
+dbroot.palettes['side'] = PALETTE.copy()
 
-# Bootstrap them
+# Bootstrap theme
 external_stylesheets = [
     dbc.themes.SANDSTONE,
     {

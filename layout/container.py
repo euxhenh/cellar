@@ -143,6 +143,16 @@ main_page = dbc.Col(
         # Signal notification
         dcc.Store(id="push-notification",
                   storage_type="memory", data=1, clear_data=True),
+
+        # Palette Signal
+        dcc.Store(id="main-clear-palette-signal",
+                  storage_type="memory", data=1, clear_data=True),
+        dcc.Store(id="side-clear-palette-signal",
+                  storage_type="memory", data=1, clear_data=True),
+        dcc.Store(id="main-apply-palette-signal",
+                  storage_type="memory", data=1, clear_data=True),
+        dcc.Store(id="side-apply-palette-signal",
+                  storage_type="memory", data=1, clear_data=True),
         main_body
     ],
     id='main-body',

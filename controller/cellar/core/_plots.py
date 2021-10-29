@@ -37,7 +37,7 @@ def get_dim_figure(adata, title):
     return fig
 
 
-def get_clu_figure(adata, title):
+def get_clu_figure(adata, title, palette=PALETTE):
     if 'x_emb_2d' not in adata.obsm or 'labels' not in adata.obs:
         raise InternalError("x_emb_2d or labels not found in adata.")
 
@@ -46,7 +46,7 @@ def get_clu_figure(adata, title):
     unq_colors = np.unique(adata.obs['labels'].to_numpy())
     maxval = np.max(unq_colors)
     unq_colors = list(unq_colors.astype(str))
-    pal = [px.colors.convert_colors_to_same_type(i)[0][0] for i in PALETTE]
+    pal = [px.colors.convert_colors_to_same_type(i)[0][0] for i in palette]
 
     if 'annotations' in adata.obs:
         hover_data['Annotation'] = adata.obs['annotations'].to_numpy()
@@ -208,7 +208,7 @@ def get_heatmap(adata, feature_list):
     return fig
 
 
-def get_violin_plot(adata, feature_values, feature_range):
+def get_violin_plot(adata, feature_values, feature_range, palette=PALETTE):
     for feature in feature_values:
         if feature not in adata.var_names:
             raise UserError(f"Feature {feature} not found in adata.")
@@ -234,7 +234,7 @@ def get_violin_plot(adata, feature_values, feature_range):
         vect[vect > feature_range[1]] = new_max
 
     unq_labels = np.unique(adata.obs['labels'])
-    pal = [px.colors.convert_colors_to_same_type(i)[0][0] for i in PALETTE]
+    pal = [px.colors.convert_colors_to_same_type(i)[0][0] for i in palette]
 
     if 'gene_symbols' not in adata.var:
         cl_add_gene_symbol(adata)

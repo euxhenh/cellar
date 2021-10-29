@@ -3,6 +3,75 @@ import dash_core_components as dcc
 import dash_html_components as html
 
 from .misc import empty_figure
+from app import dbroot
+
+
+def get_plot_palette_popover(prefix):
+    palette = dbroot.palettes[prefix]
+    return dbc.Popover(
+        [
+            dbc.PopoverHeader("Color Palette"),
+            dbc.PopoverBody(
+                [
+                    dbc.Row([
+                        dbc.Col(
+                            dbc.InputGroup(
+                                [
+                                    dbc.InputGroupAddon(
+                                        html.P(
+                                            ("0" if i * 5 + j < 10 else "") +
+                                            str(i * 5 + j),
+                                            className="input-group-text",
+                                            style={
+                                                'background-color': palette[
+                                                    i * 5 + j]
+                                            },
+                                            id=prefix + f"-color-bg-{i* 5 + j}"
+                                        ),
+                                        addon_type="append"
+                                    ),
+                                    dbc.Input(
+                                        id=prefix + f"-color-input-{i* 5 + j}",
+                                        debounce=True,
+                                        maxLength=6,
+                                        minLength=6,
+                                        pattern='^(?:[0-9a-fA-F]{6})$',
+                                        placeholder=str(palette[i * 5 + j])[1:]
+                                    )
+                                ]
+                            )
+                        ) for j in range(5)
+                    ]) for i in range(10)
+                ] + [
+                    dbc.Row(
+                        [
+                            dbc.Col([
+                                dbc.Button(
+                                    "Clear All",
+                                    id=prefix + "-clear-palette-btn",
+                                    color='secondary',
+                                    className="mr-3"
+                                ),
+                                dbc.Button(
+                                    "Apply Palette",
+                                    id=prefix + "-apply-palette-btn",
+                                    color='primary'
+                                )
+                            ], width=4)
+                        ],
+                        justify='center',
+                        className="mt-3"
+                    )
+                ]
+            )
+        ],
+        className="color-popover",
+        id=prefix + "-color-palette-popover",
+        is_open=False,
+        placement="bottom-start",
+        target=prefix + "-change-color-palette-btn",
+        trigger="click"
+    )
 
 
 def get_plot_download_popover(prefix):
@@ -103,6 +172,16 @@ def get_plot(prefix):
                         ),
                         dbc.Row(
                             [
+                                dbc.Button(
+                                    html.I(
+                                        className="fas fa-palette",
+                                        style={'font-size': '16px'}
+                                    ),
+                                    id=prefix + "-change-color-palette-btn",
+                                    className="mr-3",
+                                    color="light"
+                                ),
+                                get_plot_palette_popover(prefix),
                                 dbc.Button(
                                     html.I(
                                         className="fas fa-save",

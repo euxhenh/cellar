@@ -1,8 +1,10 @@
 from enum import Enum
+import re
 
 import dash
 import dash_core_components as dcc
 import plotly
+from scipy.cluster.hierarchy import single
 from app import app, dbroot, logger
 from dash.dependencies import Input, Output, State
 from dash.exceptions import PreventUpdate
@@ -18,6 +20,7 @@ from .operations import (clu_filter, dim_reduce_filter, lbt_filter,
 from .multiplexer import MultiplexerOutput
 from .notifications import _prep_notification
 from scipy.sparse.linalg.eigen.arpack import ArpackNoConvergence
+from .cellar.utils.colors import PALETTE
 
 
 class Signal(int, Enum):
@@ -25,6 +28,7 @@ class Signal(int, Enum):
     CLUSTER = 201
     MERGE = 250
     SS_CLUSTER = 251
+    PALETTE = 280
     LABEL_TRANSFER = 301
     FEATURE_EXP = 401
     ANNOTATION = 501
@@ -47,13 +51,16 @@ class Signal(int, Enum):
     Input("data-loaded-plot-signal", "data"),
     Input("data-loaded-plot-signal-prep", "data"),
     Input("data-loaded-plot-signal-prep-atac", "data"),
+    Input("main-apply-palette-signal", "data"),
+    Input("side-apply-palette-signal", "data"),
 
     State("active-plot", "data"),
     State("label-tabs", "active_tab"),
     prevent_initial_call=True
 )
 def signal_plot(
-        n1, n2, mexp, sexp, c1, c2, ans, mps, dlps, dlpsp, dlpspa, actp, actt):
+        n1, n2, mexp, sexp, c1, c2, ans, mps, dlps, dlpsp, dlpspa, mapp, sapp,
+        actp, actt):
     ctx = dash.callback_context
     if not ctx.triggered:
         raise PreventUpdate
@@ -98,11 +105,14 @@ def signal_plot(
             or button_id == "data-loaded-plot-signal-prep-atac":
         if dlps is not None or dlpsp is not None or dlpspa is not None:
             to_return[index] = Signal.DATA_LOAD
+    elif button_id == "main-apply-palette-signal" or \
+            button_id == "side-apply-palette-signal":
+        to_return[index] = Signal.PALETTE
 
     return to_return
 
 
-def get_update_plot_func(an):
+def get_update_plot_func(an, prefix):
     def update_plot(
             s_code,
             dim_method, vis_method, clu_method, ssclu_method, lbt_method,
@@ -129,19 +139,27 @@ def get_update_plot_func(an):
             elif s_code == Signal.CLUSTER:
                 # Cluster and prepare figure
                 clu_filter(dbroot.adatas[an]['adata'], clu_method, settings)
-                return get_clu_figure(dbroot.adatas[an]['adata'], title), 1,\
-                    dash.no_update
+                return get_clu_figure(
+                    dbroot.adatas[an]['adata'], title,
+                    palette=dbroot.palettes[prefix]), 1, dash.no_update
             elif s_code == Signal.SS_CLUSTER:
                 ssclu_filter(dbroot.adatas[an]['adata'], ssclu_method,
                              settings, extras={'actp': 1 if an == 'a1' else 2})
-                return get_clu_figure(dbroot.adatas[an]['adata'], title), 1,\
-                    dash.no_update
+                return get_clu_figure(
+                    dbroot.adatas[an]['adata'], title,
+                    palette=dbroot.palettes[prefix]), 1, dash.no_update
             elif s_code == Signal.LABEL_TRANSFER:
                 ref_an = 'a2' if an == 'a1' else 'a1'
                 lbt_filter(dbroot.adatas[an]['adata'], lbt_method, settings,
                            extras={'ref': dbroot.adatas[ref_an]['adata']})
-                return get_clu_figure(dbroot.adatas[an]['adata'], title), 1,\
-                    dash.no_update
+                return get_clu_figure(
+                    dbroot.adatas[an]['adata'], title,
+                    palette=dbroot.palettes[prefix]), 1, dash.no_update
+            elif s_code == Signal.PALETTE:
+                return get_clu_figure(
+                    dbroot.adatas[an]['adata'], title,
+                    palette=dbroot.palettes[prefix]),\
+                    dash.no_update, dash.no_update
             elif s_code == Signal.FEATURE_EXP:
                 # Show gene expression levels and prepare figure
                 if feature_list is None:
@@ -153,19 +171,23 @@ def get_update_plot_func(an):
                 return get_reset_figure(dbroot.adatas[an]['adata'], title),\
                     dash.no_update, dash.no_update
             elif s_code == Signal.ANNOTATION:
-                return get_clu_figure(dbroot.adatas[an]['adata'], title),\
+                return get_clu_figure(
+                    dbroot.adatas[an]['adata'], title,
+                    palette=dbroot.palettes[prefix]),\
                     dash.no_update, dash.no_update
             elif s_code == Signal.MERGE:
-                return get_clu_figure(dbroot.adatas[an]['adata'], title), 1,\
-                    dash.no_update
+                return get_clu_figure(
+                    dbroot.adatas[an]['adata'], title,
+                    palette=dbroot.palettes[prefix]), 1, dash.no_update
             elif s_code == Signal.DATA_LOAD:
                 if 'x_emb_2d' in dbroot.adatas[an]['adata'].obsm:
                     if 'labels' in dbroot.adatas[an]['adata'].obs:
                         notif = _prep_notification(
                             "Found embeddings and labels.", icon="info")
 
-                        return get_clu_figure(dbroot.adatas[an]['adata'], title),\
-                            1, notif
+                        return get_clu_figure(
+                            dbroot.adatas[an]['adata'], title,
+                            palette=dbroot.palettes[prefix]), 1, notif
                     notif = _prep_notification(
                         "Found embeddings on file.", icon="info")
 
@@ -222,7 +244,7 @@ for prefix, an in zip(['main', 'side'], ['a1', 'a2']):
         [State(m['value'] + '-settings', 'children') for m in ssclu_list],
         [State(m['value'] + '-settings', 'children') for m in lbt_list],
         prevent_initial_call=True
-    )(get_update_plot_func(an))
+    )(get_update_plot_func(an, prefix))
 
 
 def get_download_plot_func(an):
@@ -263,3 +285,94 @@ for prefix, an in zip(['main', 'side'], ['a1', 'a2']):
         State(prefix + "-plot-download-scale", "value"),
         prevent_initial_call=True
     )(get_download_plot_func(an))
+
+
+def get_clear_palette_func():
+    def _func(n1):
+        ctx = dash.callback_context
+        if not ctx.triggered:
+            raise PreventUpdate
+        return [1] + [""] * len(PALETTE)
+    return _func
+
+
+for prefix in ['main', 'side']:
+    app.callback(
+        Output(prefix + "-clear-palette-signal", "data"),
+        [Output(prefix + f'-color-input-{i}', "value")
+         for i in range(len(PALETTE))],
+        Input(prefix + "-clear-palette-btn", "n_clicks"),
+        prevent_initial_call=True
+    )(get_clear_palette_func())
+
+
+def get_palette_bg_switcher_func(prefix):
+    def _func(clear, *colors):
+        ctx = dash.callback_context
+        if not ctx.triggered:
+            raise PreventUpdate
+
+        button_id = ctx.triggered[0]["prop_id"].split(".")[0]
+
+        if button_id == prefix + "-clear-palette-signal":
+            return [{'background-color': c} for c in PALETTE]
+
+        color_no = int(button_id.split('-')[-1])
+        match = re.search(r'^(?:[0-9a-fA-F]{6})$', colors[color_no])
+
+        to_return = [dash.no_update] * len(colors)
+        if colors[color_no] == "":
+            # dbroot.palettes[prefix][color_no] = PALETTE[color_no]
+            to_return[color_no] = {'background-color': PALETTE[color_no]}
+        elif match:
+            # dbroot.palettes[prefix][color_no] = '#' + colors[color_no]
+            to_return[color_no] = {'background-color': '#' + colors[color_no]}
+        return to_return
+
+    return _func
+
+
+for prefix in ['main', 'side']:
+    app.callback(
+        [Output(prefix + f'-color-bg-{i}', "style")
+         for i in range(len(PALETTE))],
+        Input(prefix + "-clear-palette-signal", "data"),
+        [Input(prefix + f'-color-input-{i}', "value")
+         for i in range(len(PALETTE))],
+        prevent_initial_call=True
+    )(get_palette_bg_switcher_func(prefix))
+
+
+def get_apply_palette_func(prefix):
+    def _func(n1, *colors):
+        ctx = dash.callback_context
+        if not ctx.triggered:
+            raise PreventUpdate
+
+        new_pal = PALETTE.copy()
+
+        for i in range(len(PALETTE)):
+            if colors[i] is None or colors[i] == "":
+                continue
+
+            match = re.search(r'^(?:[0-9a-fA-F]{6})$', colors[i])
+            if match:
+                new_pal[i] = '#' + colors[i]
+            else:
+                # Only apply if not errors
+                return dash.no_update, dash.no_update
+
+        dbroot.palettes[prefix] = new_pal
+        return 1, False
+    return _func
+
+
+for prefix in ['main', 'side']:
+    app.callback(
+        Output(prefix + "-apply-palette-signal", "data"),
+        Output(prefix + "-color-palette-popover", "is_open"),
+        Input(prefix + "-apply-palette-btn", "n_clicks"),
+        [State(prefix + f'-color-input-{i}', "value")
+         for i in range(len(PALETTE))],
+        prevent_initial_call=True
+    )(get_apply_palette_func(prefix))
