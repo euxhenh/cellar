@@ -168,7 +168,9 @@ def get_update_plot_func(an, prefix):
                     dbroot.adatas[an]['adata'], feature_list, feature_range)
                 return exp, dash.no_update, dash.no_update
             elif s_code == Signal.RESET:
-                return get_reset_figure(dbroot.adatas[an]['adata'], title),\
+                return get_reset_figure(
+                    dbroot.adatas[an]['adata'], title,
+                    palette=dbroot.palettes[prefix]),\
                     dash.no_update, dash.no_update
             elif s_code == Signal.ANNOTATION:
                 return get_clu_figure(

@@ -81,9 +81,9 @@ def get_clu_figure(adata, title, palette=PALETTE):
     return fig
 
 
-def get_reset_figure(adata, title):
+def get_reset_figure(adata, title, palette=PALETTE):
     if 'labels' in adata.obs:
-        return get_clu_figure(adata, title)
+        return get_clu_figure(adata, title, palette=palette)
 
     return get_dim_figure(adata, title)
 
