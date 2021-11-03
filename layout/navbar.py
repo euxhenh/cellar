@@ -4,7 +4,7 @@ import dash_html_components as html
 from controller.cellar.utils.misc import get_server_dataset_dict
 from controller.multiplexer import create_multiplexer
 from gvars import (CELLAR_LOGO, DATA_PATH, DEMOS_URL, DOCS_URL, GITHUB_URL,
-                   PAPER_URL)
+                   PAPER_URL, EMAIL, BUGS)
 
 from .preprocessing import prep_tabs
 
@@ -100,7 +100,26 @@ cellar_bar = dbc.Nav(
                 *create_multiplexer('notifications-toast', 'is_open', 2),
                 *create_multiplexer('notifications-toast', 'duration', 2)
             ]
-        )
+        ),
+        dbc.NavItem(
+            [
+                dbc.Button(
+                    html.I(className="fas fa-power-off"),
+                    outline=True,
+                    color='danger',
+                    id="shutdown-btn",
+                    style={
+                        'font-size': '20px',
+                        'position': 'absolute',
+                        'right': 20
+                    }
+                ),
+                dbc.Tooltip(
+                    "End Session",
+                    target="shutdown-btn",
+                )
+            ]
+        ),
     ],
     className="ml-auto flex-nowrap mt-3 mt-md-0 m-auto",
     navbar=True
@@ -145,7 +164,7 @@ doc_bar = dbc.Nav(
                     [
                         html.I(className="fab fa-youtube"),
                         html.Span(style={'width': '5px'}),
-                        html.Span("Demo"),
+                        html.Span("Demos"),
                     ],
                     align='baseline',
                     no_gutters=True
@@ -153,7 +172,38 @@ doc_bar = dbc.Nav(
                 external_link=True,
                 href=DEMOS_URL,
                 target="_blank")
-        )
+        ),
+        dbc.NavItem(
+            dbc.NavLink(
+                dbc.Row(
+                    [
+                        html.I(className="fas fa-envelope"),
+                        html.Span(style={'width': '5px'}),
+                        html.Span("Email Us"),
+                    ],
+                    align='baseline',
+                    no_gutters=True
+                ),
+                className="ml-5",
+                external_link=True,
+                href=EMAIL,
+                target="_blank")
+        ),
+        dbc.NavItem(
+            dbc.NavLink(
+                dbc.Row(
+                    [
+                        html.I(className="fab fa-github"),
+                        html.Span(style={'width': '5px'}),
+                        html.Span("Issues"),
+                    ],
+                    align='baseline',
+                    no_gutters=True
+                ),
+                external_link=True,
+                href=BUGS,
+                target="_blank")
+        ),
     ],
     className="ml-auto flex-nowrap mt-3 mt-md-0 m-auto",
     navbar=True

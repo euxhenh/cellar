@@ -153,6 +153,9 @@ main_page = dbc.Col(
                   storage_type="memory", data=1, clear_data=True),
         dcc.Store(id="side-apply-palette-signal",
                   storage_type="memory", data=1, clear_data=True),
+
+        dcc.Store(id="shutdown-signal",
+                  storage_type="memory", data=1, clear_data=True),
         main_body
     ],
     id='main-body',

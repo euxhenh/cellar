@@ -3,6 +3,7 @@ import os
 import dash_core_components as dcc
 from dash.dependencies import Input, Output, State
 from dash.exceptions import PreventUpdate
+from flask import request
 
 from app import app, logger, dbroot
 
@@ -53,3 +54,20 @@ def export_annotations(n1, actp):
 
     title = dbroot.adatas[an]['name'] + '_obs_cellar.csv'
     return dcc.send_data_frame(dbroot.adatas[an]['adata'].obs.to_csv, title)
+
+
+@app.callback(
+    Output("shutdown-signal", "data"),
+    Input("shutdown-btn", "n_clicks"),
+    prevent_initial_call=True
+)
+def shutdown(n1):
+    ctx = dash.callback_context
+    if not ctx.triggered:
+        raise PreventUpdate
+    func = request.environ.get('werkzeug.server.shutdown')
+    if func is None:
+        raise RuntimeError('Not running with the Werkzeug Server')
+
+    logger.info("Shutting down...")
+    func()
