@@ -28,31 +28,61 @@ def get_de_card(prefix):
                                             id=prefix + "-de-cluster-select2",
                                             className="mr-1"
                                         ),
-                                        dbc.InputGroupAddon(
-                                            u"\u03B1"
+                                        dbc.Button(
+                                            html.I(className="fas fa-cog"),
+                                            id=prefix + "-de-analysis-btn",
+                                            color='primary',
+                                            outline=True
                                         ),
-                                        dbc.Input(
-                                            value=0.05,
-                                            id=prefix + "-de-analysis-alpha",
-                                            type="number",
-                                            className="no-arrow"
-                                        ),
-                                        dbc.Tooltip(
-                                            "q-value threshold",
-                                            target=prefix + "-de-analysis-alpha",
-                                        ),
-                                        dbc.InputGroupAddon(
-                                            "FC"
-                                        ),
-                                        dbc.Input(
-                                            value=1,
-                                            id=prefix + "-de-analysis-fc",
-                                            type="number",
-                                            className="no-arrow"
-                                        ),
-                                        dbc.Tooltip(
-                                            "Fold-Change threshold",
-                                            target=prefix + "-de-analysis-fc",
+                                        dbc.Popover(
+                                            [
+                                                dbc.PopoverHeader(
+                                                    "DE Settings"),
+                                                dbc.PopoverBody([
+                                                    dbc.FormGroup(
+                                                        [
+                                                            dbc.Label(
+                                                                "Alpha (q-Value Threshold)"),
+                                                            dbc.Input(
+                                                                id=prefix + "-de-analysis-alpha",
+                                                                type="number",
+                                                                value=0.05
+                                                            )
+                                                        ]
+                                                    ),
+                                                    dbc.FormGroup(
+                                                        [
+                                                            dbc.Label(
+                                                                "FoldChange Threshold"),
+                                                            dbc.Input(
+                                                                id=prefix + "-de-analysis-fc",
+                                                                placeholder="Set to 0 for no threshold",
+                                                                type="number",
+                                                                value=1
+                                                            )
+                                                        ]
+                                                    ),
+                                                    dbc.FormGroup(
+                                                        [
+                                                            dbc.Label(
+                                                                "Is Data Logged?"),
+                                                            dbc.RadioItems(
+                                                                options=[
+                                                                    {"label": "True",
+                                                                        "value": True},
+                                                                    {"label": "False",
+                                                                        "value": False},
+                                                                ],
+                                                                value=True,
+                                                                id=prefix + "-de-analysis-logged",
+                                                                inline=True
+                                                            )
+                                                        ]
+                                                    ),
+                                                ])
+                                            ],
+                                            target=prefix + "-de-analysis-btn",
+                                            trigger="click"
                                         ),
                                         dbc.InputGroupAddon(
                                             dbc.Button(

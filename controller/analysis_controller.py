@@ -110,7 +110,7 @@ for prefix, an in zip(['main', 'side'], ['a1', 'a2']):
 
 # DE genes
 def get_update_de_table_func(prefix, an):
-    def _func(n1, clean, cluster_id, cluster_id2, alpha, fc_thresh):
+    def _func(n1, clean, cluster_id, cluster_id2, alpha, fc_thresh, is_logged):
         """
         Given a cluster id or subset name, find the DE genes for that cluster.
 
@@ -174,7 +174,7 @@ def get_update_de_table_func(prefix, an):
         try:
             test = ttest(
                 dbroot.adatas[an]['adata'],
-                cluster_id, cluster_id2, alpha, fc_thresh)
+                cluster_id, cluster_id2, alpha, fc_thresh, is_logged)
         except UserError as ue:
             logger.error(str(ue))
             return [dash.no_update] * 4 + [_prep_notification(
@@ -212,6 +212,7 @@ for prefix, an in zip(['main', 'side'], ['a1', 'a2']):
         State(prefix + "-de-cluster-select2", "value"),
         State(prefix + "-de-analysis-alpha", "value"),
         State(prefix + "-de-analysis-fc", "value"),
+        State(prefix + "-de-analysis-logged", "value"),
         prevent_initial_call=True
     )(get_update_de_table_func(prefix, an))
 

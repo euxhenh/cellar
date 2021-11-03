@@ -6,7 +6,8 @@ import gseapy as gp
 from controller.cellar.utils.exceptions import InternalError, UserError
 
 
-def ttest(adata, cluster_id, cluster_id2, alpha=0.05, fc_thresh=1):
+def ttest(adata, cluster_id, cluster_id2,
+          alpha=0.05, fc_thresh=1, is_logged=True):
     if cluster_id == cluster_id2:
         raise UserError("Selected subsets cannot be the same.")
 
@@ -60,15 +61,17 @@ def ttest(adata, cluster_id, cluster_id2, alpha=0.05, fc_thresh=1):
         data=data,
         grouping=grouping,
         gene_names=gene_names,
-        is_logged=not (np.min(adata.X) == 0)
+        is_logged=is_logged
     )
-
     test = test.summary(qval_thres=alpha, fc_upper_thres=fc_thresh)
-    means = adata.X[indices1].mean(axis=0)
+    means = np.array(adata.X[indices1].mean(axis=0)).flatten()
+
     if indices2 is None:
-        other_means = np.delete(adata.X, indices1, axis=0).mean(axis=0)
+        indices = np.arange(adata.X.shape[0])
+        other_indices = np.delete(indices, indices1)
+        other_means = np.array(adata.X[other_indices].mean(axis=0)).flatten()
     else:
-        other_means = adata.X[indices2].mean(axis=0)
+        other_means = np.array(adata.X[indices2].mean(axis=0)).flatten()
 
     test['mean_set1'] = means[test.index.to_numpy()].astype(float)
     test['mean_set2'] = other_means[test.index.to_numpy()].astype(float)
