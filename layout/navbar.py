@@ -101,25 +101,25 @@ cellar_bar = dbc.Nav(
                 *create_multiplexer('notifications-toast', 'duration', 2)
             ]
         ),
-        dbc.NavItem(
-            [
-                dbc.Button(
-                    html.I(className="fas fa-power-off"),
-                    outline=True,
-                    color='danger',
-                    id="shutdown-btn",
-                    style={
-                        'font-size': '20px',
-                        'position': 'absolute',
-                        'right': 20
-                    }
-                ),
-                dbc.Tooltip(
-                    "End Session",
-                    target="shutdown-btn",
-                )
-            ]
-        ),
+        # dbc.NavItem(
+        #     [
+        #         dbc.Button(
+        #             html.I(className="fas fa-power-off"),
+        #             outline=True,
+        #             color='danger',
+        #             id="shutdown-btn",
+        #             style={
+        #                 'font-size': '20px',
+        #                 'position': 'absolute',
+        #                 'right': 20
+        #             }
+        #         ),
+        #         dbc.Tooltip(
+        #             "End Session",
+        #             target="shutdown-btn",
+        #         )
+        #     ]
+        # ),
     ],
     className="ml-auto flex-nowrap mt-3 mt-md-0 m-auto",
     navbar=True

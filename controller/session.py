@@ -56,18 +56,19 @@ def export_annotations(n1, actp):
     return dcc.send_data_frame(dbroot.adatas[an]['adata'].obs.to_csv, title)
 
 
-@app.callback(
-    Output("shutdown-signal", "data"),
-    Input("shutdown-btn", "n_clicks"),
-    prevent_initial_call=True
-)
-def shutdown(n1):
-    ctx = dash.callback_context
-    if not ctx.triggered:
-        raise PreventUpdate
-    func = request.environ.get('werkzeug.server.shutdown')
-    if func is None:
-        raise RuntimeError('Not running with the Werkzeug Server')
+# @app.callback(
+#     Output("shutdown-signal", "data"),
+#     Input("shutdown-btn", "n_clicks"),
+#     prevent_initial_call=True
+# )
+# def shutdown(n1):
+#     ctx = dash.callback_context
+#     if not ctx.triggered:
+#         raise PreventUpdate
 
-    logger.info("Shutting down...")
-    func()
+#     func = request.environ.get('werkzeug.server.shutdown')
+#     if func is None:
+#         raise RuntimeError('Not running with the Werkzeug Server')
+
+#     logger.info("Shutting down...")
+#     func()
