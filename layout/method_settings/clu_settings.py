@@ -93,20 +93,20 @@ clu_leiden_settings = dbc.Popover(
                         )
                     ]
                 ),
-                dbc.FormGroup(
-                    [
-                        dbc.Label("Construct Weighted Graph"),
-                        dbc.RadioItems(
-                            options=[
-                                {"label": "True", "value": True},
-                                {"label": "False", "value": False},
-                            ],
-                            value=True,
-                            id="clu-Leiden-weights",
-                            inline=True
-                        )
-                    ]
-                ),
+                # dbc.FormGroup(
+                #     [
+                #         dbc.Label("Construct Weighted Graph"),
+                #         dbc.RadioItems(
+                #             options=[
+                #                 {"label": "True", "value": True},
+                #                 {"label": "False", "value": False},
+                #             ],
+                #             value=True,
+                #             id="clu-Leiden-weights",
+                #             inline=True
+                #         )
+                #     ]
+                # ),
                 dbc.FormGroup(
                     [
                         dbc.Label("Construct Directed Graph"),
@@ -158,7 +158,7 @@ clu_leiden_settings_keys = {
     'clu-Leiden-max-comm': 'max_comm_size',
     'clu-Leiden-graph-method': 'graph_method',
     'clu-Leiden-nneigh': 'n_neighbors',
-    'clu-Leiden-weights': 'use_weights',
+    # 'clu-Leiden-weights': 'use_weights',
     'clu-Leiden-directed': 'directed',
     'clu-Leiden-random-state': 'seed'
 }

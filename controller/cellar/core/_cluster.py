@@ -16,18 +16,59 @@ from ..utils.exceptions import UserError
 def cl_Leiden(
         adata, key='labels', x_to_use='x_emb', clear_annotations=True,
         partition_type='RBConfigurationVertexPartition', directed=True,
-        graph_method='auto', n_neighbors=15, use_weights=True, **kwargs):
+        graph_method='auto', n_neighbors=15, use_weights=False, **kwargs):
+    """
+    Runs the leiden clustering algorithm:
+    https://www.nature.com/articles/s41598-019-41695-z
+
+    Parameters
+    __________
+
+    adata: anndata.AnnData object
+    key: str
+        Name of the key to add labels under adata.obs[key].
+    x_to_use: str
+        Key name in adata.obsm to use as feature vectors. If set to 'x'
+        then will use adata.X
+    clear_annotations: bool
+        Set to True to clear adata.obs['annotations'] before clustering.
+    partition_type: str
+        Can be one of [
+            'RBConfigurationVertexPartition',
+            'ModularityVertexPartition',
+            'RBERVertexPartition',
+            'CPMVertexPartition',
+            'SurpriseVertexPartition'
+        ]
+        See https://leidenalg.readthedocs.io/en/stable/reference.html#mutablevertexpartition
+    directed: bool
+        Set to True to construct a directed neighbors graph and undirected
+        otherwise.
+    graph_method: str
+        Method to use to construct the connectivity graph.
+        Can be one of ['auto', 'full', 'approx']. If set to 'auto',
+        will automatically choose between 'full' and 'approx' depending
+        on the size of the dataset. 'full' uses an exact KNN computation
+        to construct the graph, while 'approx' uses the faiss library
+        to compute approximate nearest neighbors.
+    n_neighbors: int
+        Number of nearest neighbors to find using the method specified above.
+    use_weights: bool
+        Set to True to construct a weighted graph (with weights being the
+        distances between points).
+    **kwargs: dict
+        Any additional arguments will be passed to la.find_partition
+    """
     if clear_annotations:
         if 'annotations' in adata.obs:
             adata.obs.pop('annotations')
 
-    if x_to_use not in adata.obsm:
-        raise UserError("No embeddings found. Please " +
-                        "run dimensionality reduction first.")
-
     if x_to_use == 'x':
         x_to_use = adata.X
     else:
+        if x_to_use not in adata.obsm:
+            raise UserError("No embeddings found. Please " +
+                            "run dimensionality reduction first.")
         x_to_use = adata.obsm[x_to_use]
 
     for k in kwargs:
@@ -38,16 +79,21 @@ def cl_Leiden(
             'ModularityVertexPartition', 'SurpriseVertexPartition']:
         kwargs.pop('resolution_parameter')
 
+    # Compute nearest neighbors
     sources, targets, weights = knn_auto(
         x_to_use, n_neighbors=n_neighbors,
-        mode='distance', method=graph_method)
+        mode='connectivity', method=graph_method)
 
-    kwargs['weights'] = weights if use_weights else None
+    # weights = 1 / weights
+    # kwargs['weights'] = weights if use_weights else None
 
+    # Construct graph
     gg = ig.Graph(directed=directed)
     gg.add_vertices(x_to_use.shape[0])
+    # This step can be slow if number of datapoints is really large
     gg.add_edges(list(zip(list(sources), list(targets))))
 
+    # Perform the clustering
     part = la.find_partition(gg, getattr(la, partition_type), **kwargs)
 
     adata.obs[key] = np.array(part.membership, dtype=int)
@@ -63,40 +109,28 @@ def _get_wrapper(x, obj_def, n_clusters=np.array([2, 4, 8, 16]),
 
     Parameters
     __________
-
     x: array, shape (n_samples, n_features)
         The data array.
-
     obj_def: object name
         Object to be instantiated in this function.
-
     n_clusters: array or int or tuple, dtype int, default [2, 4, 8, 16]
         Array containing the different values of clusters to try,
         or single int specifying the number of clusters,
         or tuple of the form (a, b, c) which specifies a range
         for (x=a; x<b; x+=c)
-
     eval_obj: Eval or None, default None
         Evaluation object to compare performance of different trials.
-
+    x_eval: np.ndarray or None
+        Array to be used for computing the clustering score. If set to None,
+        then will use x.
     n_jobs: int or None, default None
         Number of jobs to use if multithreading. See
         https://joblib.readthedocs.io/en/latest/generated/joblib.Parallel.html.
-
     attribute_name: string, default 'n_clusters'
         Name of the obj.attribute_name that corresponds to n_clusters.
-
     **kwargs: dictionary
         Dictionary of parameters that will get passed to obj_def
         when instantiating it.
-
-    Returns
-    _______
-
-    y: array, shape (n_samples,)
-        List of labels that correspond to the best clustering k, as
-        evaluated by eval_obj.
-
     """
     # Determine type of n_clusters passed
     k = _validate_clu_n_clusters(n_clusters, x.shape[0])
@@ -217,7 +251,7 @@ def cl_SpectralClustering(
             kwargs.pop('n_components')
 
     sources, targets, weights = knn_auto(
-        x_to_use, n_neighbors=kwargs['n_neighbors'], mode='distance')
+        x_to_use, n_neighbors=kwargs['n_neighbors'], mode='connectivity')
     kwargs.pop('n_neighbors')
 
     n_samples = x_to_use.shape[0]

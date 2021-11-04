@@ -1,5 +1,6 @@
 import numpy as np
 import faiss
+from numpy.core.fromnumeric import shape
 from sklearn.neighbors import kneighbors_graph
 
 from ..utils.exceptions import InternalError
@@ -25,15 +26,15 @@ def faiss_knn(x, n_neighbors=15):
 
     sources = np.repeat(np.arange(n_samples), n_neighbors)
     targets = targets.flatten()
-    weights = weights.flatten()
+    # weights = weights.flatten()
 
     if -1 in targets:
         raise InternalError("Not enough neighbors were found. Please consider "
                             "reducing the number of neighbors.")
-    return sources, targets, weights
+    return sources, targets, np.full(len(sources), 1)
 
 
-def knn_auto(x, n_neighbors=15, mode='distance', method='auto'):
+def knn_auto(x, n_neighbors=15, mode='connectivity', method='auto'):
     if method == 'auto':
         if x.shape[0] > 5000:
             print("Dataset is too large. Finding approximate neighbors.")
