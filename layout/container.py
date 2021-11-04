@@ -154,12 +154,33 @@ main_page = dbc.Col(
         dcc.Store(id="side-apply-palette-signal",
                   storage_type="memory", data=1, clear_data=True),
 
+        dcc.Store(id="runtime-warning-signal",
+                  storage_type="memory", data=1, clear_data=True),
         dcc.Store(id="shutdown-signal",
                   storage_type="memory", data=1, clear_data=True),
+        dbc.Modal(
+            [
+                dbc.ModalHeader("Warning"),
+                dbc.ModalBody(id="singler-runtime-body"),
+                dbc.ModalFooter([
+                    dbc.Button(
+                        "Continue", id="singler-runtime-yes",
+                        color="primary", className="ms-auto", n_clicks=0
+                    ),
+                    dbc.Button(
+                        "Back", id="singler-runtime-no",
+                        color="secondary", className="ms-auto", n_clicks=0
+                    )
+                ]),
+            ],
+            id="singler-runtime-modal",
+            is_open=False
+        ),
+        # dcc.ConfirmDialog(id="singler-runtime-dialog"),
         main_body
     ],
-    id='main-body',
+    id = 'main-body',
     # className="no-display"
 )
 
-container = dbc.Row([main_page], id='container')
+container=dbc.Row([main_page], id = 'container')

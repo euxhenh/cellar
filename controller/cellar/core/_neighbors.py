@@ -7,6 +7,9 @@ from ..utils.exceptions import InternalError
 
 
 def full_knn(x, n_neighbors=15, mode='connectivity'):
+    """
+    Compute the exact nearest neighbors graph using sklearn.
+    """
     kg = kneighbors_graph(x, n_neighbors=n_neighbors, mode=mode)
     sources, targets = kg.nonzero()
     weights = np.array(kg[sources, targets])[0]
@@ -15,11 +18,15 @@ def full_knn(x, n_neighbors=15, mode='connectivity'):
 
 
 def faiss_knn(x, n_neighbors=15):
+    """
+    Compute approximate neighbors using the faiss library. We are using
+    the CPU based release of faiss.
+    """
     n_samples = x.shape[0]
     n_features = x.shape[1]
-    x = np.ascontiguousarray(x)
+    x = np.ascontiguousarray(x)  # important
 
-    index = faiss.IndexHNSWFlat(n_features, 15)
+    index = faiss.IndexHNSWFlat(n_features, min(15, n_samples))
     index.add(x)
 
     weights, targets = index.search(x, n_neighbors)
@@ -31,6 +38,7 @@ def faiss_knn(x, n_neighbors=15):
     if -1 in targets:
         raise InternalError("Not enough neighbors were found. Please consider "
                             "reducing the number of neighbors.")
+    # TODO fix weights
     return sources, targets, np.full(len(sources), 1)
 
 

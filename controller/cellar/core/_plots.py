@@ -10,6 +10,9 @@ from ..utils.colors import PALETTE, get_col_i
 
 
 def get_dim_figure(adata, title):
+    """
+    Returns a plotly figure showing a scatter plot of the 2D embeddings.
+    """
     if 'x_emb_2d' not in adata.obsm:
         raise InternalError("x_emb_2d not found in adata.")
 
@@ -23,7 +26,7 @@ def get_dim_figure(adata, title):
         opacity=0.8,
         custom_data=[np.arange(adata.shape[0])],  # indices
         hover_name=hover_name,
-        render_mode='webgl')
+        render_mode='webgl')  # for speed
 
     fig.update_layout(
         title=title,
@@ -38,6 +41,11 @@ def get_dim_figure(adata, title):
 
 
 def get_clu_figure(adata, title, palette=PALETTE):
+    """
+    Returns a plotly figure showing a scatter plot of the 2D embeddings along
+    with the cluster assignments. Will also parse 'annotations'
+    if they are present in adata.
+    """
     if 'x_emb_2d' not in adata.obsm or 'labels' not in adata.obs:
         raise InternalError("x_emb_2d or labels not found in adata.")
 
@@ -89,6 +97,22 @@ def get_reset_figure(adata, title, palette=PALETTE):
 
 
 def get_expression_figure(adata, feature_values, feature_range):
+    """
+    Returns a plotly figure with the expression level of a gene
+    or list of genes. In case a list of genes is used, then the
+    expression value is calculated as shown in
+    https://jingtaowang22.github.io/cellar_docs/#/analysis
+    under "Feature Visualization".
+
+    Parameters
+    __________
+    adata: anndata.AnnData object
+    feature_values: list or str
+        List of gene names
+    feature_range: (float, float)
+        Contains upper and lower thresholds to use for filtering
+        high and low expression values. Useful when filtering outliers.
+    """
     feature_values = np.array(feature_values, dtype='U200').flatten()
 
     for feat in feature_values:
@@ -157,6 +181,10 @@ def get_expression_figure(adata, feature_values, feature_range):
 
 
 def get_heatmap(adata, feature_list):
+    """
+    Returns a plotly figure with a heatmap of gene expression values
+    in feature_list. Uses dashbio.Clustergram.
+    """
     if 'labels' not in adata.obs:
         raise InternalError("No labels found in adata.")
 
@@ -209,6 +237,24 @@ def get_heatmap(adata, feature_list):
 
 
 def get_violin_plot(adata, feature_values, feature_range, palette=PALETTE):
+    """
+    Returns a plotly figure with a heatmap of gene expression values
+    in feature_values. If multiple genes are selected, then the
+    expression value is calculated as shown in
+    https://jingtaowang22.github.io/cellar_docs/#/analysis
+    under "Feature Visualization".
+
+    Parameters
+    __________
+    adata: anndata.AnnData object
+    feature_values: list or str
+        List of gene names
+    feature_range: (float, float)
+        Contains upper and lower thresholds to use for filtering
+        high and low expression values. Useful when filtering outliers.
+    palette: list
+        Color palette to use.
+    """
     for feature in feature_values:
         if feature not in adata.var_names:
             raise UserError(f"Feature {feature} not found in adata.")

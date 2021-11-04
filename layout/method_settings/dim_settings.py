@@ -13,7 +13,7 @@ dim_pca_settings = dbc.Popover(
                         dbc.Label("No. of components", html_for="slider"),
                         dcc.Slider(
                             id="dim-PCA-n-components",
-                            min=2, max=100, step=1,
+                            min=3, max=100, step=1,
                             value=40,
                             marks={i: str(i) for i in range(10, 101, 10)},
                             tooltip={'always_visible': True}

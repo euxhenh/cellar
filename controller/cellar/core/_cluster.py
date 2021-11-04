@@ -2,21 +2,45 @@ import igraph as ig
 import leidenalg as la
 import numpy as np
 from app import logger
-from scipy.sparse import csr_matrix
+from faiss.swigfaiss_avx2 import compute_PQ_dis_tables_dsub2
+from scipy.sparse import csr_matrix, issparse
 from sklearn.cluster import AgglomerativeClustering, KMeans, SpectralClustering
 from sklearn_extra.cluster import KMedoids
 
+from ..utils.exceptions import UserError
 from ..utils.validation import _validate_clu_n_clusters
 from ._cluster_multiple import cluster_multiple
 from ._evaluation import get_eval_obj
 from ._neighbors import faiss_knn, knn_auto
-from ..utils.exceptions import UserError
+
+
+def _has_neighbors(adata, params, key='neighs'):
+    """
+    Checks if there are any neighbors in adata and return those if new params
+    equal existing ones in adata.uns[key].
+
+    Parameters
+    __________
+    adata: anndata.AnnData object
+    params: dict
+        dictionary of neighbor parameters
+    key: str
+        Key to look for neighbors params under adata.uns
+    """
+    if key in adata.uns:
+        old_params = adata.uns[key]
+        if isinstance(old_params, dict) and isinstance(params, dict):
+            if params == old_params and key in adata.obsp:
+                if issparse(adata.obsp[key]):
+                    return True
+    return False
 
 
 def cl_Leiden(
         adata, key='labels', x_to_use='x_emb', clear_annotations=True,
         partition_type='RBConfigurationVertexPartition', directed=True,
-        graph_method='auto', n_neighbors=15, use_weights=False, **kwargs):
+        graph_method='auto', n_neighbors=15, use_cached_neigh=True,
+        use_weights=False, neigh_key='neighs', **kwargs):
     """
     Runs the leiden clustering algorithm:
     https://www.nature.com/articles/s41598-019-41695-z
@@ -26,7 +50,7 @@ def cl_Leiden(
 
     adata: anndata.AnnData object
     key: str
-        Name of the key to add labels under adata.obs[key].
+        Name of the key to use for labels under adata.obs.
     x_to_use: str
         Key name in adata.obsm to use as feature vectors. If set to 'x'
         then will use adata.X
@@ -53,50 +77,89 @@ def cl_Leiden(
         to compute approximate nearest neighbors.
     n_neighbors: int
         Number of nearest neighbors to find using the method specified above.
+    use_cached_neigh: bool
+        If True, then will check adata if it already contains neighbors
+        and if the parameters used to compute these neighbors match
+        the current ones.
     use_weights: bool
         Set to True to construct a weighted graph (with weights being the
         distances between points).
+    neigh_key: str
+        Key to store neighbors in adata.obsp.
     **kwargs: dict
         Any additional arguments will be passed to la.find_partition
     """
-    if clear_annotations:
-        if 'annotations' in adata.obs:
-            adata.obs.pop('annotations')
+    config = {}
+    neigh_config = {}
 
+    if clear_annotations and 'annotations' in adata.obs:
+        _ = adata.obs.pop('annotations')
+    # Using adata.X to perform clustering can be very slow
+    neigh_config['x_to_use'] = x_to_use
     if x_to_use == 'x':
         x_to_use = adata.X
+        if x_to_use.shape[1] > 500:
+            logger.warn(
+                "Data is very high-dimensional. This process can " +
+                "be slow and may yield suboptimal results. Running " +
+                "dimensionality reduction first is highly recommended.")
     else:
         if x_to_use not in adata.obsm:
             raise UserError("No embeddings found. Please " +
                             "run dimensionality reduction first.")
         x_to_use = adata.obsm[x_to_use]
 
+    neigh_config['n_neighbors'] = n_neighbors
+    neigh_config['mode'] = 'connectivity'
+    neigh_config['graph_method'] = graph_method
+    # Check if adata contains neighbors and the configuration is the same
+    if use_cached_neigh and _has_neighbors(adata, neigh_config, neigh_key):
+        logger.info("Using cached neighbors.")
+        sources, targets = adata.obsp[neigh_key].nonzero()
+    else:
+        # (Re)Compute nearest neighbors
+        if n_neighbors >= x_to_use.shape[0]:
+            n_neighbors = x_to_use.shape[0] // 2 + 1
+            logger.warn(
+                "Number of neighbors is greater than " +
+                f"the dataset size. Using {n_neighbors} neighbors instead.")
+        sources, targets, weights = knn_auto(
+            x_to_use, n_neighbors=n_neighbors,
+            mode='connectivity', method=graph_method)
+        adata.uns[neigh_key] = neigh_config
+        adata.obsp[neigh_key] = csr_matrix(
+            (weights, (sources, targets)), shape=(x_to_use.shape[0],) * 2)
+
+    # weights = 1 / weights
+    # TODO: construct weighted graph
+    # kwargs['weights'] = weights if use_weights else None
+    # Construct graph
+    gg = ig.Graph(directed=directed)
+    config['directed'] = directed
+    gg.add_vertices(x_to_use.shape[0])
+    # Add edges as list of pairs (unweighted)
+    gg.add_edges(list(zip(list(sources), list(targets))))
+
+    # Empty input boxes are parsed as empty strings
     for k in kwargs:
         if kwargs[k] == '':
             kwargs[k] = None
-
+    # These two partitions do not use resolution
     if partition_type in [
             'ModularityVertexPartition', 'SurpriseVertexPartition']:
-        kwargs.pop('resolution_parameter')
-
-    # Compute nearest neighbors
-    sources, targets, weights = knn_auto(
-        x_to_use, n_neighbors=n_neighbors,
-        mode='connectivity', method=graph_method)
-
-    # weights = 1 / weights
-    # kwargs['weights'] = weights if use_weights else None
-
-    # Construct graph
-    gg = ig.Graph(directed=directed)
-    gg.add_vertices(x_to_use.shape[0])
-    # This step can be slow if number of datapoints is really large
-    gg.add_edges(list(zip(list(sources), list(targets))))
-
+        if 'resolution_parameter' in kwargs:
+            _ = kwargs.pop('resolution_parameter')
+    if not hasattr(la, partition_type):
+        raise UserError(f"No partition type '{partition_type}' found.")
     # Perform the clustering
     part = la.find_partition(gg, getattr(la, partition_type), **kwargs)
-
+    config['partition_type'] = partition_type
+    # Merge the two dictionaries to also include kwargs passed to leidenalg
+    config = {**config, **kwargs}
+    config['method'] = 'Leiden'
     adata.obs[key] = np.array(part.membership, dtype=int)
+    adata.uns[key] = config
+    logger.info(f"Graph modularity: {gg.modularity(part.membership)}")
 
 
 def _get_wrapper(x, obj_def, n_clusters=np.array([2, 4, 8, 16]),

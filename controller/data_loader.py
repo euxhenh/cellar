@@ -9,6 +9,7 @@ import dash_html_components as html
 import dash_bootstrap_components as dbc
 
 from app import app, logger, dbroot
+from controller.cellar.utils.exceptions import UserError
 from .cellar.core import read_adata, cl_add_gene_symbol
 from .cellar.utils.misc import is_sparse
 from .multiplexer import MultiplexerOutput
@@ -45,7 +46,10 @@ def load_dataset(n1, dname, actp):
     gc.collect()
 
     try:
-        dbroot.adatas[an]['adata'] = read_adata(dname)
+        adata = read_adata(dname)
+        if adata.shape[0] <= 2:
+            raise UserError("Dataset contains less than 3 points.")
+        dbroot.adatas[an]['adata'] = adata
     except Exception as e:
         logger.error(str(e))
         error_msg = "Error encountered while reading file. Maybe the file " +\
@@ -73,6 +77,16 @@ def _prettify_time(s):
     t += f"{m}m " if m > 0 else ""
     t += f"{s}s"
     return t
+
+
+def _get_singler_warning(nos, nof):
+    nos, nof = nos / 1000, nof / 1000
+    singler = 120 if nos < 5 else 0.18 * nos**2 + 17 * nos + 28
+    msg = "Running SingleR on this dataset can " + \
+        "take between " + _prettify_time(singler) + " to " + \
+        _prettify_time(2 * singler) + ". Do you " + \
+        "want to continue?"
+    return msg
 
 
 def _get_run_times(nos, nof):
@@ -105,8 +119,8 @@ def _get_run_times(nos, nof):
 
     # Assume linear model on data (since using approx nn)
     leiden = 2 if nos < 5 else 0.7 * nos
-    leidenrow = html.Tr([html.Td("Leiden Clustering (auto graph)"), html.Td(
-        _prettify_time(leiden))])
+    leidenrow = html.Tr([html.Td("Leiden Clustering (auto + max iter)"),
+                         html.Td(_prettify_time(leiden))])
 
     # Assume linear model on data
     de = 1 if nos < 5 else 1.4 * nos

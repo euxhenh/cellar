@@ -41,7 +41,7 @@ row_1 = dbc.Row([
                                                 min=0,
                                                 max=3000,
                                                 step=50,
-                                                value=[100, 2000],
+                                                value=[100, 3000],
                                                 marks={i: str(i) for i in
                                                        range(0, 3001, 500)},
                                                 # tooltip={
@@ -77,7 +77,7 @@ row_1 = dbc.Row([
                                                 min=0,
                                                 max=3000,
                                                 step=50,
-                                                value=[100, 2000],
+                                                value=[100, 3000],
                                                 marks={i: str(i) for i in
                                                        range(0, 3001, 500)},
                                                 # tooltip={
@@ -139,7 +139,7 @@ row_1 = dbc.Row([
                                                 min=0,
                                                 max=3000,
                                                 step=50,
-                                                value=[100, 2000],
+                                                value=[100, 3000],
                                                 marks={i: str(i) for i in
                                                        range(0, 3001, 500)},
                                                 # tooltip={
@@ -175,7 +175,7 @@ row_1 = dbc.Row([
                                                 min=0,
                                                 max=3000,
                                                 step=50,
-                                                value=[100, 2000],
+                                                value=[100, 3000],
                                                 marks={i: str(i) for i in
                                                        range(0, 3001, 500)},
                                                 # tooltip={

@@ -143,4 +143,4 @@ clu_filter = get_filter(
 ssclu_filter = get_filter(
     ssclu_settings_keys, ssclu_list, key='labels', x_to_use='x_emb')
 lbt_filter = get_filter(
-    lbt_settings_keys, lbt_list, key='labels', x_to_use='x')
+    lbt_settings_keys, lbt_list, key='labels', x_to_use='x_emb')

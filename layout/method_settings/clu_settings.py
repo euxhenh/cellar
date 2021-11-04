@@ -2,7 +2,6 @@ import dash_bootstrap_components as dbc
 import dash_core_components as dcc
 import dash_html_components as html
 
-
 clu_leiden_settings = dbc.Popover(
     [
         dbc.PopoverHeader("Leiden Settings"),
@@ -29,6 +28,10 @@ clu_leiden_settings = dbc.Popover(
                         )
                     ]
                 ),
+                dbc.Tooltip(
+                    "Check Leidenalg docs for a description of each.",
+                    target="clu-Leiden-partition-type"
+                ),
                 dbc.FormGroup(
                     [
                         dbc.Label("Number of Iterations"),
@@ -36,9 +39,14 @@ clu_leiden_settings = dbc.Popover(
                             id="clu-Leiden-n-iter",
                             placeholder="Set to -1 to run until convergence",
                             type="number",
-                            value=-1
+                            value=4
                         )
                     ]
+                ),
+                dbc.Tooltip(
+                    "Maximum number of iterations for the leiden algorithm. "
+                    "If set to -1, will run until convergence.",
+                    target="clu-Leiden-n-iter"
                 ),
                 dbc.FormGroup(
                     [
@@ -53,6 +61,10 @@ clu_leiden_settings = dbc.Popover(
                         )
                     ]
                 ),
+                dbc.Tooltip(
+                    "Higher resolution results in more clusters.",
+                    target="clu-Leiden-resolution"
+                ),
                 dbc.FormGroup(
                     [
                         dbc.Label("Max Community Size"),
@@ -64,6 +76,11 @@ clu_leiden_settings = dbc.Popover(
                         )
                     ]
                 ),
+                dbc.Tooltip(
+                    "Maximum number of nodes in a community. Set to 0 "
+                    "to allow any size.",
+                    target="clu-Leiden-max-comm"
+                ),
                 dbc.FormGroup(
                     [
                         dbc.Label("Graph Construction Method"),
@@ -73,12 +90,18 @@ clu_leiden_settings = dbc.Popover(
                                 {"label": "auto", "value": "auto"},
                                 {"label": "approximate neighbors",
                                  "value": "approximate"},
-                                {"label": "full (slow for large datasets)",
+                                {"label": "exact (slow for large datasets)",
                                  "value": "full"}
                             ],
                             value="auto"
                         )
                     ]
+                ),
+                dbc.Tooltip(
+                    "Method to use for finding KNN. 'auto' uses approximate "
+                    "neighbors if n_samples > 5000, otherwise computes the "
+                    "exact KNN.",
+                    target="clu-Leiden-graph-method"
                 ),
                 dbc.FormGroup(
                     [
@@ -92,6 +115,31 @@ clu_leiden_settings = dbc.Popover(
                             tooltip={'always_visible': True}
                         )
                     ]
+                ),
+                dbc.Tooltip(
+                    "Number of k-Nearest Neighbors to compute.",
+                    target="clu-Leiden-nneigh"
+                ),
+                dbc.FormGroup(
+                    [
+                        dbc.Label("Use Cached Neighbors"),
+                        dbc.RadioItems(
+                            options=[
+                                {"label": "True", "value": True},
+                                {"label": "False", "value": False},
+                            ],
+                            value=True,
+                            id="clu-Leiden-cached-neigh",
+                            inline=True
+                        )
+                    ]
+                ),
+                dbc.Tooltip(
+                    "If the KNN were already computed using the same settings, "
+                    "will not recompute them if True. It only makes sense to "
+                    "set this to False when using approximate neighbors and "
+                    "a new random seed is desired.",
+                    target="clu-Leiden-cached-neigh"
                 ),
                 # dbc.FormGroup(
                 #     [
@@ -120,6 +168,10 @@ clu_leiden_settings = dbc.Popover(
                             inline=True
                         )
                     ]
+                ),
+                dbc.Tooltip(
+                    "If set to True, then the neighbors graph will be directed",
+                    target="clu-Leiden-directed"
                 ),
                 dbc.FormGroup(
                     [
@@ -158,6 +210,7 @@ clu_leiden_settings_keys = {
     'clu-Leiden-max-comm': 'max_comm_size',
     'clu-Leiden-graph-method': 'graph_method',
     'clu-Leiden-nneigh': 'n_neighbors',
+    'clu-Leiden-cached-neigh': 'use_cached_neigh',
     # 'clu-Leiden-weights': 'use_weights',
     'clu-Leiden-directed': 'directed',
     'clu-Leiden-random-state': 'seed'

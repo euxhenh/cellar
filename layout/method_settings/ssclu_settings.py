@@ -25,7 +25,13 @@ ssclu_leiden_settings = dbc.Popover(
                             className="no-display mb-2",
                             value=[]
                         )
-                    ]
+                    ],
+                    id="ssclu-Leiden-constrained-subsets-form"
+                ),
+                dbc.Tooltip(
+                    "The membership for the points belonging to a "
+                    "constrained subset will be set to the same value.",
+                    target="ssclu-Leiden-constrained-subsets-form"
                 ),
                 dbc.FormGroup(
                     [
@@ -48,6 +54,10 @@ ssclu_leiden_settings = dbc.Popover(
                         )
                     ]
                 ),
+                dbc.Tooltip(
+                    "Check Leidenalg docs for a description of each.",
+                    target="ssclu-Leiden-partition-type"
+                ),
                 dbc.FormGroup(
                     [
                         dbc.Label("Number of Iterations"),
@@ -55,9 +65,14 @@ ssclu_leiden_settings = dbc.Popover(
                             id="ssclu-Leiden-n-iter",
                             placeholder="Set to -1 to run until convergence",
                             type="number",
-                            value=-1
+                            value=4
                         )
                     ]
+                ),
+                dbc.Tooltip(
+                    "Maximum number of iterations for the leiden algorithm. "
+                    "If set to -1, will run until convergence.",
+                    target="ssclu-Leiden-n-iter"
                 ),
                 dbc.FormGroup(
                     [
@@ -72,17 +87,26 @@ ssclu_leiden_settings = dbc.Popover(
                         )
                     ]
                 ),
-                dbc.FormGroup(
-                    [
-                        dbc.Label("Max Community Size"),
-                        dbc.Input(
-                            id="ssclu-Leiden-max-comm",
-                            placeholder="Set to 0 to allow any size",
-                            type="number",
-                            value=0
-                        )
-                    ]
+                dbc.Tooltip(
+                    "Higher resolution results in more clusters.",
+                    target="ssclu-Leiden-resolution"
                 ),
+                # dbc.FormGroup(
+                #     [
+                #         dbc.Label("Max Community Size"),
+                #         dbc.Input(
+                #             id="ssclu-Leiden-max-comm",
+                #             placeholder="Set to 0 to allow any size",
+                #             type="number",
+                #             value=0
+                #         )
+                #     ]
+                # ),
+                # dbc.Tooltip(
+                #     "Maximum number of nodes in a community. Set to 0 "
+                #     "to allow any size.",
+                #     target="ssclu-Leiden-max-comm"
+                # ),
                 dbc.FormGroup(
                     [
                         dbc.Label("Graph Construction Method"),
@@ -99,6 +123,12 @@ ssclu_leiden_settings = dbc.Popover(
                         )
                     ]
                 ),
+                dbc.Tooltip(
+                    "Method to use for finding KNN. 'auto' uses approximate "
+                    "neighbors if n_samples > 5000, otherwise computes the "
+                    "exact KNN.",
+                    target="ssclu-Leiden-graph-method"
+                ),
                 dbc.FormGroup(
                     [
                         dbc.Label(
@@ -111,6 +141,10 @@ ssclu_leiden_settings = dbc.Popover(
                             tooltip={'always_visible': True}
                         )
                     ]
+                ),
+                dbc.Tooltip(
+                    "Number of k-Nearest Neighbors to compute.",
+                    target="ssclu-Leiden-nneigh"
                 ),
                 dbc.FormGroup(
                     [
@@ -126,20 +160,46 @@ ssclu_leiden_settings = dbc.Popover(
                         )
                     ]
                 ),
+                dbc.Tooltip(
+                    "Fix labels for all the points in the "
+                    "constrained subsets.",
+                    target="ssclu-Leiden-fix-membership"
+                ),
                 dbc.FormGroup(
                     [
-                        dbc.Label("Construct Weighted Graph"),
+                        dbc.Label("Use Cached Neighbors"),
                         dbc.RadioItems(
                             options=[
                                 {"label": "True", "value": True},
                                 {"label": "False", "value": False},
                             ],
-                            value=False,
-                            id="ssclu-Leiden-weights",
+                            value=True,
+                            id="ssclu-Leiden-cached-neigh",
                             inline=True
                         )
                     ]
                 ),
+                dbc.Tooltip(
+                    "If the KNN were already computed using the same settings, "
+                    "will not recompute them if True. It only makes sense to "
+                    "set this to False when using approximate neighbors and "
+                    "a new random seed is desired.",
+                    target="ssclu-Leiden-cached-neigh"
+                ),
+                # dbc.FormGroup(
+                #     [
+                #         dbc.Label("Construct Weighted Graph"),
+                #         dbc.RadioItems(
+                #             options=[
+                #                 {"label": "True", "value": True},
+                #                 {"label": "False", "value": False},
+                #             ],
+                #             value=False,
+                #             id="ssclu-Leiden-weights",
+                #             inline=True
+                #         )
+                #     ]
+                # ),
                 dbc.FormGroup(
                     [
                         dbc.Label("Construct Directed Graph"),
@@ -154,17 +214,21 @@ ssclu_leiden_settings = dbc.Popover(
                         )
                     ]
                 ),
-                dbc.FormGroup(
-                    [
-                        dbc.Label("Random State"),
-                        dbc.Input(
-                            id="ssclu-Leiden-random-state",
-                            placeholder="Leave empty if None",
-                            type="number",
-                            value=""
-                        )
-                    ]
+                dbc.Tooltip(
+                    "If set to True, then the neighbors graph will be directed",
+                    target="ssclu-Leiden-directed"
                 ),
+                # dbc.FormGroup(
+                #     [
+                #         dbc.Label("Random State"),
+                #         dbc.Input(
+                #             id="ssclu-Leiden-random-state",
+                #             placeholder="Leave empty if None",
+                #             type="number",
+                #             value=""
+                #         )
+                #     ]
+                # ),
                 html.P(
                     [
                         "Details: ",
@@ -190,13 +254,14 @@ ssclu_leiden_settings_keys = {
     'ssclu-Leiden-partition-type': 'partition_type',
     'ssclu-Leiden-n-iter': 'n_iterations',
     'ssclu-Leiden-resolution': 'resolution_parameter',
-    'ssclu-Leiden-max-comm': 'max_comm_size',
+    # 'ssclu-Leiden-max-comm': 'max_comm_size',
     'ssclu-Leiden-graph-method': 'graph_method',
     'ssclu-Leiden-nneigh': 'n_neighbors',
     'ssclu-Leiden-fix-membership': 'fix_membership',
-    'ssclu-Leiden-weights': 'use_weights',
-    'ssclu-Leiden-directed': 'directed',
-    'ssclu-Leiden-random-state': 'seed'
+    'ssclu-Leiden-cached-neigh': 'use_cached_neigh',
+    # 'ssclu-Leiden-weights': 'use_weights',
+    'ssclu-Leiden-directed': 'directed'
+    # 'ssclu-Leiden-random-state': 'seed'
 }
 
 

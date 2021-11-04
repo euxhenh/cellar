@@ -68,4 +68,4 @@ def push_notification(pn):
     text = _prep_notification_card(tt, pn, False)
     dbroot.notifications[tt] = pn
 
-    return text, True, 5000
+    return text, True, 20000

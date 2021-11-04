@@ -21,6 +21,7 @@ from .multiplexer import MultiplexerOutput
 from .notifications import _prep_notification
 from scipy.sparse.linalg.eigen.arpack import ArpackNoConvergence
 from .cellar.utils.colors import PALETTE
+from .data_loader import _get_singler_warning
 
 
 class Signal(int, Enum):
@@ -39,6 +40,9 @@ class Signal(int, Enum):
 @app.callback(
     Output("main-plot-signal-code", "data"),
     Output("side-plot-signal-code", "data"),
+    Output("singler-runtime-modal", "is_open"),
+    Output("singler-runtime-body", "children"),
+    MultiplexerOutput("push-notification", "data"),
 
     Input("dim-run-btn", "n_clicks"),
     Input("label-run-btn", "n_clicks"),
@@ -53,6 +57,8 @@ class Signal(int, Enum):
     Input("data-loaded-plot-signal-prep-atac", "data"),
     Input("main-apply-palette-signal", "data"),
     Input("side-apply-palette-signal", "data"),
+    Input("singler-runtime-yes", "n_clicks"),
+    Input("singler-runtime-no", "n_clicks"),
 
     State("active-plot", "data"),
     State("label-tabs", "active_tab"),
@@ -60,7 +66,7 @@ class Signal(int, Enum):
 )
 def signal_plot(
         n1, n2, mexp, sexp, c1, c2, ans, mps, dlps, dlpsp, dlpspa, mapp, sapp,
-        actp, actt):
+        singlery, singlerno, actp, actt):
     ctx = dash.callback_context
     if not ctx.triggered:
         raise PreventUpdate
@@ -71,7 +77,7 @@ def signal_plot(
     if 'adata' not in dbroot.adatas[an]:
         raise PreventUpdate
 
-    to_return = [dash.no_update] * 2
+    to_return = [dash.no_update] * 5
     index = 0 if actp == 1 else 1
     button_id = ctx.triggered[0]["prop_id"].split(".")[0]
 
@@ -85,7 +91,15 @@ def signal_plot(
             to_return[index] = Signal.SS_CLUSTER
         elif actt == 'lbt':
             if 'a1' not in dbroot.adatas or 'a2' not in dbroot.adatas:
-                raise PreventUpdate
+                to_return[-1] = _prep_notification(
+                    "Label Transfer can only be run if a reference dataset "
+                    "has been loaded under Dual Mode.", "warning")
+                return to_return
+            if dbroot.adatas[an]['adata'].shape[0] >= 10_000:
+                to_return[2] = True
+                nos, nof = dbroot.adatas[an]['adata'].shape
+                to_return[3] = _get_singler_warning(nos, nof)
+                return to_return
             to_return[index] = Signal.LABEL_TRANSFER
         else:
             raise InternalError(f"No tab with name {actt} found.")
@@ -108,6 +122,11 @@ def signal_plot(
     elif button_id == "main-apply-palette-signal" or \
             button_id == "side-apply-palette-signal":
         to_return[index] = Signal.PALETTE
+    elif button_id == "singler-runtime-yes":
+        to_return[2] = False
+        to_return[index] = Signal.LABEL_TRANSFER
+    elif button_id == "singler-runtime-no":
+        to_return[2] = False
 
     return to_return
 

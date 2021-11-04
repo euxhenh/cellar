@@ -1,5 +1,6 @@
 import dash_bootstrap_components as dbc
 import dash_html_components as html
+import dash_core_components as dcc
 
 
 lbt_ingest_settings = dbc.Popover(
@@ -34,7 +35,6 @@ lbt_ingest_settings_keys = {
 lbt_singler_settings = dbc.Popover(
     [
         dbc.PopoverHeader("SingleR Settings"),
-
         dbc.PopoverBody(
             [
                 html.P(
