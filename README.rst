@@ -4,7 +4,7 @@
 
 .. |PythonVersion| image:: https://img.shields.io/badge/python-3.7%20%7C%203.8%20%7C%203.9-blue
 .. _PythonVersion: https://img.shields.io/badge/python-3.7%20%7C%203.8%20%7C%203.9-blue
-.. |MITLicense| image:: https://img.shields.io/badge/License-MIT-green
+.. |MITLicense| image:: https://img.shields.io/badge/License-MIT-blue
 .. _MITLicense: https://raw.githubusercontent.com/ferrocactus/CellarV/master/LICENSE.txt
 .. |Website| image:: https://img.shields.io/website-up-down-green-red/http/shields.io
 .. _Website: https://data.test.hubmapconsortium.org/app/cellar
@@ -35,7 +35,7 @@ it supports. These include but are not limited to scRNA-seq, scATAC-seq,
 CODEX, SNARE-seq, sciRNA-seq, Visium. Cellar supports preprocessing,
 dimensionality reduction, clustering, DE gene testing, enrichment analysis,
 cluster and gene visualization modules, projection to spatial tiles,
-label transfer and semi-supervised clustering among others. The documentation
+label transfer, and semi-supervised clustering among others. The documentation
 also contains several written tutorials.
 `Video tutorials
 <https://www.youtube.com/playlist?list=PL5sLSLkTYpWgfBQ0M8ObfBIqDMAzx0-D2>`__

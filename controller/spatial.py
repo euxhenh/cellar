@@ -17,6 +17,7 @@ from .cellar.utils.tile_generator import (generate_10x_spatial,
                                           generate_tile)
 from .multiplexer import MultiplexerOutput
 from .notifications import _prep_notification
+from layout.misc import empty_spatial_figure
 
 
 def get_parse_tar_gz_func(an):
@@ -66,7 +67,7 @@ for prefix, an in zip(["main", "side"], ["a1", "a2"]):
 
 
 def get_generate_tile_func(an, prefix):
-    def _func(n1, data_type):
+    def _func(n1, clean, data_type):
         ctx = dash.callback_context
         if not ctx.triggered:
             raise PreventUpdate
@@ -74,6 +75,10 @@ def get_generate_tile_func(an, prefix):
             raise PreventUpdate
         if 'adata' not in dbroot.adatas[an]:
             raise PreventUpdate
+
+        button_id = ctx.triggered[0]["prop_id"].split(".")[0]
+        if button_id == prefix + "-data-load-clean":
+            return empty_spatial_figure, dash.no_update
 
         owner = None
         if data_type == 'spatial-10x':
@@ -116,7 +121,8 @@ def get_generate_tile_func(an, prefix):
                         palette=dbroot.palettes[prefix])
             except Exception as e:
                 logger.error(str(e))
-                error_msg = "Error occurred when generating CODEX tile."
+                error_msg = "Error occurred when generating CODEX tile. " +\
+                    "Have the necessary supplementary files been uploaded?"
                 logger.error(error_msg)
                 return dash.no_update, _prep_notification(error_msg, "danger")
         else:
@@ -162,6 +168,7 @@ for prefix, an in zip(["main", "side"], ["a1", "a2"]):
         MultiplexerOutput("push-notification", "data"),
 
         Input(prefix + "-generate-tile-btn", "n_clicks"),
+        Input(prefix + "-data-load-clean", "data"),
         State(prefix + "-spatial-type-dropdown", "value"),
         prevent_initial_call=True
     )(get_generate_tile_func(an, prefix))

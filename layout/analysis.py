@@ -186,17 +186,17 @@ def get_feature_card(prefix):
                                         multi=True,
                                         id=prefix + '-feature-list',
                                         placeholder="Search gene by symbol",
-                                    ), type="circle"),
-                                dbc.Tooltip(
-                                    "Select one or multiple features " +
-                                    "for visualization purposes. This input " +
-                                    "will automatically parse any selected " +
-                                    "gene from the DE table. To understand " +
-                                    "what is shown when multiple genes are " +
-                                    "selected, please check the documentation.",
-                                    target=prefix + "-feature-list"
-                                )
-                            ], width=7),
+                                    ), type="circle")
+                            ], width=7, id=prefix + "-feature-list-col"),
+                            dbc.Tooltip(
+                                "Select one or multiple features " +
+                                "for visualization purposes. This input " +
+                                "will automatically parse any selected " +
+                                "gene from the DE table. To understand " +
+                                "what is shown when multiple genes are " +
+                                "selected, please check the documentation.",
+                                target=prefix + "-feature-list-col"
+                            ),
                             dbc.Col(
                                 dbc.DropdownMenu(
                                     [
@@ -242,16 +242,17 @@ def get_feature_card(prefix):
                                 id=prefix + "-feature-rangeslider",
                                 marks={}
                             ),
-                            dbc.Tooltip(
-                                "Clip expression values to this range. " +
-                                "Can be useful to filter outliers or modify " +
-                                "the colorbar scale. Only works for a " +
-                                "single gene.",
-                                target=prefix + "-feature-rangeslider"
-                            )
-                        ]),
+
+                        ], id=prefix + "-feature-rangeslider-col"),
                         justify='between',
                         no_gutters=True
+                    ),
+                    dbc.Tooltip(
+                        "Clip expression values to this range. " +
+                        "Can be useful to filter outliers or modify " +
+                        "the colorbar scale. Only works for a " +
+                        "single gene.",
+                        target=prefix + "-feature-rangeslider-col"
                     ),
                     dcc.Loading(
                         dcc.Graph(
