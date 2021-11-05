@@ -52,7 +52,8 @@ clu_leiden_settings = dbc.Popover(
                     [
                         dbc.Label(
                             "Resolution (only for RBConfiguration, RBER, CPM)",
-                            html_for="slider"),
+                            html_for="slider",
+                            id="clu-Leiden-tooltip-temp-resolution"),
                         dcc.Slider(
                             id="clu-Leiden-resolution",
                             min=0.01, max=10, step=0.01,
@@ -63,7 +64,7 @@ clu_leiden_settings = dbc.Popover(
                 ),
                 dbc.Tooltip(
                     "Higher resolution results in more clusters.",
-                    target="clu-Leiden-resolution"
+                    target="clu-Leiden-tooltip-temp-resolution"
                 ),
                 dbc.FormGroup(
                     [
@@ -107,7 +108,8 @@ clu_leiden_settings = dbc.Popover(
                     [
                         dbc.Label(
                             "Number of Neighbors for the Graph",
-                            html_for="slider"),
+                            html_for="slider",
+                            id="clu-Leiden-tooltip-temp-nneigh"),
                         dcc.Slider(
                             id="clu-Leiden-nneigh",
                             min=1, max=100, step=1,
@@ -118,7 +120,7 @@ clu_leiden_settings = dbc.Popover(
                 ),
                 dbc.Tooltip(
                     "Number of k-Nearest Neighbors to compute.",
-                    target="clu-Leiden-nneigh"
+                    target="clu-Leiden-tooltip-temp-nneigh"
                 ),
                 dbc.FormGroup(
                     [
@@ -230,6 +232,15 @@ clu_kmeans_settings = dbc.Popover(
                             type="text",
                             value='8',
                             placeholder='e.g.  [4, 8, 16] or (3, 7) or 8'
+                        ),
+                        dbc.Tooltip(
+                            "Can select multiple values by specifying a " +
+                            "list as in [4, 8, 16], a range of values as in " +
+                            "(3, 7) (selects 3, 4, 5, 6), or a single " +
+                            "integer value. If more than one value is " +
+                            "specified, the best number of clusters is " +
+                            "determined via the score selected below.",
+                            target="clu-KMeans-n-clusters"
                         )
                     ]
                 ),
@@ -248,6 +259,13 @@ clu_kmeans_settings = dbc.Popover(
                             id="clu-KMeans-eval",
                             value='Silhouette'
                         ),
+                        dbc.Tooltip(
+                            "Score to use when selecting the best number " +
+                            "of clusters to use. Only applies when " +
+                            "multiple n-cluster values are used. " +
+                            "2D embeddings are used to compute the score.",
+                            target="clu-KMeans-eval"
+                        )
                     ]
                 ),
                 dbc.FormGroup(
@@ -358,6 +376,15 @@ clu_kmedoids_settings = dbc.Popover(
                             type="text",
                             value='8',
                             placeholder='e.g.  [4, 8, 16] or (3, 7) or 8'
+                        ),
+                        dbc.Tooltip(
+                            "Can select multiple values by specifying a " +
+                            "list as in [4, 8, 16], a range of values as in " +
+                            "(3, 7) (selects 3, 4, 5, 6), or a single " +
+                            "integer value. If more than one value is " +
+                            "specified, the best number of clusters is " +
+                            "determined via the score selected below.",
+                            target="clu-KMedoids-n-clusters"
                         )
                     ]
                 ),
@@ -376,6 +403,13 @@ clu_kmedoids_settings = dbc.Popover(
                             id="clu-KMedoids-eval",
                             value='Silhouette'
                         ),
+                        dbc.Tooltip(
+                            "Score to use when selecting the best number " +
+                            "of clusters to use. Only applies when " +
+                            "multiple n-cluster values are used. " +
+                            "2D embeddings are used to compute the score.",
+                            target="clu-KMedoids-eval"
+                        )
                     ]
                 ),
                 dbc.FormGroup(
@@ -517,6 +551,15 @@ clu_spectral_clustering_settings = dbc.Popover(
                             type="text",
                             value='8',
                             placeholder='e.g.  [4, 8, 16] or (3, 7) or 8'
+                        ),
+                        dbc.Tooltip(
+                            "Can select multiple values by specifying a " +
+                            "list as in [4, 8, 16], a range of values as in " +
+                            "(3, 7) (selects 3, 4, 5, 6), or a single " +
+                            "integer value. If more than one value is " +
+                            "specified, the best number of clusters is " +
+                            "determined via the score selected below.",
+                            target="clu-SpectralClustering-n-clusters"
                         )
                     ]
                 ),
@@ -535,6 +578,13 @@ clu_spectral_clustering_settings = dbc.Popover(
                             id="clu-SpectralClustering-eval",
                             value='Silhouette'
                         ),
+                        dbc.Tooltip(
+                            "Score to use when selecting the best number " +
+                            "of clusters to use. Only applies when " +
+                            "multiple n-cluster values are used. " +
+                            "2D embeddings are used to compute the score.",
+                            target="clu-SpectralClustering-eval"
+                        )
                     ]
                 ),
                 dbc.FormGroup(
@@ -697,6 +747,15 @@ clu_agglomerative_settings = dbc.Popover(
                             type="text",
                             value='8',
                             placeholder='e.g.  [4, 8, 16] or (3, 7) or 8'
+                        ),
+                        dbc.Tooltip(
+                            "Can select multiple values by specifying a " +
+                            "list as in [4, 8, 16], a range of values as in " +
+                            "(3, 7) (selects 3, 4, 5, 6), or a single " +
+                            "integer value. If more than one value is " +
+                            "specified, the best number of clusters is " +
+                            "determined via the score selected below.",
+                            target="clu-Agglomerative-n-clusters"
                         )
                     ]
                 ),
@@ -715,6 +774,13 @@ clu_agglomerative_settings = dbc.Popover(
                             id="clu-Agglomerative-eval",
                             value='Silhouette'
                         ),
+                        dbc.Tooltip(
+                            "Score to use when selecting the best number " +
+                            "of clusters to use. Only applies when " +
+                            "multiple n-cluster values are used. " +
+                            "2D embeddings are used to compute the score.",
+                            target="clu-Agglomerative-eval"
+                        )
                     ]
                 ),
                 dbc.FormGroup(

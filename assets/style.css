@@ -180,3 +180,8 @@ button.export:hover {
     margin: 0;
     padding-right: 0;
 }
+
+.tooltip {
+    text-transform: unset;
+    font-size: 12px;
+}

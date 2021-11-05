@@ -181,6 +181,10 @@ def get_plot(prefix):
                                     className="mr-3",
                                     color="light"
                                 ),
+                                dbc.Tooltip(
+                                    "Change Color Palette",
+                                    target=prefix + "-change-color-palette-btn"
+                                ),
                                 get_plot_palette_popover(prefix),
                                 dbc.Button(
                                     html.I(
@@ -191,13 +195,21 @@ def get_plot(prefix):
                                     className="mr-3",
                                     color='light'
                                 ),
+                                dbc.Tooltip(
+                                    "Save Plot to a File",
+                                    target=prefix + "-download-plot-popover-btn"
+                                ),
                                 get_plot_download_popover(prefix),
                                 dbc.Button(
                                     "Activate",
                                     id=prefix + "-activate-btn",
                                     disabled=True,
                                     color='light'
-                                )
+                                ),
+                                dbc.Tooltip(
+                                    "Make this the Active Plot",
+                                    target=prefix + "-activate-btn"
+                                ),
                             ]
                         )
                     ],

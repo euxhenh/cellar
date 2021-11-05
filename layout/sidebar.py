@@ -180,7 +180,7 @@ clu_block = dbc.Card(
             [
                 dbc.FormGroup(
                     [
-                        dbc.Label("Obtain Labels via"),
+                        dbc.Label("Method to use"),
                         dbc.InputGroup(
                             [
                                 dbc.Select(
@@ -216,7 +216,7 @@ ssclu_block = dbc.Card(
             [
                 dbc.FormGroup(
                     [
-                        dbc.Label("Obtain Labels via"),
+                        dbc.Label("Method to use"),
                         dbc.InputGroup(
                             [
                                 dbc.Select(
@@ -252,7 +252,7 @@ lbt_block = dbc.Card(
             [
                 dbc.FormGroup(
                     [
-                        dbc.Label("Obtain Labels via"),
+                        dbc.Label("Method to use"),
                         dbc.InputGroup(
                             [
                                 dbc.Select(
@@ -379,6 +379,10 @@ annotations_block = dbc.Card(
                                             type="text",
                                             id="annotation-input"
                                         ),
+                                        dbc.Tooltip(
+                                            "Annotate the selected cluster",
+                                            target="annotation-input"
+                                        ),
                                         dbc.InputGroupAddon(
                                             [
                                                 dbc.Button(
@@ -489,6 +493,13 @@ tools_block = dbc.Card(
                                         type="text",
                                         id="subset-name-input"
                                     ),
+                                    dbc.Tooltip(
+                                        "Assign the selected group " +
+                                        "of cells to a subset. To select " +
+                                        "a group of cells click and drag " +
+                                        "on the plot using the lasso tool.",
+                                        target="subset-name-input"
+                                    ),
                                     dbc.InputGroupAddon(
                                         dbc.Button(
                                             "Store",
@@ -518,6 +529,20 @@ tools_block = dbc.Card(
                                             placeholder="Merge subset",
                                             className="no-display",
                                             id="side-subset-select"
+                                        ),
+                                        dbc.Tooltip(
+                                            "Cells belonging to this subset " +
+                                            "will merge into a single " +
+                                            "cluster. This is useful only " +
+                                            "for user defined subsets.",
+                                            target="main-subset-select"
+                                        ),
+                                        dbc.Tooltip(
+                                            "Cells belonging to this subset " +
+                                            "will merge into a single " +
+                                            "cluster. This is useful only " +
+                                            "for user defined subsets.",
+                                            target="side-subset-select"
                                         ),
                                         dbc.InputGroupAddon(
                                             dbc.Button(
@@ -570,12 +595,22 @@ session_block = dbc.Card(
                             color='primary',
                             outline=False
                         ),
+                        dbc.Tooltip(
+                            "Export the dataset and the analysis as an " +
+                            ".h5ad file. This make take a few seconds.",
+                            target="export-session-btn"
+                        ),
                         dbc.Button(
                             "Export Annotations",
                             id='export-annotations-btn',
                             block=True,
                             color='primary',
                             outline=False
+                        ),
+                        dbc.Tooltip(
+                            "Export the cell IDs and their annotations as " +
+                            "a .csv file.",
+                            target="export-annotations-btn"
                         ),
                         dcc.Loading(
                             dcc.Download("export-session-d"),

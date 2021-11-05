@@ -78,7 +78,8 @@ ssclu_leiden_settings = dbc.Popover(
                     [
                         dbc.Label(
                             "Resolution (only for RBConfiguration, RBER, CPM)",
-                            html_for="slider"),
+                            html_for="slider",
+                            id="ssclu-Leiden-tooltip-temp-resolution"),
                         dcc.Slider(
                             id="ssclu-Leiden-resolution",
                             min=0.01, max=10, step=0.01,
@@ -89,7 +90,7 @@ ssclu_leiden_settings = dbc.Popover(
                 ),
                 dbc.Tooltip(
                     "Higher resolution results in more clusters.",
-                    target="ssclu-Leiden-resolution"
+                    target="ssclu-Leiden-tooltip-temp-resolution"
                 ),
                 # dbc.FormGroup(
                 #     [
@@ -133,7 +134,8 @@ ssclu_leiden_settings = dbc.Popover(
                     [
                         dbc.Label(
                             "Number of Neighbors for the Graph",
-                            html_for="slider"),
+                            html_for="slider",
+                            id="ssclu-Leiden-tooltip-temp-nneigh"),
                         dcc.Slider(
                             id="ssclu-Leiden-nneigh",
                             min=1, max=100, step=1,
@@ -144,7 +146,7 @@ ssclu_leiden_settings = dbc.Popover(
                 ),
                 dbc.Tooltip(
                     "Number of k-Nearest Neighbors to compute.",
-                    target="ssclu-Leiden-nneigh"
+                    target="ssclu-Leiden-tooltip-temp-nneigh"
                 ),
                 dbc.FormGroup(
                     [

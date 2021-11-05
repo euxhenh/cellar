@@ -18,3 +18,4 @@ experiments
 PaperImages
 .idea
 .DS_Store
+cellar-env.txt
