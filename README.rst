@@ -118,4 +118,4 @@ ____________
 
 We welcome contributions both in code and feature requests. To request
 new features please raise an issue in the links provided above or directly
-send an `email to us <mailto:ehasanaj@cs.cmu.edu>`__.
+`send us an email <mailto:ehasanaj@cs.cmu.edu>`__.
