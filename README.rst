@@ -113,8 +113,6 @@ The entry point of the application is ``main.py`` and can be run with::
 
     python main.py
 
-Please view this documentation at [https://jingtaowang22.github.io/cellar_docs/](https://jingtaowang22.github.io/cellar_docs/) or watch video demonstrations at [https://www.youtube.com/playlist?list=PL5sLSLkTYpWgfBQ0M8ObfBIqDMAzx0-D2](https://www.youtube.com/playlist?list=PL5sLSLkTYpWgfBQ0M8ObfBIqDMAzx0-D2).
-
 Contributing
 ____________
 
