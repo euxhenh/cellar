@@ -1,6 +1,6 @@
 .vscode
 /**/__pycache__
-/**/.ipynb*
+/**/*.ipynb*
 data/*
 tmp/a1/*
 tmp/a2/*

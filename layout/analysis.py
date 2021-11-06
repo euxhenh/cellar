@@ -1,11 +1,12 @@
 import os
 
 import dash_bootstrap_components as dbc
-import dash_html_components as html
 import dash_core_components as dcc
+import dash_html_components as html
 import dash_table
 
-from .misc import empty_analysis_figure, empty_spatial_figure
+from .misc import (empty_analysis_figure, empty_colocalization_figure,
+                   empty_spatial_figure)
 
 
 def get_de_card(prefix):
@@ -518,6 +519,86 @@ def get_spatial_card(prefix):
     return spatial
 
 
+def get_spatial_cluster_score_card(prefix):
+    spatial_cluster_score_card = dbc.Card([
+        dbc.CardBody([
+            html.H5([
+                "Cluster Co-Localization Score",
+                dbc.Button(
+                    "Compute Scores",
+                    color='light',
+                    className="mr-2 ml-4",
+                    size='sm',
+                    outline=False,
+                    id=prefix + "-generate-cluster-scores-btn"
+                ),
+            ], className="card-title"),
+            dcc.Loading(
+                children=[dcc.Graph(
+                    id=prefix + '-cluster-scores',
+                    figure=empty_colocalization_figure,
+                    config={
+                        'autosizable': True,
+                        'displaylogo': False,
+                        'displayModeBar': True,
+                        'toImageButtonOptions': {
+                            'format': 'png'
+                        }
+                    }
+                )],
+                type="circle"
+            )
+        ], className="overflow-auto")
+    ])
+    return spatial_cluster_score_card
+
+
+def get_spatial_protein_score_card(prefix):
+    spatial_protein_score_card = dbc.Card([
+        dbc.CardBody([
+            html.H5([
+                "Protein Co-Localization Score",
+                dbc.Button(
+                    "Compute Scores",
+                    color='light',
+                    className="mr-2 ml-4",
+                    size='sm',
+                    outline=False,
+                    id=prefix + "-generate-protein-scores-btn"
+                ),
+            ], className="card-title"),
+            dcc.Loading(
+                children=[dcc.Graph(
+                    id=prefix + '-protein-scores',
+                    figure=empty_colocalization_figure,
+                    config={
+                        'autosizable': True,
+                        'displaylogo': False,
+                        'displayModeBar': True,
+                        'toImageButtonOptions': {
+                            'format': 'png'
+                        }
+                    }
+                )],
+                type="circle"
+            )
+        ], className="overflow-auto")
+    ])
+    return spatial_protein_score_card
+
+
+def get_spatial_scores_carddeck(prefix):
+    scores = dbc.CardDeck(
+        [
+            get_spatial_cluster_score_card(prefix),
+            get_spatial_protein_score_card(prefix)
+        ],
+        className="mb-2 analysis-container"
+    )
+
+    return scores
+
+
 def get_asct_tables(prefix):
     tables = {
         "Brain": "ASCT-B_Allen_Brain.csv",
@@ -562,21 +643,33 @@ def get_analysis_tabs(prefix):
     analysis_tabs = dbc.Tabs(
         [
             dbc.Tab(
-                dbc.Col(
-                    [
+                dbc.Col([
                         dbc.Row(dbc.Col(
                             get_features_carddeck(prefix), width=12),
                             no_gutters=True),
                         dbc.Row(dbc.Col(
                             get_enrich_card(prefix), width=12),
                             no_gutters=True)
-                    ],
+                        ],
+                        className="p-0",
+                        width=12
+                        ),
+                label="Analysis"
+            ),
+            dbc.Tab(
+                dbc.Col([
+                    dbc.Row(dbc.Col(
+                        get_spatial_card(prefix), width=12),
+                        no_gutters=True),
+                    dbc.Row(dbc.Col(
+                        get_spatial_scores_carddeck(prefix), width=12),
+                        no_gutters=True)
+                ],
                     className="p-0",
                     width=12
                 ),
-                label="Analysis"
+                label="Spatial Data"
             ),
-            dbc.Tab(get_spatial_card(prefix), label="Spatial Data"),
             dbc.Tab(get_asct_tables(prefix), label="ASCT-B")
         ]
     )

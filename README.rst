@@ -116,6 +116,6 @@ The entry point of the application is ``main.py`` and can be run with::
 Contributing
 ____________
 
-We welcome contributions both in code and feature requests. To request
+We welcome code contributions as well as feature requests. To request
 new features please raise an issue in the links provided above or directly
 `send us an email <mailto:ehasanaj@cs.cmu.edu>`__.

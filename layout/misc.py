@@ -48,6 +48,30 @@ empty_analysis_figure = {
 }
 
 
+empty_colocalization_figure = {
+    "layout": {
+        "xaxis": {
+            "visible": False
+        },
+        "yaxis": {
+            "visible": False
+        },
+        "annotations": [
+            {
+                "text": "Nothing to show. Load a spatial tile first.",
+                "xref": "paper",
+                "yref": "paper",
+                "showarrow": False,
+                "font": {
+                    "size": 14
+                }
+            }
+        ]
+        # "height": "650"
+    }
+}
+
+
 empty_spatial_figure = {
     "layout": {
         "xaxis": {
@@ -58,7 +82,7 @@ empty_spatial_figure = {
         },
         "annotations": [
             {
-                "text": "Nothing to show.",
+                "text": "Nothing to show. Load a spatial tile first.",
                 "xref": "paper",
                 "yref": "paper",
                 "showarrow": False,

@@ -15,9 +15,10 @@ from dash.exceptions import PreventUpdate
 
 from .cellar.utils.tile_generator import (generate_10x_spatial,
                                           generate_tile)
+from .cellar.core import adjScoreProteinsCODEX, adjScoreClustersCODEX
 from .multiplexer import MultiplexerOutput
 from .notifications import _prep_notification
-from layout.misc import empty_spatial_figure
+from layout.misc import empty_spatial_figure, empty_colocalization_figure
 
 
 def get_parse_tar_gz_func(an):
@@ -172,6 +173,122 @@ for prefix, an in zip(["main", "side"], ["a1", "a2"]):
         State(prefix + "-spatial-type-dropdown", "value"),
         prevent_initial_call=True
     )(get_generate_tile_func(an, prefix))
+
+
+def get_generate_cluster_scores_func(an, prefix):
+    def _func(n1, clean):
+        ctx = dash.callback_context
+        if not ctx.triggered:
+            raise PreventUpdate
+        if an not in dbroot.adatas:
+            raise PreventUpdate
+        if 'adata' not in dbroot.adatas[an]:
+            raise PreventUpdate
+
+        button_id = ctx.triggered[0]["prop_id"].split(".")[0]
+        if button_id == prefix + "-data-load-clean":
+            return empty_colocalization_figure, dash.no_update
+
+        tile_list = os.listdir('data/codex_tile')
+        fname = dbroot.adatas[an]['name']
+
+        if fname not in tile_list:
+            msg = "Could not find spatial data."
+            logger.warn()
+            return dash.no_update, _prep_notification(msg, icon="warning")
+
+        csv_path = f'data/codex_tile/{fname}/data.csv'
+        res = adjScoreClustersCODEX(dbroot.adatas[an]['adata'], csv_path)
+
+        x_cord, y_cord = res['f'].astype(int), res['g'].astype(int)
+        scores = res['score'].astype(float)
+        n = max(x_cord.max(), y_cord.max()) + 1
+        heatmap = np.zeros((n, n))
+        heatmap[x_cord, y_cord] = scores
+
+        fig = px.imshow(
+            heatmap,
+            x=np.arange(n).astype(str),
+            y=np.arange(n).astype(str),
+            labels={
+                'color': 'score'
+            },
+            color_continuous_scale='viridis'
+        )
+        # fig.update(data=[{
+        #     'customdata': np.round(res['q'], 3),
+        #     'hovertemplate': 'q-value: %{customdata}'}])
+        return fig, dash.no_update
+    return _func
+
+
+for prefix, an in zip(["main", "side"], ["a1", "a2"]):
+    app.callback(
+        Output(prefix + "-cluster-scores", "figure"),
+        MultiplexerOutput("push-notification", "data"),
+
+        Input(prefix + "-generate-cluster-scores-btn", "n_clicks"),
+        Input(prefix + "-data-load-clean", "data"),
+        prevent_initial_call=True
+    )(get_generate_cluster_scores_func(an, prefix))
+
+
+def get_generate_protein_scores_func(an, prefix):
+    def _func(n1, clean):
+        ctx = dash.callback_context
+        if not ctx.triggered:
+            raise PreventUpdate
+        if an not in dbroot.adatas:
+            raise PreventUpdate
+        if 'adata' not in dbroot.adatas[an]:
+            raise PreventUpdate
+
+        button_id = ctx.triggered[0]["prop_id"].split(".")[0]
+        if button_id == prefix + "-data-load-clean":
+            return empty_colocalization_figure, dash.no_update
+
+        tile_list = os.listdir('data/codex_tile')
+        fname = dbroot.adatas[an]['name']
+
+        if fname not in tile_list:
+            msg = "Could not find spatial data."
+            logger.warn()
+            return dash.no_update, _prep_notification(msg, icon="warning")
+
+        csv_path = f'data/codex_tile/{fname}/data.csv'
+        res = adjScoreProteinsCODEX(dbroot.adatas[an]['adata'], csv_path)
+
+        x_cord, y_cord = res['f'].astype(int), res['g'].astype(int)
+        scores = res['score'].astype(float)
+        n = max(x_cord.max(), y_cord.max()) + 1
+        heatmap = np.zeros((n, n))
+        heatmap[x_cord, y_cord] = scores
+
+        fig = px.imshow(
+            heatmap,
+            x=np.arange(n).astype(str),
+            y=np.arange(n).astype(str),
+            labels={
+                'color': 'score'
+            },
+            color_continuous_scale='viridis'
+        )
+        # fig.update(data=[{
+        #     'customdata': np.round(res['q'], 3),
+        #     'hovertemplate': 'q-value: %{customdata}'}])
+        return fig, dash.no_update
+    return _func
+
+
+for prefix, an in zip(["main", "side"], ["a1", "a2"]):
+    app.callback(
+        Output(prefix + "-protein-scores", "figure"),
+        MultiplexerOutput("push-notification", "data"),
+
+        Input(prefix + "-generate-protein-scores-btn", "n_clicks"),
+        Input(prefix + "-data-load-clean", "data"),
+        prevent_initial_call=True
+    )(get_generate_protein_scores_func(an, prefix))
 
 
 def get_download_tile_func(an):
