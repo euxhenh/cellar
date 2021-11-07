@@ -186,6 +186,8 @@ def update_shape(s1, s2, s3, s4, actp):
 @app.callback(
     Output("main-feature-list", "options"),
     Output("side-feature-list", "options"),
+    Output("main-feature-list-spatial", "options"),
+    Output("side-feature-list-spatial", "options"),
     MultiplexerOutput("push-notification", "data"),
 
     Input("feature-list-signal", "data"),
@@ -208,8 +210,8 @@ def update_feature_list(s1, s2, s3, actp):
     if dbroot.adatas[an]['adata'].shape[1] > 50000:
         error_msg = "Too many features found. Skipping feature list."
         logger.warn(error_msg)
-        to_return = [dash.no_update] * 2
-        to_return[actp - 1] = []
+        to_return = [dash.no_update] * 4
+        to_return[actp - 1] = to_return[actp + 1] = []
         return to_return + [
             _prep_notification(error_msg, "warning")]
 
@@ -220,15 +222,16 @@ def update_feature_list(s1, s2, s3, actp):
         logger.error(str(e))
         error_msg = "Error occurred when adding gene symbols."
         logger.error(error_msg)
-        return [dash.no_update] * 2 + [_prep_notification(error_msg, "danger")]
+        return [dash.no_update] * 4 + [_prep_notification(error_msg, "danger")]
 
     features = dbroot.adatas[an][
         'adata'].var['gene_symbols'].to_numpy().astype(str)
     unique_index = \
         dbroot.adatas[an]['adata'].var_names.to_numpy().astype(str)
 
-    to_return = [dash.no_update] * 2
-    to_return[actp - 1] = [{'label': f, 'value': g}
-                           for f, g in zip(features, unique_index)]
+    to_return = [dash.no_update] * 4
+    to_return[actp - 1] = to_return[actp + 1] = [
+        {'label': f, 'value': g}
+        for f, g in zip(features, unique_index)]
 
     return to_return + [dash.no_update]

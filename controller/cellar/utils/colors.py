@@ -18,7 +18,8 @@ def get_col_i(pal, i):
     return pal[i % len(pal)]
 
 
-def palette_to_rgb(palette=None, maxval=None):
+def palette_to_rgb(
+        palette=None, maxval=None, black="#000000", white="#FFFFFF"):
     # Colors when labels are provided
     if palette is None:
         palette = PALETTE
@@ -26,7 +27,7 @@ def palette_to_rgb(palette=None, maxval=None):
         while len(palette) - 1 < maxval:
             palette += palette
     # add 0 for black and -1 for white
-    palette = ["#000000"] + palette + ["#FFFFFF"]
+    palette = [black] + palette + [white]
     palr = np.array([int(i[1:3], 16) for i in palette])  # hex string to int
     palb = np.array([int(i[3:5], 16) for i in palette])
     palg = np.array([int(i[5:], 16) for i in palette])

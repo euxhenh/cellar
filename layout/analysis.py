@@ -436,11 +436,11 @@ def get_spatial_card(prefix):
                                         placeholder="Select spatial data type",
                                         id=prefix + '-spatial-type-dropdown'
                                     ),
-                                    dbc.Tooltip(
-                                        "Please check the documentation " +
-                                        "for file format details.",
-                                        target=prefix + '-spatial-type-dropdown'
-                                    ),
+                                    # dbc.Tooltip(
+                                    #     "Please check the documentation " +
+                                    #     "for file format details.",
+                                    #     target=prefix + '-spatial-type-dropdown'
+                                    # ),
                                     dcc.Upload(
                                         id=prefix + "-upload-spatial",
                                         children=[
@@ -448,6 +448,26 @@ def get_spatial_card(prefix):
                                         ],
                                         className="mr-2",
                                         max_size=150*1024*1024  # 150 MB
+                                    ),
+                                    dbc.Col(
+                                        dcc.Loading(
+                                            dcc.Dropdown(
+                                                options=[],
+                                                multi=True,
+                                                id=prefix + '-feature-list-spatial',
+                                                placeholder="Leave empty for cluster view",
+                                            ),
+                                            type="circle"
+                                        ),
+                                        width=4,
+                                        id=prefix + "-feature-list-spatial-col"
+                                    ),
+                                    dbc.Tooltip(
+                                        "Select one or multiple features " +
+                                        "to visualize in the tile. If " +
+                                        "nothing is selected, will default " +
+                                        "to cluster view.",
+                                        target=prefix + "-feature-list-spatial-col"
                                     ),
                                     dbc.Button(
                                         "Generate Tile",

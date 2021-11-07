@@ -324,16 +324,16 @@ def get_paste_de_genes_func(prefix, an):
 
         button_id = ctx.triggered[0]["prop_id"].split(".")[0]
         if button_id == prefix + "-data-load-clean":
-            return [], dash.no_update
+            return [], [], dash.no_update
         elif button_id == prefix + "-paste-de-genes":
             if de_data is None or len(de_data) == 0:
-                return dash.no_update, _prep_notification(
+                return dash.no_update, dash.no_update, _prep_notification(
                     "DE table is empty", "warning"
                 )
             return [
                 options[vals[row['gene']]]['value'] for row in
                 de_data[cur_page * page_size: (cur_page + 1) * page_size]
-            ], dash.no_update
+            ], dash.no_update, dash.no_update
         elif button_id == prefix + "-de-table":
             labels = [
                 de_data[cur_page * page_size + cell['row']]['gene']
@@ -343,15 +343,16 @@ def get_paste_de_genes_func(prefix, an):
             return [
                 options[vals[label]]['value']
                 for label in labels
-            ], dash.no_update
+            ], dash.no_update, dash.no_update
 
-        return [], dash.no_update
+        return [], [], dash.no_update
     return _func
 
 
 for prefix, an in zip(['main', 'side'], ['a1', 'a2']):
     app.callback(
         Output(prefix + "-feature-list", "value"),
+        Output(prefix + "-feature-list-spatial", "value"),
         MultiplexerOutput("push-notification", "data"),
 
         Input(prefix + "-paste-de-genes", "n_clicks"),

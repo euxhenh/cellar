@@ -1,4 +1,4 @@
-from itertools import combinations
+from itertools import combinations_with_replacement as cwr
 import numpy as np
 from rpy2.robjects.packages import importr
 import rpy2.robjects as ro
@@ -9,6 +9,7 @@ from anndata._core.sparse_dataset import SparseDataset
 from controller.cellar.utils.exceptions import UserError
 
 from ._neighbors import get_spatial_knn_graph
+from app import logger
 
 
 def adjScoreProteinsCODEX(
@@ -32,7 +33,15 @@ def adjScoreProteinsCODEX(
         If adata is not None, will use this key to store the adjacency
         matrix in adata.obsp
     """
-    if key in adata.obsp and key in adata.uns and\
+    if adata.shape[0] > 5_000:
+        logger.warn("Too many samples were found. Randomly sampling 5000.")
+        indices = np.random.choice(
+            np.arange(adata.shape[0]), 5000, replace=False)
+        adata = adata[indices]
+        adj = get_spatial_knn_graph(
+            path_to_df, n_neighbors=n_neighbors, adata=adata, key=key,
+            is_truncated=True)
+    elif key in adata.obsp and key in adata.uns and\
             adata.uns[key]['n_neighbors'] == n_neighbors:
         adj = adata.obsp[key]
     else:
@@ -54,21 +63,26 @@ def adjScoreProteinsCODEX(
         dims=ro.IntVector(np.array([*adj.shape])))
 
     if isinstance(adata.X, SparseDataset) or sp.issparse(adata.X):
-        protein_mat = anndata2ri.scipy2ri.py2rpy(sp.csr_matrix(adata.X))
+        xx_cords, yy_cords = adata.X.nonzero()
+        protein_mat = Matrix.sparseMatrix(
+            i=ro.IntVector(xx_cords + 1),
+            j=ro.IntVector(yy_cords + 1),
+            x=adata.X[xx_cords, yy_cords],
+            dims=ro.IntVector(np.array([*adata.shape])))
     else:
         protein_mat = ro.numpy2ri.py2rpy(np.array(adata.X))
 
-    protein_names = list(adata.var.index.to_numpy())
-    protein_mat = ro.r("`colnames<-`")(
-        protein_mat, ro.IntVector(list(range(adata.shape[1]))))
+    colnames = list(range(1, adata.shape[1] + 1))
+    protein_mat = ro.r("`colnames<-`")(protein_mat, ro.IntVector(colnames))
 
-    protein_pairs = list(combinations(list(range(adata.shape[1])), 2))
-    protein_pairs = ro.r.matrix(
-        [ro.IntVector([i[0], i[1]]) for i in protein_pairs])
+    protein_pairs = np.array(list(cwr(colnames, 2)))
+    protein_pairs = ro.numpy2ri.py2rpy(np.array(protein_pairs))
 
-    res = STvEA.AdjScoreProteins_internal(
-        adj_mat, protein_mat, protein_pairs, num_cores=2)
+    res = STvEA.AdjScoreProteins_internal(adj_mat, protein_mat, protein_pairs)
     res = ro.pandas2ri.rpy2py_dataframe(res)
+    # Careful: Subtract 1
+    res['f'] -= 1
+    res['g'] -= 1
     return res
 
 
@@ -111,8 +125,7 @@ def adjScoreClustersCODEX(
         raise ImportError("Could not import R Libraries.")
 
     x_cords, y_cords = adj.nonzero()
-    # Add one to coordinates since R is retarded
-    r_mat = Matrix.sparseMatrix(
+    adj_mat = Matrix.sparseMatrix(
         i=ro.IntVector(x_cords + 1),
         j=ro.IntVector(y_cords + 1),
         x=1,
@@ -120,6 +133,6 @@ def adjScoreClustersCODEX(
 
     labels = ro.IntVector(adata.obs[labels_key])
 
-    res = STvEA.AdjScoreClustersCODEX_internal(r_mat, labels, num_cores=2)
+    res = STvEA.AdjScoreClustersCODEX_internal(adj_mat, labels, num_cores=2)
     res = ro.pandas2ri.rpy2py_dataframe(res)
     return res
