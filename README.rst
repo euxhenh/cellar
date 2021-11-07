@@ -105,6 +105,7 @@ and the following R packages
 
 - SingleR (>= 1.6.1)
 - aertslab/cisTopic (>= 0.3.0)
+- STvEA (>= 0.2.0)
 
 These R packages can be installed using the provided python script
 ``install_Rdeps.py``.

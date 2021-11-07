@@ -1,5 +1,5 @@
 FROM library/archlinux:latest
-MAINTAINER Euxhen Hasanaj ehasanaj@cs.cmu.edu
+LABEL author="ehasanaj@cs.cmu.edu"
 
 RUN pacman -Syyu --noconfirm
 
@@ -27,7 +27,8 @@ ENV PATH /opt/miniconda3/bin:$PATH
 RUN conda env create -f /home/nonroot/downloads/env.yml && \
         cd /home/nonroot/downloads && \
         conda run --no-capture-output -n cellar python install_Rdeps.py && \
-        conda clean -a && rm -rf /home/nonroot/downloads
+        conda clean -a && rm -rf /home/nonroot/downloads && \
+        rm -rf /home/nonroot/.conda/pkgs/*
 
 RUN mkdir /home/nonroot/cellar
 ARG VER=unknown
