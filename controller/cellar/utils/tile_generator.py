@@ -1,3 +1,4 @@
+from genericpath import exists
 import os
 from numpy.core.fromnumeric import sort
 import tifffile
@@ -9,7 +10,7 @@ import matplotlib.pyplot as plt
 import plotly.colors as pc
 
 from .exceptions import InternalError, InvalidArgument, UserError
-from .colors import palette_to_rgb
+from .colors import palette_to_rgb, interpolate_grayimage
 from skimage import draw
 from app import logger
 
@@ -25,19 +26,39 @@ def get_name_index(x, y, im_names):
     return im_names.index(name)
 
 
+def _validate_codex_dataframe(data):
+    """
+    Checks if data.csv has the right columns.
+    """
+    cols = ['id', 'rid', 'z', 'tile_x', 'tile_y']
+    if not set(cols).issubset(data.columns):
+        raise UserError("Columns missing from dataframe. All of " +
+                        "['id', 'rid', 'z', 'tile_x', 'tile_y'] " +
+                        "must be provided.")
+    if not (data.dtypes[cols] == int).all():
+        raise UserError("Columns were not of integer type.")
+
+
 def _read_tiff_images(path_to_tiff):
     """
     Reads images into an list and makes sure each has a z-plane.
     """
+    if not os.path.isdir(path_to_tiff):
+        raise UserError("No images folder found. Make sure all your tif " +
+                        "files are stored in a subdirectory named 'images'.")
     im_names = os.listdir(path_to_tiff)
     # only take .tif files
     im_names = [i for i in im_names if i[-3:] == 'tif']
+    if len(im_names) == 0:
+        raise UserError("No tif images were found.")
     ims = [tifffile.imread(os.path.join(path_to_tiff, i)) for i in im_names]
 
     # In case no z-planes are provided, we add an extra dimension
     for i in range(len(ims)):
         if ims[i].ndim == 3:
             ims[i] = np.expand_dims(ims[i], 0)
+        if ims[i].ndim != 4:
+            raise UserError("Encountered incorrect image dimensions.")
         if ims[i].shape != ims[0].shape:
             raise UserError("Found tiles of differing shapes.")
     return ims, im_names
@@ -65,7 +86,7 @@ def _get_global_owner_single_image(
     will be filled with `no_owner`.
 
     im: array
-        A single image of shape (n z_planes, 4, height, width)
+        A single image of shape (n_z_planes, 4, height, width)
          The 4 channels of a tile stand for
             0) cell seg.filled, 1) nucleus seg. filled
             2) cell seg. outline 3) nucleus seg. outline
@@ -93,7 +114,7 @@ def _get_global_owner_single_image(
         raise UserError(
             "Best z-plane is greater than total number of z planes.")
 
-    # Has shape (height, width) and each pixels contains
+    # Has shape (height, width), and each pixel contains
     # the cell ID that the pixel belongs to.
     # Need to convert cell IDs to cell RIDs to determine global owner.
     local_owner = (im[top_z, CELL_FILL_CH]).astype(int)
@@ -103,9 +124,8 @@ def _get_global_owner_single_image(
         raise UserError(
             "Found cell with local ID 0 which is reserved for no-cell.")
     if cell_rids.min() < 0:  # No equality for RIDS
-        raise UserError(
-            "Found cell with negative RID.")
-    # First map each pixel ID to its index in cell_ids
+        raise UserError("Found cell with negative RID.")
+    # First map each pixel ID to its index in cell_ids, then to RID
     global_owner = _local_owner_2_global(local_owner, cell_ids, cell_rids)
     global_owner[local_owner == 0] = no_owner  # 0 IDs mean no owner
     # Fill cell boundaries
@@ -117,21 +137,27 @@ def _get_global_owner_single_image(
 
 def generate_tile(
         path_to_tiff, path_to_df, adata=None,
-        colors=None, palette=None, savepath=None):
+        colors=None, palette=None, savepath=None, key='spatial_idx'):
     """
     Given a path to image files, construct a codex tile and return figure.
     Parameters
     __________
-    path_to_tiff: string, path to a folder with the Tiff Image files
-    path_to_df: string, path to data.csv
-    adata: anndata.AnnData object or None
-        If present, will store owner under adata.uns['spatial_idx']
-    palette: list of strings containing colors
-    savepath: path to save the generated tile
+    path_to_tiff: str
+        Path to a folder with the Tiff Image files
+    path_to_df: str
+        Path to a data.csv containing columns [id, rid, z, tile_x, tile_y]
+    adata: anndata.AnnData object
+        If present, will store owner under adata.uns[key]
+    palette: list of str
+        Contains colors in hex format
+    savepath: str
+        Path to save the generated tile
+
     Returns
     _______
-    The generated tile as a numpy array (n, m, channels)
-    and an ownership array (n, m)
+    The generated tile as a numpy array (n, m, channels),
+    and an ownership array (n, m) where every pixel corresponds to the
+    cell ID it belongs to.
     """
     # Tiff files are now assumed to have shape (z-planes, 4, h, w)
     # The 4 channels stand for
@@ -143,11 +169,16 @@ def generate_tile(
     WHITE = 255
     BLACK = 0
 
-    if adata is not None and 'spatial_idx' in adata.uns:
-        owner = adata.uns['spatial_idx'].astype(int)
+    if adata is not None and key in adata.uns:
+        owner = adata.uns[key].astype(int).copy()
     else:
         ims, im_names = _read_tiff_images(path_to_tiff)  # list of images
+        if not os.path.exists(path_to_df):
+            raise UserError(
+                "No dataframe was found. Please upload " +
+                "a 'data.csv' file along with an 'images' subfolder.")
         data = pd.read_csv(path_to_df)
+        _validate_codex_dataframe(data)
         # Begin Grid Construction
         grid = []
         owner = []  # Needed to return which cell a pixel belongs to
@@ -168,19 +199,19 @@ def generate_tile(
                 owner_row.append(global_owner)
             logger.info(f"Finished row {y}.")
             owner.append(owner_row)
-        owner = np.block(owner)
+        try:
+            owner = np.block(owner)  # Stitch all tiles together
+        except ValueError as ve:
+            raise UserError("Tile row dimensions do not match. Make sure " +
+                            "images form a valid rectangular tile.")
         if adata is not None:
-            adata.uns['spatial_idx'] = owner
+            adata.uns[key] = owner.copy()  # Make sure to copy
 
     if colors is None:
-        tile = owner.copy()  # Will hold colors
-        # Fill all cells with white and set boundaries to black
-        tile[owner >= 0] = WHITE
-        tile[owner == NO_OWNER] = BLACK
-        tile[owner == OUTLINE] = BLACK
-        tile = tile.astype(np.uint8)
+        # Fill all cells with white and set the rest to black
+        tile = np.where(owner >= 0, WHITE, BLACK).astype(np.uint8)
         # Make it a 3 channel image, channels last
-        tile = np.stack([tile, tile, tile], axis=-1)
+        tile = np.repeat(tile[..., np.newaxis], 3, axis=-1)
         if savepath is not None:
             matplotlib.image.imsave(savepath, tile)
         return tile, owner
@@ -194,9 +225,9 @@ def generate_tile(
 
     tile = owner.copy()
     if colors.dtype == int:
-        # Assume these are cluster IDs
         if colors.min() < 0:
             raise InternalError("Negative cluster IDs found.")
+        # Assume these are cluster IDs
         # so assign to each cell a color from the given palette
         # NOTE: palette gets extended at the top with BLACK and
         # end with WHITE
@@ -204,8 +235,8 @@ def generate_tile(
         # Assign each pixel to its cluster ID
         # Add one not to mess up cells with ID 0 and no owner
         tile[tile >= 0] = colors[tile[tile >= 0]] + 1
-        tile[tile < 0] = 0  # Black out all special keys, i.e., outlines
-        # 0 will pick up black in the palette, and 1 will pick up white
+        tile = tile.clip(min=0)  # Black out all special keys, i.e., outlines
+        # 0 will pick up black in the palette which has sufficient colors
         tile = np.stack([palr[tile], palb[tile], palg[tile]], axis=-1)
         tile = tile.astype(np.uint8)
         if savepath is not None:
@@ -213,83 +244,121 @@ def generate_tile(
         return tile, owner
 
     if colors.dtype == float:
+        # This can be protein expression
         tile = tile.astype(float)
         tile[owner >= 0] = colors[owner[owner >= 0]]
         # Make sure special keys take the smallest value
-        min_color = colors.min()
-        tile[owner == NO_OWNER] = min_color
-        tile[owner == OUTLINE] = min_color
-
+        tile[(owner == NO_OWNER) | (owner == OUTLINE)] = colors.min()
+        tile = interpolate_grayimage(tile, 'magma')
         if savepath is not None:
             matplotlib.image.imsave(savepath, tile, cmap='magma')
         return tile, owner
 
-    raise InternalError("Should not reach this point.")
+    raise InternalError(
+        "Error in colors format. Please report this to the developers.")
+
+
+def _read_verify_10x_json(path_to_json):
+    """
+    This is a dictionary containing 'tissue_hires_scalef' and
+    'spot_diameter_fullres' keys.
+    """
+    if path_to_json is None or not os.path.exists(path_to_json):
+        raise UserError("No json file was provided.")
+    try:
+        with open(path_to_json, 'r') as jf:
+            json_dict = json.load(jf)
+    except:
+        raise UserError("Could not read json file.")
+
+    if any([k not in json_dict
+            for k in ['tissue_hires_scalef', 'spot_diameter_fullres']]):
+        raise UserError("json_dict is missing one of 'tissue_hires_scalef' " +
+                        "or 'spot_diameter_fullres'.")
+    return json_dict
+
+
+def _read_verify_10x_image(path_to_img):
+    """
+    A tile of shape (height, width, channels).
+    """
+    if path_to_img is None or not os.path.exists(path_to_img):
+        raise UserError("No image file was provided.")
+    try:
+        image = np.array(plt.imread(path_to_img))
+    except:
+        raise UserError("Could not read image file.")
+    return image
+
+
+def _read_verify_10x_df(path_to_df, in_tissue=True):
+    """
+    Must be a csv file where the index corresponds to the sample ID
+    and contains two columns for x and y coordinates. Assume
+    the two coordinates are the last columns.
+    """
+    if path_to_df is None or not os.path.exists(path_to_df):
+        raise UserError("No image file was provided.")
+    try:
+        df = pd.read_csv(path_to_df, delimiter=",", header=None).values
+        spatial_dict = {}
+        for row in df:
+            if row[1] == 0 and in_tissue:
+                continue
+            spatial_dict[row[0]] = [row[-2], row[-1]]
+    except:
+        raise UserError("Could not read dataframe.")
+    return spatial_dict
 
 
 def generate_10x_spatial(
-        path_to_img, path_to_df, path_to_json,
+        path_to_img=None, path_to_df=None, path_to_json=None, colors=None,
         adata=None, savepath=None, in_tissue=True, palette=None):
     '''
     in_tissue:
-        True: onyl show spots that are in the tissue
-        False: show all spots
+        True: Only show spots that are in the tissue
+        False: Show all spots
     '''
-
-    has_labels = False
-    if adata is not None:
-        if 'labels' in adata.obs:
-            has_labels = True
-
-    if has_labels:
-        labels = adata.obs['labels']
-    else:
-        return
-
     if 'json_dict' in adata.uns:
-        dic = adata.uns['json_dict']
+        json_dict = adata.uns['json_dict']
     else:
-        json_file = open(path_to_json, 'r')
-        dic = json.load(json_file)
-    scaling_factor = dic['tissue_hires_scalef']  # 0.08250825
-    full_d = dic['spot_diameter_fullres']
-    r = full_d*scaling_factor/2
+        json_dict = _read_verify_10x_json(path_to_json)
+    scaling_factor = json_dict['tissue_hires_scalef']  # 0.08250825
+    full_d = json_dict['spot_diameter_fullres']
+    radius = full_d * scaling_factor / 2
 
     if 'image' in adata.uns:
-        small_img = adata.uns['image']
+        small_img = adata.uns['image'].copy()
     else:
-        small_img = np.array(plt.imread(path_to_img))
+        small_img = _read_verify_10x_image(path_to_img)
 
     if 'spatial_dict' in adata.uns:
         spatial_dict = adata.uns['spatial_dict']
     else:
-        spatial_dict = {}
-        points = []
-        row_col_dict = {}
-        spatial_info = pd.read_csv(
-            path_to_df, delimiter=",", header=None).values
-        for row in spatial_info:
-            if row[1] == 0 and in_tissue:
-                continue
-            spatial_dict[row[0]] = [row[-2], row[-1]]
-            points.append([row[-2], row[-1]])
-            row_col_dict[(row[2], row[3])] = row[0]
+        spatial_dict = _read_verify_10x_df(path_to_df, in_tissue)
 
     owner = np.zeros(small_img.shape[:2]) - 1
     barcodes = list(adata.obs['barcodes'])
-    R, G, B = palette_to_rgb(palette)
+
+    if colors is None:
+        colors = np.full(len(barcodes), 1, dtype=int)
+    elif colors.dtype == int:
+        palr, palb, palg = palette_to_rgb(palette, colors.max())
+        colors += 1
+        colors = np.stack([palr[colors], palb[colors], palg[colors]], axis=-1)
+    elif colors.dtype == float:
+        small_img.fill(0)
+        small_img = small_img[..., 0]
+        small_img = small_img.astype(float)
+
     for i in range(len(adata.obs)):
-        center = np.array(spatial_dict[(barcodes[i])])*scaling_factor
+        center = np.array(spatial_dict[(barcodes[i])]) * scaling_factor
         center = center.astype('int')
-
-        label = labels[i] + 1  # +1 so that dont get white
-        color = np.array([R[label], G[label], B[label]])
-        circle = draw.disk(center, r)
-
-        small_img[circle[0], circle[1], :] = color
+        circle = draw.disk(center, radius)
+        small_img[circle[0], circle[1]] = colors[i]
         owner[circle[0], circle[1]] = i
 
     if savepath is not None:
-        matplotlib.image.imsave(savepath, small_img)
+        matplotlib.image.imsave(savepath, small_img, cmap='magma')
 
     return small_img, owner.astype(int)

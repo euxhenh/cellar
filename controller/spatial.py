@@ -1,4 +1,5 @@
 import io
+from logging import error
 import os
 import shutil
 import tarfile
@@ -70,6 +71,21 @@ for prefix, an in zip(["main", "side"], ["a1", "a2"]):
     )(get_parse_tar_gz_func(an))
 
 
+def _determine_spatial_colors(adata, feature_list):
+    """
+    Determine whether to use labels or protein expression. If neither,
+    will return None.
+    """
+    colors = None
+    if feature_list is None or len(feature_list) == 0:
+        if 'labels' in adata.obs:
+            colors = adata.obs['labels'].to_numpy().astype(int)
+    else:
+        feature_list = np.array(feature_list, dtype='U200').flatten()
+        colors = cl_get_expression(adata, feature_list).astype(float)
+    return colors
+
+
 def get_generate_tile_func(an, prefix):
     def _func(n1, clean, data_type, feature_list):
         ctx = dash.callback_context
@@ -85,30 +101,18 @@ def get_generate_tile_func(an, prefix):
             return empty_spatial_figure, dash.no_update
 
         adata = dbroot.adatas[an]['adata']
-
-        colors = None
-        if feature_list is None or len(feature_list) == 0:
-            if 'labels' in dbroot.adatas[an]['adata'].obs:
-                colors = adata.obs['labels'].to_numpy().astype(int)
-        else:
-            if data_type == 'spatial-10x':
-                error_msg = "Protein expression view is currently " + \
-                    "only supported for CODEX data."
-                return dash.no_update, _prep_notification(error_msg, "info")
-            feature_list = np.array(feature_list, dtype='U200').flatten()
-            colors = cl_get_expression(adata, feature_list).astype(float)
-
+        colors = _determine_spatial_colors(adata, feature_list)
         savepath = f'tmp/spatial_{an}_tile.png'
         owner = None
+
         if data_type == 'spatial-10x':
-            # if not os.path.isdir(f'tmp/{an}/s10x'):
-            #     raise PreventUpdate
             try:
                 tile, owner = generate_10x_spatial(
                     f'tmp/{an}/s10x/spatial/detected_tissue_image.jpg',
                     f'tmp/{an}/s10x/spatial/tissue_positions_list.csv',
                     f'tmp/{an}/s10x/spatial/scalefactors_json.json',
                     adata=adata,
+                    colors=colors,
                     in_tissue=True,
                     savepath=savepath,
                     palette=dbroot.palettes[prefix])
@@ -120,32 +124,25 @@ def get_generate_tile_func(an, prefix):
         elif data_type == 'spatial-codex':
             tile_list = os.listdir('data/codex_tile')
             fname = dbroot.adatas[an]['name']
+            # Selected a server CODEX dataset
+            if fname in tile_list:
+                logger.info("Found CODEX tile locally.")
+                impath = f'data/codex_tile/{fname}/images'
+                datapath = f'data/codex_tile/{fname}/data.csv'
+            # In case no necessary spatial tile information has been uploaded
+            elif not os.path.isdir(f'tmp/{an}/codex'):
+                error_msg = "No spatial files have been uploaded."
+                logger.error(error_msg)
+                return dash.no_update, _prep_notification(error_msg, "warn")
+            else:
+                impath = f'tmp/{an}/codex/images'
+                datapath = f'tmp/{an}/codex/data.csv'
 
             try:
-                if fname in tile_list:
-                    logger.info("Found CODEX tile locally.")
-
-                    tile, owner = generate_tile(
-                        f'data/codex_tile/{fname}/images',
-                        f'data/codex_tile/{fname}/data.csv',
-                        adata=adata,
-                        colors=colors,
-                        palette=dbroot.palettes[prefix],
-                        savepath=savepath)
-                else:
-                    if not os.path.isdir(f'tmp/{an}/codex'):
-                        raise PreventUpdate
-
-                    tile, owner = generate_tile(
-                        f'tmp/{an}/codex/images',
-                        f'tmp/{an}/codex/data.csv',
-                        adata=adata,
-                        colors=colors,
-                        palette=dbroot.palettes[prefix],
-                        savepath=savepath)
+                tile, owner = generate_tile(
+                    impath, datapath, adata=adata, colors=colors,
+                    palette=dbroot.palettes[prefix], savepath=savepath)
             except Exception as e:
-                import traceback
-                print(traceback.format_exc())
                 logger.error(str(e))
                 error_msg = "Error occurred when generating CODEX tile."
                 logger.error(error_msg)
@@ -154,25 +151,19 @@ def get_generate_tile_func(an, prefix):
             msg = "Please select a data type."
             return dash.no_update, _prep_notification(msg, "info")
 
-        if tile is None:
-            error_msg = "No tile was generated."
-            logger.error(error_msg)
-            return dash.no_update, _prep_notification(error_msg, "danger")
-
         logger.info(f"Generated tile with shape {tile.shape}. Scaling...")
-
         ho, wo = tile.shape[:2]
         scaler = 1000 / max(wo, ho)
         w, h = int(scaler * wo), int(scaler * ho)
-
         fig = px.imshow(tile, width=w, height=h,
-                        color_continuous_scale='magma')
+                        color_continuous_scale='magma',
+                        binary_compression_level=9,
+                        binary_format='jpg')
 
-        if owner is not None and 'labels' in dbroot.adatas[an]['adata'].obs:
+        if owner is not None and 'labels' in adata.obs:
             owner_cp = owner.copy()
-            owner[owner < 0] = 0
-            customdata = dbroot.adatas[an][
-                'adata'].obs['labels'].to_numpy()[owner]
+            owner = owner.clip(min=0)
+            customdata = adata.obs['labels'].to_numpy()[owner]
             customdata[owner_cp < 0] = -1
             fig.update(data=[{
                 'customdata': customdata,
@@ -225,7 +216,7 @@ def get_generate_cluster_scores_func(an, prefix):
         fname = dbroot.adatas[an]['name']
 
         if fname not in tile_list:
-            msg = "Could not find spatial data."
+            msg = "Could not find spatial data or data type not supported."
             logger.warn(msg)
             return dash.no_update, _prep_notification(msg, icon="warning")
 
@@ -242,7 +233,7 @@ def get_generate_cluster_scores_func(an, prefix):
         heatmap = np.zeros((n, n))
         heatmap[x_cord, y_cord] = scores
         heatmap[y_cord, x_cord] = scores
-        heatmap = np.log10(heatmap + 1)
+        heatmap = heatmap + 1
 
         # fig = dashbio.Clustergram(
         #     data=heatmap,
@@ -269,7 +260,7 @@ def get_generate_cluster_scores_func(an, prefix):
             x=unq_labels.astype(str),
             y=unq_labels.astype(str),
             labels={
-                'color': 'log10(score+1)',
+                'color': 'score',
                 'x': 'Cluster x ID',
                 'y': 'Cluster y ID'
             },
@@ -308,7 +299,7 @@ def get_generate_protein_scores_func(an, prefix):
         fname = dbroot.adatas[an]['name']
 
         if fname not in tile_list:
-            msg = "Could not find spatial data."
+            msg = "Could not find spatial data or data type not supported."
             logger.warn(msg)
             return dash.no_update, _prep_notification(msg, icon="warning")
 

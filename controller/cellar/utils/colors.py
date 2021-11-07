@@ -1,4 +1,5 @@
 import numpy as np
+import plotly.colors as pc
 
 
 PALETTE = [
@@ -32,3 +33,35 @@ def palette_to_rgb(
     palb = np.array([int(i[3:5], 16) for i in palette])
     palg = np.array([int(i[5:], 16) for i in palette])
     return palr, palb, palg
+
+
+def interpolate_grayimage(im, colorscale='magma'):
+    """
+    Maps a 2D image to a 3D image using the given colormap.
+    We use this manually since plotly is very slow when rendering
+    large 2D images using imshow as in the case of CODEX data.
+    """
+    assert im.ndim == 2
+    colorscale = pc.get_colorscale(colorscale)
+    colors = pc.colorscale_to_colors(colorscale)
+    colors = pc.validate_colors(colors, colortype="tuple")
+
+    # First we bin each value in im so that we know which colors
+    # to use for interpolation
+    unit = (im - im.min()) / (im.max() - im.min())
+    binned = (unit * (len(colors) - 1)) - 0.5
+    binned = np.round(binned).astype(int).clip(min=0)
+    # empty 3d im
+    im3d = np.zeros((*im.shape, 3))
+    for i in range(len(colors) - 1):  # Small for loop so it's ok
+        r1, g1, b1 = colors[i]
+        r2, g2, b2 = colors[i + 1]
+        idx = np.where(binned == i)
+        minv, maxv = im[idx].min(), im[idx].max()
+        intermeds = (im[idx] - minv) / (maxv - minv)
+        im3d[idx] = np.stack([
+            (r2 - r1) * intermeds + r1,
+            (g2 - g1) * intermeds + g1,
+            (b2 - b1) * intermeds + b1
+        ], axis=-1)
+    return im3d

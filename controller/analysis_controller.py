@@ -330,20 +330,22 @@ def get_paste_de_genes_func(prefix, an):
                 return dash.no_update, dash.no_update, _prep_notification(
                     "DE table is empty", "warning"
                 )
-            return [
+            selected = [
                 options[vals[row['gene']]]['value'] for row in
                 de_data[cur_page * page_size: (cur_page + 1) * page_size]
-            ], dash.no_update, dash.no_update
+            ]
+            return selected, selected, dash.no_update
         elif button_id == prefix + "-de-table":
             labels = [
                 de_data[cur_page * page_size + cell['row']]['gene']
                 for cell in cells
             ]
             labels = np.unique(labels)
-            return [
+            selected = [
                 options[vals[label]]['value']
                 for label in labels
-            ], dash.no_update, dash.no_update
+            ]
+            return selected, selected, dash.no_update
 
         return [], [], dash.no_update
     return _func
