@@ -10,6 +10,25 @@ def is_sparse(x):
     return scipy.sparse.issparse(x)
 
 
+def get_title_from_feature_list(adata, feature_list):
+    for feat in feature_list:
+        if feat not in adata.var_names:
+            return None
+
+    if 'gene_symbols' in adata.var:
+        symbols = adata[:, feature_list].var['gene_symbols']
+    else:
+        symbols = feature_list
+
+    title = symbols[0]
+    for i in range(1, min(3, len(symbols))):
+        title += ", " + symbols[i]
+    if len(symbols) > 3:
+        title += "..."
+
+    return title
+
+
 def get_server_dataset_dict(root='data'):
     """
     Reads the datasets in the above folder and returns a dict

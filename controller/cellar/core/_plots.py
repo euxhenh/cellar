@@ -5,7 +5,7 @@ import plotly.express as px
 
 from ..utils.exceptions import InternalError, UserError
 from ._tools import cl_add_gene_symbol, cl_get_expression
-from ..utils.misc import is_sparse
+from ..utils.misc import is_sparse, get_title_from_feature_list
 from ..utils.colors import PALETTE, get_col_i
 
 
@@ -124,13 +124,7 @@ def get_expression_figure(adata, feature_values, feature_range):
 
     # Construct title with gene symbols
     # If more than 3 genes were used, we append dots
-    symbols = adata[:, feature_values].var['gene_symbols']
-    title = symbols[0]
-    for i in range(1, min(3, len(symbols))):
-        title += ", " + symbols[i]
-    if len(symbols) > 3:
-        title += "..."
-
+    title = get_title_from_feature_list(adata, feature_values)
     hover_data = {}
 
     if 'annotations' in adata.obs:
@@ -259,15 +253,8 @@ def get_violin_plot(adata, feature_values, feature_range, palette=PALETTE):
         if feature not in adata.var_names:
             raise UserError(f"Feature {feature} not found in adata.")
 
-    symbols = adata[:, feature_values].var['gene_symbols']
-    title = symbols[0]
-    for i in range(1, min(3, len(symbols))):
-        title += ", " + symbols[i]
-    if len(symbols) > 3:
-        title += "..."
-
+    title = get_title_from_feature_list(adata, feature_values)
     vect = cl_get_expression(adata, feature_values)
-
     single_feature = len(feature_values) == 1
     if single_feature:
         if feature_range[0] > feature_range[1]:

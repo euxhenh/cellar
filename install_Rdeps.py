@@ -14,10 +14,10 @@ if len(names_to_install) > 0:
     utils.install_packages(StrVector(names_to_install))
 
 BiocManager = importr('BiocManager')
-BiocManager.install('BiocParallel')
-BiocManager.install('flowCore')
-BiocManager.install('SingleR')
-BiocManager.install('celldex')
+BiocManager.install('BiocParallel', update=False)
+BiocManager.install('flowCore', update=False)
+BiocManager.install('SingleR', update=False)
+BiocManager.install('celldex', update=False)
 
 devtools = importr('devtools')
 base = importr('base')

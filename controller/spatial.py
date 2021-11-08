@@ -18,6 +18,7 @@ from dash.exceptions import PreventUpdate
 from .cellar.utils.tile_generator import (generate_10x_spatial,
                                           generate_tile)
 from .cellar.utils.exceptions import InternalError
+from .cellar.utils.misc import get_title_from_feature_list
 from .cellar.core import adjScoreProteinsCODEX, adjScoreClustersCODEX
 from .cellar.core import cl_get_expression
 from .multiplexer import MultiplexerOutput
@@ -143,8 +144,6 @@ def get_generate_tile_func(an, prefix):
                     impath, datapath, adata=adata, colors=colors,
                     palette=dbroot.palettes[prefix], savepath=savepath)
             except Exception as e:
-                import traceback
-                print(traceback.format_exc())
                 logger.error(str(e))
                 error_msg = "Error occurred when generating CODEX tile."
                 logger.error(error_msg)
@@ -157,9 +156,11 @@ def get_generate_tile_func(an, prefix):
         ho, wo = tile.shape[:2]
         scaler = 1000 / max(wo, ho)
         w, h = int(scaler * wo), int(scaler * ho)
+
         title = None
-        if feature_list is not None and len(feature_list) == 1:
-            title = feature_list[0]
+        if feature_list is not None and len(feature_list) >= 1:
+            title = get_title_from_feature_list(adata, feature_list)
+
         fig = px.imshow(tile, width=w, height=h,
                         color_continuous_scale='magma',
                         binary_compression_level=9,

@@ -26,7 +26,8 @@ def get_de_card(prefix):
                                         ),
                                         dbc.Tooltip(
                                             "Subset to find DE genes for",
-                                            target=prefix + "-de-cluster-select"
+                                            target=prefix + "-de-cluster-select",
+                                            delay=500
                                         ),
                                         dbc.Select(
                                             options=[],
@@ -501,33 +502,32 @@ def get_spatial_card(prefix):
                                 ],
                                 no_gutters=True
                             ),
-                            dbc.Row(
-                                [
-                                    dbc.Col(
-                                        dcc.Loading(
-                                            children=[
-                                                # html.Div(id=prefix + '-tile',)
-                                                dcc.Graph(
-                                                    id=prefix + '-tile',
-                                                    figure=empty_spatial_figure,
-                                                    config={
-                                                        'autosizable': True,
-                                                        'displaylogo': False,
-                                                        # 'staticPlot': True,
-                                                        'toImageButtonOptions': {
-                                                            'format': 'png'
-                                                        }
-                                                    }
-                                                )
-                                            ],
-                                            type="circle"
-                                        ),
-                                        align='center'
-                                    )
-                                ],
-                                align='center',
-                                no_gutters=True
-                            )
+                            dbc.Row([
+                                dbc.Col(
+                                    dcc.Loading(
+                                        children=[
+                                            # html.Div(id=prefix + '-tile',)
+                                            dcc.Graph(
+                                                id=prefix + '-tile',
+                                                figure=empty_spatial_figure,
+                                                config={
+                                                    'autosizable': True,
+                                                    'displaylogo': False,
+                                                    # 'staticPlot': True,
+                                                    # 'toImageButtonOptions': {
+                                                    #     'format': 'png'
+                                                    # },
+                                                    'modeBarButtonsToRemove': [
+                                                        'toImage',
+                                                    ]
+                                                }
+                                            )
+                                        ],
+                                        type="circle"
+                                    ),
+                                    align='center'
+                                )
+                            ], align='center', no_gutters=True)
                         ],
                         width=12
                     )
