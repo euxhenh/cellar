@@ -166,7 +166,7 @@ def get_feature_card(prefix):
             dbc.CardBody(
                 [
                     html.H5("Feature Visualization",
-                            className="card-title"),
+                            className="card-title", id=prefix + "-feat-title"),
                     dbc.Row(
                         [
                             dbc.Col([
@@ -204,7 +204,7 @@ def get_feature_card(prefix):
                                 "gene from the DE table. To understand " +
                                 "what is shown when multiple genes are " +
                                 "selected, please check the documentation.",
-                                target=prefix + "-feature-list-col",
+                                target=prefix + "-feat-title",
                                 delay=1000
                             ),
                             dbc.Col(
