@@ -57,8 +57,13 @@ def interpolate_grayimage(im, colorscale='magma'):
         r1, g1, b1 = colors[i]
         r2, g2, b2 = colors[i + 1]
         idx = np.where(binned == i)
+        if idx[0].size == 0:
+            continue
         minv, maxv = im[idx].min(), im[idx].max()
-        intermeds = (im[idx] - minv) / (maxv - minv)
+        if minv == maxv:
+            intermeds = 0.5
+        else:
+            intermeds = (im[idx] - minv) / (maxv - minv)
         im3d[idx] = np.stack([
             (r2 - r1) * intermeds + r1,
             (g2 - g1) * intermeds + g1,

@@ -29,6 +29,7 @@ def get_name_index(x, y, im_names):
 def _validate_codex_dataframe(data):
     """
     Checks if data.csv has the right columns.
+    id maps to the id in a tile, and rid maps this id to the index in adata
     """
     cols = ['id', 'rid', 'z', 'tile_x', 'tile_y']
     if not set(cols).issubset(data.columns):
@@ -207,6 +208,8 @@ def generate_tile(
         if adata is not None:
             adata.uns[key] = owner.copy()  # Make sure to copy
 
+    logger.info(f"Found {len(np.unique(owner) - 2)} cells in the tile.")
+
     if colors is None:
         # Fill all cells with white and set the rest to black
         tile = np.where(owner >= 0, WHITE, BLACK).astype(np.uint8)
@@ -221,7 +224,7 @@ def generate_tile(
     if owner.max() >= colors.shape[0]:
         owner[owner >= colors.shape[0]] = NO_OWNER
         logger.warn("Found RIDs greater than the total number of samples. " +
-                    "These RIDs will be filtered.")
+                    "These RIDs will be ignored.")
 
     tile = owner.copy()
     if colors.dtype == int:

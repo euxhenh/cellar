@@ -60,43 +60,49 @@ def knn_auto(x, n_neighbors=15, mode='connectivity', method='auto'):
     return faiss_knn(x, n_neighbors=n_neighbors)
 
 
-def _get_coordinates(rid, indices, x, y):
+def _get_coordinates(rid, n_samples, x, y):
     """
     Matches the IDs in rid and adata.obs.index and returns the appropriate
     x and y coordinates. It will raise an error if adata contains
     any IDs not present in rid.
     """
-    if rid.shape[0] < indices.shape[0]:
-        raise UserError("Incorrect shape for the coordinate matrix. " +
-                        "adata contains more samples.")
-    elif rid.shape[0] > indices.shape[0]:
+    if rid.shape[0] < n_samples:
+        logger.warn("Found more samples than coordinates. Ignoring samples...")
+    elif rid.shape[0] > n_samples:
         logger.warn("Found more coordinates than samples. Truncating...")
 
-    try:
-        _, ind1, ind2 = np.intersect1d(
-            rid, indices, return_indices=True)
-        if ind2.shape[0] != indices.shape[0]:
-            raise UserError("Some sample IDs were not found in data.csv.")
-        # First limit x, y to overlap only
-        x, y = x[ind1].copy(), y[ind1].copy()
-        # Since np.intersect1d returns sorted values, we un-sort
-        sorted_indices = np.argsort(indices)
-        # Make sure to copy, since x will be updated online
-        xx, yy = x.copy(), y.copy()
-        x[sorted_indices], y[sorted_indices] = xx, yy
-        logger.info(f"Kept {x.shape[0]} coordinates.")
-    except UserError as ue:
-        raise ue
-    except Exception as e:
-        raise InternalError(
-            "An error occurred when parsing coordinates.")
+    indices = np.arange(n_samples)
+    overlap, ind1, ind2 = np.intersect1d(rid, indices, return_indices=True)
+    if overlap.size == 0:
+        raise UserError("No rid values correspond to samples.")
+    logger.info(f"Using {overlap.shape[0]} coordinates.")
 
-    return x, y
+    return rid[ind1], x[ind1], y[ind1], ind2
+
+
+def _subsample_from_overlap(rid, n_samples, x, y, subsample_n=5000):
+    """
+    Looks at the overlap between arange(len(adata)) and rid and
+    samples subsample_n points.
+    """
+    # NOTE: rid maps to the ordinal index in adata and NOT adata.obs.index
+    common, ind1, ind2 = np.intersect1d(
+        rid, np.arange(n_samples), return_indices=True)
+    if common.shape[0] <= subsample_n:
+        ind_of_ind = np.arange(len(common))
+    else:
+        ind_of_ind = np.random.choice(
+            np.arange(len(common)), subsample_n, replace=False)
+    df_idx = ind1[ind_of_ind]
+    rid, x, y = rid[df_idx], x[df_idx], y[df_idx]
+    sample_idx = ind2[ind_of_ind]
+
+    return rid, x, y, sample_idx
 
 
 def get_spatial_knn_graph(
-        path_to_df, n_neighbors=3, adata=None, key='spatial_nneigh',
-        is_truncated=False):
+        path_to_df, adata, n_neighbors=3, key='spatial_nneigh',
+        subsample=False, subsample_n=5000):
     """
     Constructs a nearest neighbors graph using CODEX spatial tiles
     and return a sparse adjacency matrix.
@@ -114,14 +120,14 @@ def get_spatial_knn_graph(
     key: str
         If adata is not None, will use this key to store the adjacency
         matrix in adata.obsp
-    is_truncated: bool
-        If set to True, will assume that adata has been truncated and
-        will not populate its neighbors keys.
+    subsample: bool
+        If set to True, will sample points instead of using the full data.
 
     Returns
     _______
     sparse.csr_matrix symmetric, binary adjacency matrix.
-    If adata is not None, will also add the adjacency matrix to adata.obsp
+    If adata is not None, will also add the adjacency matrix to adata.obsp,
+    indices if subsample is set to True
     """
     if not os.path.exists(path_to_df):
         raise UserError("No data.csv file containing spatial info was found.")
@@ -135,10 +141,15 @@ def get_spatial_knn_graph(
     x = data['rx'].to_numpy().astype(float)
     y = data['ry'].to_numpy().astype(float)
     rid = data['rid'].to_numpy().astype(int)
-    # Check shapes and get overlapping IDs
-    if adata is not None:
-        x, y = _get_coordinates(
-            rid, adata.obs.index.to_numpy().astype(int), x, y)
+
+    if subsample:
+        rid, x, y, sample_idx = _subsample_from_overlap(
+            rid, adata.shape[0], x, y, subsample_n)
+    else:
+        # Check shapes and get overlapping IDs
+        rid, x, y, sample_idx = _get_coordinates(rid, adata.shape[0], x, y)
+
+    ######### Neighbors ##########
     # Stack into a single data array
     coords = np.array([x, y]).T
     # Use a KD-Tree for fast neighbors computation
@@ -150,14 +161,17 @@ def get_spatial_knn_graph(
     # Add one neighbor since we do not want to include self
     nn_indices = kdt.query(coords, return_distance=False, k=n_neighbors + 1)
     nn_indices = nn_indices[:, 1:]  # Remove self
+    ######### Neighbors ##########
+
     # Construct sparse matrix from nn_indices
     n, d = nn_indices.shape
-    x_cord = np.repeat(np.arange(n), d)
+    x_cord = np.repeat(sample_idx, d)
     adj = csr_matrix(
-        (np.full(n * d, 1), (x_cord, nn_indices.flat)), shape=(n, n))
+        (np.full(n * d, 1), (x_cord, sample_idx[nn_indices.flat])),
+        shape=(adata.shape[0], adata.shape[0]))
     adj = ((adj + adj.transpose()) > 0).astype(float)
 
-    if adata is not None and not is_truncated:
+    if not subsample:
         adata.obsp[key] = adj
         adata.uns[key] = {
             'n_neighbors': n_neighbors

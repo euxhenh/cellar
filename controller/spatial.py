@@ -143,6 +143,8 @@ def get_generate_tile_func(an, prefix):
                     impath, datapath, adata=adata, colors=colors,
                     palette=dbroot.palettes[prefix], savepath=savepath)
             except Exception as e:
+                import traceback
+                print(traceback.format_exc())
                 logger.error(str(e))
                 error_msg = "Error occurred when generating CODEX tile."
                 logger.error(error_msg)
@@ -155,10 +157,13 @@ def get_generate_tile_func(an, prefix):
         ho, wo = tile.shape[:2]
         scaler = 1000 / max(wo, ho)
         w, h = int(scaler * wo), int(scaler * ho)
+        title = None
+        if feature_list is not None and len(feature_list) == 1:
+            title = feature_list[0]
         fig = px.imshow(tile, width=w, height=h,
                         color_continuous_scale='magma',
                         binary_compression_level=9,
-                        binary_format='jpg')
+                        binary_format='jpg', title=title)
 
         if owner is not None and 'labels' in adata.obs:
             owner_cp = owner.copy()
@@ -323,6 +328,11 @@ def get_generate_protein_scores_func(an, prefix):
                 'color': 'log10(score+1)'
             },
             color_continuous_scale='magma'
+        )
+        # Show all labels
+        fig.update_layout(
+            xaxis=dict(tickmode='linear'),
+            yaxis=dict(tickmode='linear')
         )
         return fig, dash.no_update
     return _func

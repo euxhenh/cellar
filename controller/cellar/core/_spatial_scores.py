@@ -34,13 +34,10 @@ def adjScoreProteinsCODEX(
         matrix in adata.obsp
     """
     if adata.shape[0] > 5_000:
-        logger.warn("Too many samples were found. Randomly sampling 5000.")
-        indices = np.random.choice(
-            np.arange(adata.shape[0]), 5000, replace=False)
-        adata = adata[indices]
+        logger.warn("Too many samples were found. Subsampling...")
         adj = get_spatial_knn_graph(
             path_to_df, n_neighbors=n_neighbors, adata=adata, key=key,
-            is_truncated=True)
+            subsample=True, subsample_n=5000)
     elif key in adata.obsp and key in adata.uns and\
             adata.uns[key]['n_neighbors'] == n_neighbors:
         adj = adata.obsp[key]
@@ -48,6 +45,10 @@ def adjScoreProteinsCODEX(
         adj = get_spatial_knn_graph(
             path_to_df, n_neighbors=n_neighbors, adata=adata, key=key)
 
+    # We will only consider non-zero rows/cols.
+    adata = adata[adj.getnnz(1) > 0]
+    # We use the fact that adj is symmetric
+    adj = adj[adj.getnnz(1) > 0][:, adj.getnnz(0) > 0]
     try:
         STvEA = importr('STvEA')
         Matrix = importr('Matrix')
