@@ -204,9 +204,8 @@ def get_feature_card(prefix):
                                 "gene from the DE table. To understand " +
                                 "what is shown when multiple genes are " +
                                 "selected, please check the documentation.",
-                                target=prefix + "-plotting-menu",
-                                delay=500,
-                                placement='auto-start'
+                                target=prefix + "-feature-list-col",
+                                delay=1000
                             ),
                             dbc.Col(
                                 dbc.DropdownMenu(
