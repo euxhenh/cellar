@@ -318,14 +318,16 @@ def get_generate_protein_scores_func(an, prefix):
         heatmap = np.zeros((n, n))
         heatmap[x_cord, y_cord] = scores
         heatmap[y_cord, x_cord] = scores
-        heatmap = np.log10(heatmap + 1)
+        # heatmap = np.log10(heatmap + 1)
 
         fig = px.imshow(
             heatmap,
             x=features,
             y=features,
             labels={
-                'color': 'log10(score+1)'
+                'color': 'score',
+                'x': 'Gene x ID',
+                'y': 'Gene y ID'
             },
             color_continuous_scale='magma'
         )

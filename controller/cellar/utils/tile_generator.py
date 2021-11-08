@@ -1,6 +1,7 @@
 from genericpath import exists
 import os
 from numpy.core.fromnumeric import sort
+from scipy.stats.stats import zscore
 import tifffile
 import pandas as pd
 import numpy as np
@@ -8,6 +9,7 @@ import matplotlib
 import json
 import matplotlib.pyplot as plt
 import plotly.colors as pc
+from scipy import stats
 
 from .exceptions import InternalError, InvalidArgument, UserError
 from .colors import palette_to_rgb, interpolate_grayimage
@@ -38,6 +40,16 @@ def _validate_codex_dataframe(data):
                         "must be provided.")
     if not (data.dtypes[cols] == int).all():
         raise UserError("Columns were not of integer type.")
+
+
+def _filter_outliers(arr, thresh=3):
+    zscores = stats.zscore(arr, axis=None)
+    good_min = arr[zscores >= -thresh].min()
+    good_max = arr[zscores <= thresh].max()
+    filtered_arr = np.where(zscores <= thresh, arr, good_max)
+    filtered_arr = np.where(zscores >= -thresh, filtered_arr, good_min)
+    print(f"Clipped {(filtered_arr != arr).sum()} values from {arr.size}.")
+    return filtered_arr
 
 
 def _read_tiff_images(path_to_tiff):
@@ -249,9 +261,13 @@ def generate_tile(
     if colors.dtype == float:
         # This can be protein expression
         tile = tile.astype(float)
+        # Filter very high and very low values for better visualization
+        colors = _filter_outliers(colors)
         tile[owner >= 0] = colors[owner[owner >= 0]]
-        # Make sure special keys take the smallest value
-        tile[(owner == NO_OWNER) | (owner == OUTLINE)] = colors.min()
+        # Make sure special keys take the smallest value - some 10% to
+        # distinguish them from cells
+        tile[(owner == NO_OWNER) | (owner == OUTLINE)
+             ] = colors.min() - np.ptp(colors) * 0.1
         tile = interpolate_grayimage(tile, 'magma')
         if savepath is not None:
             matplotlib.image.imsave(savepath, tile, cmap='magma')
