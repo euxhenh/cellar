@@ -205,7 +205,7 @@ def _remap_indices(x, old, new):
 
 
 def get_generate_cluster_scores_func(an, prefix):
-    def _func(n1, clean):
+    def _func(n1, clean, n_neighbors):
         ctx = dash.callback_context
         if not ctx.triggered:
             raise PreventUpdate
@@ -227,7 +227,8 @@ def get_generate_cluster_scores_func(an, prefix):
             return dash.no_update, _prep_notification(msg, icon="warning")
 
         csv_path = f'data/codex_tile/{fname}/data.csv'
-        res = adjScoreClustersCODEX(dbroot.adatas[an]['adata'], csv_path)
+        res = adjScoreClustersCODEX(
+            dbroot.adatas[an]['adata'], csv_path, n_neighbors=n_neighbors)
 
         x_cord = res['f'].to_numpy().astype(int)
         y_cord = res['g'].to_numpy().astype(int)
@@ -283,12 +284,13 @@ for prefix, an in zip(["main", "side"], ["a1", "a2"]):
 
         Input(prefix + "-generate-cluster-scores-btn", "n_clicks"),
         Input(prefix + "-data-load-clean", "data"),
+        State(prefix + "-spatial-cluster-scores-nneigh", "value"),
         prevent_initial_call=True
     )(get_generate_cluster_scores_func(an, prefix))
 
 
 def get_generate_protein_scores_func(an, prefix):
-    def _func(n1, clean):
+    def _func(n1, clean, n_neighbors):
         ctx = dash.callback_context
         if not ctx.triggered:
             raise PreventUpdate
@@ -310,7 +312,8 @@ def get_generate_protein_scores_func(an, prefix):
             return dash.no_update, _prep_notification(msg, icon="warning")
 
         csv_path = f'data/codex_tile/{fname}/data.csv'
-        res = adjScoreProteinsCODEX(dbroot.adatas[an]['adata'], csv_path)
+        res = adjScoreProteinsCODEX(
+            dbroot.adatas[an]['adata'], csv_path, n_neighbors=n_neighbors)
 
         features = dbroot.adatas[an]['adata'].var['gene_symbols'].to_numpy()
         x_cord, y_cord = res['f'].astype(int), res['g'].astype(int)
@@ -348,6 +351,7 @@ for prefix, an in zip(["main", "side"], ["a1", "a2"]):
 
         Input(prefix + "-generate-protein-scores-btn", "n_clicks"),
         Input(prefix + "-data-load-clean", "data"),
+        State(prefix + "-spatial-protein-scores-nneigh", "value"),
         prevent_initial_call=True
     )(get_generate_protein_scores_func(an, prefix))
 

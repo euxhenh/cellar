@@ -25,7 +25,7 @@ lbt_ingest_settings = dbc.Popover(
     ],
     id="lbt-Scanpy-Ingest-settings",
     target="lbt-Scanpy-Ingest-btn",
-    trigger="click"
+    trigger="legacy"
 )
 
 lbt_ingest_settings_keys = {
@@ -52,7 +52,7 @@ lbt_singler_settings = dbc.Popover(
     ],
     id="lbt-SingleR-settings",
     target="lbt-SingleR-btn",
-    trigger="click"
+    trigger="legacy"
 )
 
 lbt_singler_settings_keys = {
@@ -77,7 +77,7 @@ lbt_exact_settings = dbc.Popover(
     ],
     id="lbt-exact-settings",
     target="lbt-exact-btn",
-    trigger="click"
+    trigger="legacy"
 )
 
 lbt_exact_settings_keys = {

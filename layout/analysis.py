@@ -27,7 +27,8 @@ def get_de_card(prefix):
                                         dbc.Tooltip(
                                             "Subset to find DE genes for",
                                             target=prefix + "-de-cluster-select",
-                                            delay=500
+                                            delay=500,
+                                            placement='top'
                                         ),
                                         dbc.Select(
                                             options=[],
@@ -36,7 +37,9 @@ def get_de_card(prefix):
                                         ),
                                         dbc.Tooltip(
                                             "Subset to compare against",
-                                            target=prefix + "-de-cluster-select2"
+                                            target=prefix + "-de-cluster-select2",
+                                            delay=500,
+                                            placement='top'
                                         ),
                                         dbc.Button(
                                             html.I(className="fas fa-cog"),
@@ -60,7 +63,8 @@ def get_de_card(prefix):
                                                             ),
                                                             dbc.Tooltip(
                                                                 "q-Value Threshold",
-                                                                target=prefix + "-de-analysis-alpha"
+                                                                target=prefix + "-de-analysis-alpha",
+                                                                delay=500
                                                             )
                                                         ]
                                                     ),
@@ -76,7 +80,8 @@ def get_de_card(prefix):
                                                             dbc.Tooltip(
                                                                 "Genes with FC less than this value will be filtered. " +
                                                                 "If set to 0, no filtering will be applied.",
-                                                                target=prefix + "-de-analysis-fc"
+                                                                target=prefix + "-de-analysis-fc",
+                                                                delay=500
                                                             )
                                                         ]
                                                     ),
@@ -98,14 +103,15 @@ def get_de_card(prefix):
                                                             dbc.Tooltip(
                                                                 "If your data has been log-transformed " +
                                                                 "during the preprocessing step, set this to True.",
-                                                                target=prefix + "-de-analysis-logged"
+                                                                target=prefix + "-de-analysis-logged",
+                                                                delay=500
                                                             )
                                                         ]
                                                     ),
                                                 ])
                                             ],
                                             target=prefix + "-de-analysis-btn",
-                                            trigger="click"
+                                            trigger="legacy"
                                         ),
                                         dbc.InputGroupAddon(
                                             dbc.Button(
@@ -178,7 +184,8 @@ def get_feature_card(prefix):
                                 ),
                                 dbc.Tooltip(
                                     "Paste DE genes from the current page",
-                                    target=prefix + "-paste-de-genes"
+                                    target=prefix + "-paste-de-genes",
+                                    delay=500
                                 )
                             ], width=1),
                             dbc.Col([
@@ -197,7 +204,9 @@ def get_feature_card(prefix):
                                 "gene from the DE table. To understand " +
                                 "what is shown when multiple genes are " +
                                 "selected, please check the documentation.",
-                                target=prefix + "-feature-list-col"
+                                target=prefix + "-plotting-menu",
+                                delay=500,
+                                placement='auto-start'
                             ),
                             dbc.Col(
                                 dbc.DropdownMenu(
@@ -215,7 +224,8 @@ def get_feature_card(prefix):
                                             id=prefix + "-violin-plot"
                                         )
                                     ],
-                                    label="Plotting"
+                                    label="Plotting",
+                                    id=prefix + "-plotting-menu"
                                 ),
                                 width=2
                             ),
@@ -227,7 +237,8 @@ def get_feature_card(prefix):
                                 ),
                                 dbc.Tooltip(
                                     "Clears the expression view from the plot",
-                                    target=prefix + "-clear-expression-btn"
+                                    target=prefix + "-clear-expression-btn",
+                                    delay=500
                                 )
                             ], width=2)
                         ],
@@ -254,7 +265,8 @@ def get_feature_card(prefix):
                         "Can be useful to filter outliers or modify " +
                         "the colorbar scale. Only works for a " +
                         "single gene.",
-                        target=prefix + "-feature-rangeslider-col"
+                        target=prefix + "-feature-rangeslider-col",
+                        delay=500
                     ),
                     dcc.Loading(
                         dcc.Graph(
@@ -346,7 +358,8 @@ def get_enrich_card(prefix):
                                             "Will only use this many DE " +
                                             "genes from the DE table. DE " +
                                             "genes are sorted by Fold-Change.",
-                                            target=prefix + "-de-genes-enrich-no"
+                                            target=prefix + "-de-genes-enrich-no",
+                                            delay=500
                                         )
                                     ],
                                     className="mr-2",
@@ -463,13 +476,6 @@ def get_spatial_card(prefix):
                                         width=4,
                                         id=prefix + "-feature-list-spatial-col"
                                     ),
-                                    dbc.Tooltip(
-                                        "Select one or multiple features " +
-                                        "to visualize in the tile. If " +
-                                        "nothing is selected, will default " +
-                                        "to cluster view.",
-                                        target=prefix + "-feature-list-spatial-col"
-                                    ),
                                     dbc.Button(
                                         "Generate Tile",
                                         color='primary',
@@ -483,7 +489,8 @@ def get_spatial_card(prefix):
                                         "files for server datasets and " +
                                         "hitting this button will generate " +
                                         "the tile automatically.",
-                                        target=prefix + "-generate-tile-btn"
+                                        target=prefix + "-generate-tile-btn",
+                                        delay=500
                                     ),
                                     dcc.Loading(
                                         dcc.Download(
@@ -497,7 +504,8 @@ def get_spatial_card(prefix):
                                     dbc.Tooltip(
                                         "This will download the tile as a " +
                                         "high resolution .png image file.",
-                                        target=prefix + "-download-tile-btn"
+                                        target=prefix + "-download-tile-btn",
+                                        delay=500
                                     )
                                 ],
                                 no_gutters=True
@@ -552,6 +560,31 @@ def get_spatial_cluster_score_card(prefix):
                     outline=False,
                     id=prefix + "-generate-cluster-scores-btn"
                 ),
+                dbc.Button(
+                    html.I(className="fas fa-cog"),
+                    id=prefix + "-spatial-cluster-scores-cog",
+                    color='light',
+                    # outline=True
+                ),
+                dbc.Popover(
+                    [
+                        dbc.PopoverHeader("Settings"),
+                        dbc.PopoverBody([
+                            dbc.FormGroup([
+                                dbc.Label("# Neighbors"),
+                                dcc.Slider(
+                                    id=prefix + "-spatial-cluster-scores-nneigh",
+                                    min=3, max=15, step=1,
+                                    value=3,
+                                    marks={i: str(i) for i in range(3, 16, 1)},
+                                    tooltip={'always_visible': True}
+                                )
+                            ])
+                        ])
+                    ],
+                    target=prefix + "-spatial-cluster-scores-cog",
+                    trigger="legacy"
+                ),
             ], className="card-title"),
             dcc.Loading(
                 children=[dcc.Graph(
@@ -585,6 +618,30 @@ def get_spatial_protein_score_card(prefix):
                     size='sm',
                     outline=False,
                     id=prefix + "-generate-protein-scores-btn"
+                ),
+                dbc.Button(
+                    html.I(className="fas fa-cog"),
+                    id=prefix + "-spatial-protein-scores-cog",
+                    color='light'
+                ),
+                dbc.Popover(
+                    [
+                        dbc.PopoverHeader("Settings"),
+                        dbc.PopoverBody([
+                            dbc.FormGroup([
+                                dbc.Label("# Neighbors"),
+                                dcc.Slider(
+                                    id=prefix + "-spatial-protein-scores-nneigh",
+                                    min=3, max=15, step=1,
+                                    value=5,
+                                    marks={i: str(i) for i in range(3, 16, 1)},
+                                    tooltip={'always_visible': True}
+                                )
+                            ])
+                        ])
+                    ],
+                    target=prefix + "-spatial-protein-scores-cog",
+                    trigger="legacy"
                 ),
             ], className="card-title"),
             dcc.Loading(

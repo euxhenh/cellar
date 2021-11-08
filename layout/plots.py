@@ -70,7 +70,7 @@ def get_plot_palette_popover(prefix):
         is_open=False,
         placement="bottom-start",
         target=prefix + "-change-color-palette-btn",
-        trigger="click"
+        trigger="legacy"
     )
 
 
@@ -155,7 +155,7 @@ def get_plot_download_popover(prefix):
         is_open=False,
         placement="bottom-end",
         target=prefix + "-download-plot-popover-btn",
-        trigger="click"
+        trigger="legacy"
     )
 
 

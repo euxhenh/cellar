@@ -62,7 +62,7 @@ vis_pca_settings = dbc.Popover(
     ],
     id="vis-PCA-settings",
     target="vis-PCA-btn",
-    trigger="click"
+    trigger="legacy"
 )
 
 vis_pca_settings_keys = {
@@ -125,7 +125,7 @@ vis_tsvd_settings = dbc.Popover(
     ],
     id="vis-Truncated-SVD-settings",
     target="vis-Truncated-SVD-btn",
-    trigger="click"
+    trigger="legacy"
 )
 
 vis_tsvd_settings_keys = {
@@ -230,7 +230,7 @@ vis_kpca_settings = dbc.Popover(
     ],
     id="vis-Kernel-PCA-settings",
     target="vis-Kernel-PCA-btn",
-    trigger="click"
+    trigger="legacy"
 )
 
 vis_kpca_settings_keys = {
@@ -312,7 +312,7 @@ vis_mds_settings = dbc.Popover(
     ],
     id="vis-MDS-settings",
     target="vis-MDS-btn",
-    trigger="click"
+    trigger="legacy"
 )
 
 
@@ -459,7 +459,7 @@ vis_umap_settings = dbc.Popover(
     ],
     id="vis-UMAP-settings",
     target="vis-UMAP-btn",
-    trigger="click"
+    trigger="legacy"
 )
 
 vis_umap_settings_keys = {
@@ -614,7 +614,7 @@ vis_tsne_settings = dbc.Popover(
     ],
     id="vis-TSNE-settings",
     target="vis-TSNE-btn",
-    trigger="click"
+    trigger="legacy"
 )
 
 vis_tsne_settings_keys = {
@@ -722,7 +722,7 @@ vis_diffmap_settings = dbc.Popover(
     ],
     id="vis-Diffmap-settings",
     target="vis-Diffmap-btn",
-    trigger="click"
+    trigger="legacy"
 )
 
 vis_diffmap_settings_keys = {

@@ -76,7 +76,7 @@ dim_pca_settings = dbc.Popover(
     ],
     id="dim-PCA-settings",
     target="dim-PCA-btn",
-    trigger="click"
+    trigger="legacy"
 )
 
 dim_pca_settings_keys = {
@@ -155,7 +155,7 @@ dim_tsvd_settings = dbc.Popover(
     ],
     id="dim-Truncated-SVD-settings",
     target="dim-Truncated-SVD-btn",
-    trigger="click"
+    trigger="legacy"
 )
 
 dim_tsvd_settings_keys = {
@@ -276,7 +276,7 @@ dim_kpca_settings = dbc.Popover(
     ],
     id="dim-Kernel-PCA-settings",
     target="dim-Kernel-PCA-btn",
-    trigger="click"
+    trigger="legacy"
 )
 
 dim_kpca_settings_keys = {
@@ -373,7 +373,7 @@ dim_mds_settings = dbc.Popover(
     ],
     id="dim-MDS-settings",
     target="dim-MDS-btn",
-    trigger="click"
+    trigger="legacy"
 )
 
 dim_mds_settings_keys = {
@@ -490,7 +490,7 @@ dim_diffmap_settings = dbc.Popover(
     ],
     id="dim-Diffmap-settings",
     target="dim-Diffmap-btn",
-    trigger="click"
+    trigger="legacy"
 )
 
 dim_diffmap_settings_keys = {
@@ -654,7 +654,7 @@ dim_umap_settings = dbc.Popover(
     ],
     id="dim-UMAP-settings",
     target="dim-UMAP-btn",
-    trigger="click"
+    trigger="legacy"
 )
 
 dim_umap_settings_keys = {
@@ -717,7 +717,7 @@ dim_cistopic_settings = dbc.Popover(
     ],
     id="dim-cisTopic-settings",
     target="dim-cisTopic-btn",
-    trigger="click"
+    trigger="legacy"
 )
 
 dim_cistopic_settings_keys = {

@@ -247,7 +247,7 @@ ssclu_leiden_settings = dbc.Popover(
     ],
     id="ssclu-Constrained-Leiden-settings",
     target="ssclu-Constrained-Leiden-btn",
-    trigger="click"
+    trigger="legacy"
 )
 
 ssclu_leiden_settings_keys = {

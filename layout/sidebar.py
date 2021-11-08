@@ -69,7 +69,7 @@ dataset_shape = dbc.Row(
                     ],
                     id="run-time-popover",
                     target="run-time-btn",
-                    trigger="click"
+                    trigger="legacy"
                 )
             ],
             width=1

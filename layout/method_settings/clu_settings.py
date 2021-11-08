@@ -202,7 +202,7 @@ clu_leiden_settings = dbc.Popover(
     ],
     id="clu-Leiden-settings",
     target="clu-Leiden-btn",
-    trigger="click"
+    trigger="legacy"
 )
 
 clu_leiden_settings_keys = {
@@ -348,7 +348,7 @@ clu_kmeans_settings = dbc.Popover(
     ],
     id="clu-KMeans-settings",
     target="clu-KMeans-btn",
-    trigger="click"
+    trigger="legacy"
 )
 
 
@@ -523,7 +523,7 @@ clu_kmedoids_settings = dbc.Popover(
     ],
     id="clu-KMedoids-settings",
     target="clu-KMedoids-btn",
-    trigger="click"
+    trigger="legacy"
 )
 
 
@@ -716,7 +716,7 @@ clu_spectral_clustering_settings = dbc.Popover(
     ],
     id="clu-Spectral-Clustering-settings",
     target="clu-Spectral-Clustering-btn",
-    trigger="click"
+    trigger="legacy"
 )
 
 
@@ -829,7 +829,7 @@ clu_agglomerative_settings = dbc.Popover(
     ],
     id="clu-Agglomerative-settings",
     target="clu-Agglomerative-btn",
-    trigger="click"
+    trigger="legacy"
 )
 
 
@@ -864,7 +864,7 @@ clu_uncertainty_settings = dbc.Popover(
     ],
     id="clu-Uncertainty-Clustering-settings",
     target="clu-Uncertainty-Clustering-btn",
-    trigger="click"
+    trigger="legacy"
 )
 
 clu_uncertainty_settings_keys = {
