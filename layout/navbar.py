@@ -287,21 +287,16 @@ dataset_bar = dbc.Row(
         dbc.Col(
             dbc.InputGroupAddon(
                 [
-                    dbc.Spinner(
-                        children=[
-                            html.Div(id="dataset-load"),
-                        ],
-                        type='grow',
-                        fullscreen=True,
-                        size='lg',
-                        debounce=100
-                    ),
                     dbc.Button(
                         "Load",
                         color="primary",
                         outline=False,
                         block=True,
                         id='load-dataset-btn'
+                    ),
+                    dbc.Spinner(
+                        children=[html.Div(id="dataset-load")],
+                        size='lg'
                     )
                 ],
                 className='mw-150',

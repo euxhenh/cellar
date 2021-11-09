@@ -13,10 +13,10 @@ def is_sparse(x):
 
 def _gene_value_protein_2_symbol(feature_values, adata):
     if 'gene_symbols' in adata.var:
-        symbols = feature_values.copy()
+        symbols = np.array(feature_values.copy())
         feats_in_idx = np.isin(feature_values, adata.var_names)
         symbols[feats_in_idx] = adata[
-            :, feature_values[feats_in_idx]].var['gene_symbols']
+            :, symbols[feats_in_idx]].var['gene_symbols']
     else:
         symbols = feature_values
     return symbols

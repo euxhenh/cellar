@@ -12,8 +12,16 @@ from ._neighbors import get_spatial_knn_graph
 from app import logger
 
 
+try:
+    STvEA = importr('STvEA')
+    Matrix = importr('Matrix')
+except:
+    raise ImportError("Could not import R Libraries.")
+
+
 def adjScoreProteinsCODEX(
-        adata, path_to_df, n_neighbors=5, key='spatial_nneigh'):
+        adata, path_to_df, n_neighbors=5, num_cores=1, num_perms=50,
+        key='spatial_nneigh'):
     """
     Computes a neighbors graph using the spatial tile
     and use it to compute a colocalization score of the proteins.
@@ -29,16 +37,15 @@ def adjScoreProteinsCODEX(
         while 'rid' contains the order of the cells in adata.
     n_neighbors: int
         Number of neighbors to compute.
+    num_cores: int
+        Number of cores to use.
+    num_perms: int
+        Number of permutations to use.
     key: str
         If adata is not None, will use this key to store the adjacency
         matrix in adata.obsp
     """
-    if adata.shape[0] > 5_000:
-        logger.warn("Too many samples were found. Subsampling...")
-        adj = get_spatial_knn_graph(
-            path_to_df, n_neighbors=n_neighbors, adata=adata, key=key,
-            subsample=True, subsample_n=5000)
-    elif key in adata.obsp and key in adata.uns and\
+    if key in adata.obsp and key in adata.uns and\
             adata.uns[key]['n_neighbors'] == n_neighbors:
         adj = adata.obsp[key]
     else:
@@ -49,11 +56,6 @@ def adjScoreProteinsCODEX(
     adata = adata[adj.getnnz(1) > 0]
     # We use the fact that adj is symmetric
     adj = adj[adj.getnnz(1) > 0][:, adj.getnnz(0) > 0]
-    try:
-        STvEA = importr('STvEA')
-        Matrix = importr('Matrix')
-    except:
-        raise ImportError("Could not import R Libraries.")
 
     x_cords, y_cords = adj.nonzero()
     # Add one to coordinates since R is retarded
@@ -79,7 +81,9 @@ def adjScoreProteinsCODEX(
     protein_pairs = np.array(list(cwr(colnames, 2)))
     protein_pairs = ro.numpy2ri.py2rpy(np.array(protein_pairs))
 
-    res = STvEA.AdjScoreProteins_internal(adj_mat, protein_mat, protein_pairs)
+    res = STvEA.AdjScoreProteins_internal(
+        adj_mat, protein_mat, protein_pairs,
+        num_cores=num_cores, num_perms=num_perms)
     res = ro.pandas2ri.rpy2py_dataframe(res)
     # Careful: Subtract 1
     res['f'] -= 1
@@ -89,7 +93,7 @@ def adjScoreProteinsCODEX(
 
 def adjScoreClustersCODEX(
         adata, path_to_df, n_neighbors=3, key='spatial_nneigh',
-        labels_key='labels'):
+        labels_key='labels', num_cores=1):
     """
     Computes a neighbors graph using the spatial tile
     and use it to compute a colocalization score of the clusters.
@@ -108,6 +112,10 @@ def adjScoreClustersCODEX(
     key: str
         If adata is not None, will use this key to store the adjacency
         matrix in adata.obsp
+    num_cores: int
+        Number of cores to use.
+    num_perms: int
+        Number of permutations to use.
     """
     if labels_key not in adata.obs:
         raise UserError("No labels found in adata. Cannot compute " +
@@ -119,11 +127,6 @@ def adjScoreClustersCODEX(
     else:
         adj = get_spatial_knn_graph(
             path_to_df, n_neighbors=n_neighbors, adata=adata, key=key)
-    try:
-        STvEA = importr('STvEA')
-        Matrix = importr('Matrix')
-    except:
-        raise ImportError("Could not import R Libraries.")
 
     x_cords, y_cords = adj.nonzero()
     adj_mat = Matrix.sparseMatrix(
@@ -134,6 +137,7 @@ def adjScoreClustersCODEX(
 
     labels = ro.IntVector(adata.obs[labels_key])
 
-    res = STvEA.AdjScoreClustersCODEX_internal(adj_mat, labels, num_cores=2)
+    res = STvEA.AdjScoreClustersCODEX_internal(
+        adj_mat, labels, num_cores=num_cores)
     res = ro.pandas2ri.rpy2py_dataframe(res)
     return res

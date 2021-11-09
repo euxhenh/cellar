@@ -3,6 +3,7 @@ import numpy as np
 from numpy.core.fromnumeric import var
 import pandas as pd
 from app import logger
+from pyensembl import EnsemblRelease
 from controller.cellar.utils.exceptions import InternalError, InvalidArgument
 from controller.cellar.utils.exceptions import IncorrectFileFormat
 from controller.cellar.utils.misc import is_sparse, _check_proteins
@@ -69,24 +70,31 @@ def cl_get_expression(adata, var_names, op='min'):
         raise InternalError(f"No operation {op} has been implemented.")
 
 
-hgnc_mart = pd.read_csv('data/HGNC_Mart.csv')
-
-
 def cl_add_gene_symbol(adata, spliton='.'):
     adata.var_names_make_unique(join='-')
-
     var_names_trimmed = adata.var_names.to_numpy().astype(str)
     var_names_trimmed = [v.split(spliton)[0] for v in var_names_trimmed]
     var_names_trimmed = [i.upper() for i in var_names_trimmed]
-
     # determine format
     if var_names_trimmed[0][:4] == 'ENSG':
-        ens_sym = pd.Series(
-            hgnc_mart['Approved symbol'].values,
-            index=hgnc_mart['Ensembl gene ID']).to_dict()
-
-        gene_symbols = [ens_sym.get(i, i) for i in var_names_trimmed]
+        data = EnsemblRelease(104)
+        gene_symbols = []
+        for i in var_names_trimmed:
+            try:
+                gene_name = data.gene_name_of_gene_id(i)
+                gene_symbols.append(gene_name)
+            except:
+                gene_symbols.append(i)
+    elif var_names_trimmed[0][:4] == 'ENSM':
+        data = EnsemblRelease(104, species='mouse')
+        gene_symbols = []
+        for i in var_names_trimmed:
+            try:
+                gene_name = data.gene_name_of_gene_id(i)
+                gene_symbols.append(gene_name)
+            except ValueError:
+                gene_symbols.append(i)
     else:
         gene_symbols = var_names_trimmed
 
-    adata.var['gene_symbols'] = np.array(gene_symbols, dtype='U200')
+    adata.var['gene_symbols'] = np.char.upper(gene_symbols)

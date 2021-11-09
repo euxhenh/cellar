@@ -11,6 +11,7 @@ import dash_bio as dashbio
 import numpy as np
 import matplotlib
 import plotly.express as px
+import plotly.graph_objects as go
 from app import app, dbroot, logger
 from dash.dependencies import Input, Output, State
 from dash.exceptions import PreventUpdate
@@ -233,46 +234,49 @@ def get_generate_cluster_scores_func(an, prefix):
         x_cord = res['f'].to_numpy().astype(int)
         y_cord = res['g'].to_numpy().astype(int)
         scores = res['score'].astype(float)
+        q = np.round(res['q'].astype(float), 4)
         unq_labels = np.unique(dbroot.adatas[an]['adata'].obs['labels'])
         n = len(unq_labels)
         x_cord = _remap_indices(x_cord, unq_labels, np.arange(n))
         y_cord = _remap_indices(y_cord, unq_labels, np.arange(n))
-        heatmap = np.zeros((n, n))
+        heatmap, qvals = np.zeros((n, n)), np.zeros((n, n))
         heatmap[x_cord, y_cord] = scores
         heatmap[y_cord, x_cord] = scores
-        heatmap = heatmap + 1
+        heatmap = np.log10(heatmap + 1)
+        qvals[x_cord, y_cord] = q
+        qvals[y_cord, x_cord] = q
+        heatmap = np.flip(heatmap, axis=1)
+        qvals = np.flip(qvals, axis=1)
 
-        # fig = dashbio.Clustergram(
-        #     data=heatmap,
-        #     column_labels=list(unq_labels),
-        #     row_labels=list(unq_labels),
-        #     color_map=[
-        #         [0.0, '#440154'],
-        #         [0.25, '#3e4989'],
-        #         [0.5, '#26828e'],
-        #         [0.75, '#35b779'],
-        #         [1.0, '#fde725']
-        #     ],
-        #     cluster='col',
-        #     # center_values=True,
-        #     line_width=2,
-        #     width=600
-        # )
-
-        # fig.update_xaxes(tickangle=-90)
-        # return fig, dash.no_update
-
-        fig = px.imshow(
-            heatmap,
-            x=unq_labels.astype(str),
-            y=unq_labels.astype(str),
-            labels={
-                'color': 'score',
-                'x': 'Cluster x ID',
-                'y': 'Cluster y ID'
-            },
-            color_continuous_scale='magma'
+        fig = go.Figure(data=[go.Heatmap(
+            x=np.repeat(unq_labels, n).astype(str),
+            y=np.flip(np.tile(unq_labels, n).astype(str)),
+            z=heatmap.flatten(),
+            text=qvals.astype(str).flatten(),
+            colorscale='magma',
+            hovertemplate="Cluster x: %{x}<br>Cluster y: " +
+            "%{y}<br>log10(score+1): %{z}<br>q-val: %{text}"
+        )])
+        fig.update_layout(
+            width=500,
+            height=500,
+            autosize=False,
+            xaxis=dict(tickmode='linear'),
+            yaxis=dict(tickmode='linear'),
+            legend_title_text="log10(score+1)"
         )
+
+        # fig = px.imshow(
+        #     heatmap,
+        #     x=unq_labels.astype(str),
+        #     y=unq_labels.astype(str),
+        #     labels={
+        #         'color': 'log10(score+1)',
+        #         'x': 'Cluster x ID',
+        #         'y': 'Cluster y ID'
+        #     },
+        #     color_continuous_scale='magma'
+        # )
         return fig, dash.no_update
     return _func
 
@@ -318,28 +322,52 @@ def get_generate_protein_scores_func(an, prefix):
         features = dbroot.adatas[an]['adata'].var['gene_symbols'].to_numpy()
         x_cord, y_cord = res['f'].astype(int), res['g'].astype(int)
         scores = res['score'].astype(float)
+
         n = features.shape[0]
-        heatmap = np.zeros((n, n))
+        heatmap, qvals = np.zeros((n, n)), np.zeros((n, n))
         heatmap[x_cord, y_cord] = scores
         heatmap[y_cord, x_cord] = scores
         # heatmap = np.log10(heatmap + 1)
+        q = np.round(res['q'].astype(float), 4)
+        qvals[x_cord, y_cord] = q
+        qvals[y_cord, x_cord] = q
+        heatmap = np.flip(heatmap, axis=1)
+        qvals = np.flip(qvals, axis=1)
 
-        fig = px.imshow(
-            heatmap,
-            x=features,
-            y=features,
-            labels={
-                'color': 'score',
-                'x': 'Gene x ID',
-                'y': 'Gene y ID'
-            },
-            color_continuous_scale='magma'
-        )
-        # Show all labels
+        fig = go.Figure(data=[go.Heatmap(
+            x=np.repeat(features, n).astype(str),
+            y=np.flip(np.tile(features, n).astype(str)),
+            z=heatmap.flatten(),
+            text=qvals.astype(str).flatten(),
+            colorscale='magma',
+            hovertemplate="Cluster x: %{x}<br>Cluster y: " +
+            "%{y}<br>log10(score+1): %{z}<br>q-val: %{text}"
+        )])
         fig.update_layout(
+            width=500,
+            height=500,
+            autosize=False,
             xaxis=dict(tickmode='linear'),
-            yaxis=dict(tickmode='linear')
+            yaxis=dict(tickmode='linear'),
+            legend_title_text="log10(score+1)"
         )
+
+        # fig = px.imshow(
+        #     heatmap,
+        #     x=features,
+        #     y=features,
+        #     labels={
+        #         'color': 'score',
+        #         'x': 'Gene x ID',
+        #         'y': 'Gene y ID'
+        #     },
+        #     color_continuous_scale='magma'
+        # )
+        # # Show all labels
+        # fig.update_layout(
+        #     xaxis=dict(tickmode='linear'),
+        #     yaxis=dict(tickmode='linear')
+        # )
         return fig, dash.no_update
     return _func
 
