@@ -1,8 +1,10 @@
 import gc
 import os
 from ast import literal_eval
+import anndata
 
 import dash
+from dash_html_components.Pre import Pre
 import numpy as np
 import scanpy as sc
 from BinToGene import BinToGene
@@ -283,3 +285,57 @@ def run_atac_prep(n1, aop, aei, amei, asb, aoei, amoei, actp):
 
     return 1, 1, "", 1, _prep_notification(
         "Finished Bin to Gene conversion.", "info")
+
+
+@app.callback(
+    Output("temp-prep-h5-cite", "className"),
+    MultiplexerOutput("push-notification", "data"),
+
+    Input("prep-cite-run-btn", "n_clicks"),
+
+    State("cite-prep-normalize-total-checkbox", "checked"),
+    State("cite-prep-log1p-checkbox", "checked"),
+    State("cite-prep-scale-checkbox", "checked"),
+
+    State("prep-norm-target", "value"),
+    State("prep-norm-maxf", "value"),
+    State("prep-scale-zero", "value"),
+    State("prep-scale-max", "value"),
+
+    State("active-plot", "data"),
+    prevent_initial_call=True
+)
+def run_cite_prep(n1, cnt, clog, cscale, nt, nmax, sz, smax, actp):
+    ctx = dash.callback_context
+    if not ctx.triggered:
+        raise PreventUpdate
+    an = "a1" if actp == 1 else "a2"
+    if an not in dbroot.adatas:
+        raise PreventUpdate
+    if 'adata' not in dbroot.adatas[an]:
+        raise PreventUpdate
+
+    adata = dbroot.adatas[an]['adata']
+    if 'protein.X' not in adata.obsm and 'protein.raw.X' not in adata.obsm:
+        return dash.no_update, \
+            _prep_notification("No `protein.X` key found in adata.obsm")
+    elif 'protein.raw.X' in adata.obsm:
+        logger.info("Found raw key for protein expression.")
+        x_to_use = adata.obsm['protein.raw.X'].copy()
+    else:
+        adata.obsm['protein.raw.X'] = adata.obsm['protein.X'].copy()
+        x_to_use = adata.obsm['protein.X']
+    protein_adata = anndata.AnnData(np.array(x_to_use))
+    if cnt is not None and cnt:
+        if nt == "":
+            nt = None
+        sc.pp.normalize_total(protein_adata, target_sum=nt, max_fraction=nmax)
+    if clog is not None and clog:
+        sc.pp.log1p(protein_adata)
+    if cscale is not None and cscale:
+        if smax == "":
+            smax = None
+        sc.pp.scale(protein_adata, zero_center=sz, max_value=smax)
+    adata.obsm['protein.X'] = protein_adata.X
+    return dash.no_update, _prep_notification(
+        "Finished preprocessing protein expression matrix.")

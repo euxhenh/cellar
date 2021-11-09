@@ -617,6 +617,121 @@ atac_row = dbc.Row([
 ], no_gutters=True)
 
 
+cite_seq_row = dbc.Row([
+    dbc.Col(
+        dbc.Card([
+            dbc.CardBody([
+                dcc.Loading(
+                    html.H5(
+                        "CITE-seq Protein expression",
+                        className="card-title",
+                        id="temp-prep-h5-cite")
+                ),
+                html.H6("Must have a 'protein.X' key under adata.obsm!"),
+                dbc.FormGroup([
+                    dbc.Row([
+                        dbc.Checkbox(
+                            "cite-prep-normalize-total-checkbox",
+                            className="mr-3 prep-ckb",
+                            checked=True
+                        ),
+                        dbc.Label("Normalize Total"),
+                    ], align="baseline", no_gutters=True),
+                    dbc.Row([
+                        dbc.Col(
+                            dbc.InputGroup([
+                                dbc.InputGroupAddon(
+                                    "Target Sum", addon_type="prepend"),
+                                dbc.Input(
+                                    id="cite-prep-norm-target",
+                                    type="number",
+                                    placeholder="None"
+                                )
+                            ])
+                        ),
+                        dbc.Col(
+                            dbc.InputGroup([
+                                dbc.InputGroupAddon(
+                                    "Max Fraction",
+                                    addon_type="prepend"),
+                                dbc.Input(
+                                    id="cite-prep-norm-maxf",
+                                    type="number",
+                                    value=0.05,
+                                    placeholder="None"
+                                )
+                            ])
+                        )
+                    ], no_gutters=True)
+                ]),
+                dbc.FormGroup([
+                    dbc.Row([
+                        dbc.Checkbox(
+                            "cite-prep-log1p-checkbox",
+                            className="mr-3 prep-ckb",
+                            checked=True
+                        ),
+                        dbc.Label("Log1p"),
+                    ], align="baseline", no_gutters=True)
+                ]),
+                dbc.FormGroup([
+                    dbc.Row([
+                        dbc.Checkbox(
+                            "cite-prep-scale-checkbox",
+                            className="mr-3 prep-ckb",
+                            checked=True
+                        ),
+                        dbc.Label("Scale"),
+                    ], align="baseline", no_gutters=True),
+                    dbc.Row([
+                        dbc.Col(
+                            dbc.InputGroup([
+                                dbc.InputGroupAddon(
+                                    "Zero Center",
+                                    addon_type="prepend",
+                                    className="mr-2"),
+                                dbc.RadioItems(
+                                    id="cite-prep-scale-zero",
+                                    options=[
+                                        {"label": "True",
+                                            "value": True},
+                                        {"label": "False",
+                                            "value": False},
+                                    ],
+                                    value=True
+                                )
+                            ])
+                        ),
+                        dbc.Col(
+                            dbc.InputGroup([
+                                dbc.InputGroupAddon(
+                                    "Max Val.",
+                                    addon_type="prepend",
+                                    className="mr-2"),
+                                dbc.Input(
+                                    id="cite-prep-scale-max",
+                                    type="number",
+                                    placeholder="None"
+                                )
+                            ])
+                        )
+                    ], no_gutters=True)
+                ]),
+                html.P([
+                    "Details: ",
+                    html.A("https://scanpy.readthedocs.io/en/"
+                           "stable/api/index.html",
+                           href="https://scanpy.readthedocs.io/"
+                           "en/stable/api/index.html",
+                           target="_blank")
+                ], className="small")
+            ])
+        ], className="prep-card-long"),
+        width=3, xs=12, sm=12, md=3, lg=3
+    )
+])
+
+
 prep = html.Div([
     row_1,
     dbc.Row(
@@ -655,10 +770,30 @@ atac = html.Div([
 ], className="mb-3", id="prep-atac-row")
 
 
+cite = html.Div([
+    cite_seq_row,
+    dbc.Row(
+        dbc.Col(
+            dbc.Button(
+                "Run",
+                outline=False,
+                color='primary',
+                block=True,
+                id="prep-cite-run-btn"
+            ),
+            width=3
+        ),
+        justify='center',
+        className="mt-2"
+    )
+], className="mb-3", id="prep-cite-row")
+
+
 prep_tabs = dbc.Tabs(
     [
         dbc.Tab(prep, label="Preprocessing", tab_id="prep"),
         dbc.Tab(atac, label="scATAC-seq", tab_id="atacseq"),
+        dbc.Tab(cite, label="CITE-seq", tab_id="citeseq"),
     ],
     id="prep-tabs"
 )

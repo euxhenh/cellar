@@ -1,10 +1,11 @@
 import anndata
 import numpy as np
+from numpy.core.fromnumeric import var
 import pandas as pd
 from app import logger
 from controller.cellar.utils.exceptions import InternalError, InvalidArgument
 from controller.cellar.utils.exceptions import IncorrectFileFormat
-from controller.cellar.utils.misc import is_sparse
+from controller.cellar.utils.misc import is_sparse, _check_proteins
 
 
 def read_adata(path, mode='r'):
@@ -15,37 +16,48 @@ def read_adata(path, mode='r'):
         raise IncorrectFileFormat
 
 
+def _split_var_protein(var_names, adata):
+    in_idx = np.isin(var_names, adata.var_names)
+    vars = var_names[in_idx]
+    proteins = var_names[~in_idx]
+    return vars, proteins
+
+
+def _collect_var_protein(var_names, adata):
+    vars, proteins = _split_var_protein(var_names, adata)
+    all_proteins = _check_proteins(adata)
+    xvar = adata[:, vars].X if len(vars) > 0 else None
+    xprot = adata.obsm['protein.X'][:, np.isin(
+        all_proteins, proteins)] if len(proteins) > 0 else None
+    if xvar is not None and is_sparse(xvar):
+        xvar = np.array(xvar.todense())
+    if xprot is not None and is_sparse(xprot):
+        xprot = np.array(xprot.todense())
+    if xvar is not None and xprot is not None:
+        x = np.hstack([xvar, xprot])
+    elif xvar is None:
+        x = xprot
+    else:
+        x = xvar
+    return x
+
+
 def cl_get_expression(adata, var_names, op='min'):
     """
     Given an AnnData object and a list of var_names, return the
     expression (if single var) or co-expression (if more than one var)
-    value of those features.
+    value of those features. Make sure to check if any of the features
+    corresponds to a protein name in case of CITE-seq data.
 
     Co-expression is calculated by first scaling every feature column
     to the (0, 1) range and then applying the 'op' operation across
     all participating features for every sample point.
     """
     var_names = np.array(var_names, dtype=str).flatten()
-    all_vars = adata.var_names.to_numpy().astype(str)
-    for vname in var_names:
-        if vname not in all_vars:
-            raise InvalidArgument(f"Feature {vname} not found in data object.")
-
-    if len(var_names) == 1:  # Don't normalize if single feature
-        x = adata[:, var_names[0]].X
-
-        if is_sparse(x):
-            x = np.asarray(x.todense())
-
+    x = _collect_var_protein(var_names, adata)
+    if x.shape[1] == 1:  # single feature
         return x.flatten()
-
-    x = adata[:, var_names].X
-
-    if is_sparse(x):
-        x = np.asarray(x.todense())
-
     rang = np.ptp(x, axis=0)  # range of values
-
     x = (x - x.min(axis=0)) / (rang + np.finfo(float).eps)
     x = np.clip(x, 0, 1)  # just in case there is rounding error
 

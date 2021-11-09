@@ -183,7 +183,7 @@ def get_feature_card(prefix):
                                     color='secondary'
                                 ),
                                 dbc.Tooltip(
-                                    "Paste DE genes from the current page",
+                                    "Paste DE features from the current page",
                                     target=prefix + "-paste-de-genes",
                                     delay=500
                                 )
@@ -194,15 +194,15 @@ def get_feature_card(prefix):
                                         options=[],
                                         multi=True,
                                         id=prefix + '-feature-list',
-                                        placeholder="Search gene by symbol",
+                                        placeholder="Search features",
                                     ), type="circle")
                             ], width=7, id=prefix + "-feature-list-col"),
                             dbc.Tooltip(
                                 "Select one or multiple features " +
                                 "for visualization purposes. This input " +
                                 "will automatically parse any selected " +
-                                "gene from the DE table. To understand " +
-                                "what is shown when multiple genes are " +
+                                "feature from the DE table. To understand " +
+                                "what is shown when multiple features are " +
                                 "selected, please check the documentation.",
                                 target=prefix + "-feat-title",
                                 delay=1000
@@ -263,7 +263,7 @@ def get_feature_card(prefix):
                         "Clip expression values to this range. " +
                         "Can be useful to filter outliers or modify " +
                         "the colorbar scale. Only works for a " +
-                        "single gene.",
+                        "single feature.",
                         target=prefix + "-feature-rangeslider-col",
                         delay=500
                     ),

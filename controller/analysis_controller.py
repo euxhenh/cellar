@@ -8,7 +8,8 @@ from dash.dependencies import Input, Output, State
 from dash.exceptions import PreventUpdate
 
 from .cellar.core import ttest, enrich, get_heatmap, get_violin_plot
-from .cellar.utils.exceptions import UserError
+from .cellar.utils.exceptions import InternalError, UserError
+from .cellar.utils.misc import _check_proteins
 from .multiplexer import MultiplexerOutput
 from .notifications import _prep_notification
 from layout.misc import empty_analysis_figure
@@ -457,13 +458,21 @@ def get_feature_range_func(an):
             raise PreventUpdate
         if 'adata' not in dbroot.adatas[an]:
             raise PreventUpdate
+        adata = dbroot.adatas[an]['adata']
 
         # More than 1 or 0 features selected
         if len(feature_list) > 1 or len(feature_list) < 1:
             return 0, 0, 0, {}, [0, 0]
 
         feature = feature_list[0]  # Only apply range slider to first feature
-        feature_vec = dbroot.adatas[an]['adata'][:, feature].X.copy()
+        if feature in adata.var_names:
+            feature_vec = adata[:, feature].X.copy()
+        else:
+            proteins = _check_proteins(adata)
+            if proteins is None or feature not in proteins:
+                raise InternalError(f"Could not find feature {feature}.")
+            feature_vec = adata.obsm[
+                'protein.X'][:, (proteins == feature)][:, 0].flatten()
         vmin, vmax = float(feature_vec.min()), float(feature_vec.max())
         rang = vmax - vmin
         eps = 1e-3

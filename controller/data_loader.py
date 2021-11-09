@@ -11,7 +11,7 @@ import dash_bootstrap_components as dbc
 from app import app, logger, dbroot
 from controller.cellar.utils.exceptions import UserError
 from .cellar.core import read_adata, cl_add_gene_symbol
-from .cellar.utils.misc import is_sparse
+from .cellar.utils.misc import is_sparse, _check_proteins
 from .multiplexer import MultiplexerOutput
 from .notifications import _prep_notification
 
@@ -200,14 +200,14 @@ def update_feature_list(s1, s2, s3, actp):
     ctx = dash.callback_context
     if not ctx.triggered or (s1 is None and s2 is None):
         raise PreventUpdate
-
     an = 'a1' if actp == 1 else 'a2'
     if an not in dbroot.adatas:
         raise PreventUpdate
     if 'adata' not in dbroot.adatas[an]:
         raise PreventUpdate
+    adata = dbroot.adatas[an]['adata']
 
-    if dbroot.adatas[an]['adata'].shape[1] > 50000:
+    if adata.shape[1] > 40000:
         error_msg = "Too many features found. Skipping feature list."
         logger.warn(error_msg)
         to_return = [dash.no_update] * 4
@@ -216,22 +216,29 @@ def update_feature_list(s1, s2, s3, actp):
             _prep_notification(error_msg, "warning")]
 
     try:
-        if 'gene_symbols' not in dbroot.adatas[an]['adata'].var:
-            cl_add_gene_symbol(dbroot.adatas[an]['adata'])
+        if 'gene_symbols' not in adata.var:
+            cl_add_gene_symbol(adata)
     except Exception as e:
         logger.error(str(e))
         error_msg = "Error occurred when adding gene symbols."
         logger.error(error_msg)
         return [dash.no_update] * 4 + [_prep_notification(error_msg, "danger")]
 
-    features = dbroot.adatas[an][
-        'adata'].var['gene_symbols'].to_numpy().astype(str)
-    unique_index = \
-        dbroot.adatas[an]['adata'].var_names.to_numpy().astype(str)
+    features = adata.var['gene_symbols'].to_numpy().astype(str)
+    unique_index = adata.var_names.to_numpy().astype(str)
+    # Check for CITE-seq data
+    msg = None
+    proteins = _check_proteins(adata)
+    if proteins is not None:
+        features = np.concatenate([features, proteins])
+        unique_index = np.concatenate([unique_index, proteins])
+        msg = "Found proteins in file. These were added as features " +\
+            "prefixed by Protein_."
 
     to_return = [dash.no_update] * 4
     to_return[actp - 1] = to_return[actp + 1] = [
         {'label': f, 'value': g}
         for f, g in zip(features, unique_index)]
 
-    return to_return + [dash.no_update]
+    return to_return + [
+        dash.no_update if msg is None else _prep_notification(msg, "info")]

@@ -1,13 +1,15 @@
-import numpy as np
 import dash_bio as dashbio
-import plotly.graph_objects as go
-import plotly.express as px
+import numpy as np
 import plotly.colors as pc
+import plotly.express as px
+import plotly.graph_objects as go
 
-from ..utils.exceptions import InternalError, UserError
-from ._tools import cl_add_gene_symbol, cl_get_expression
-from ..utils.misc import is_sparse, get_title_from_feature_list
 from ..utils.colors import PALETTE, get_col_i
+from ..utils.exceptions import InternalError, UserError
+from ..utils.misc import (_check_proteins, get_title_from_feature_list,
+                          is_sparse, _gene_value_protein_2_symbol)
+from ._tools import (_collect_var_protein, _split_var_protein,
+                     cl_add_gene_symbol, cl_get_expression)
 
 
 def get_dim_figure(adata, title):
@@ -97,6 +99,15 @@ def get_reset_figure(adata, title, palette=PALETTE):
     return get_dim_figure(adata, title)
 
 
+def _check_features(feature_values, adata):
+    all_feats = adata.var_names.to_numpy().astype(str)
+    proteins = _check_proteins(adata)
+    if proteins is not None:
+        all_feats = np.concatenate([all_feats, proteins])
+    if not set(list(feature_values)).issubset(set(list(all_feats))):
+        raise InternalError(f"Some features not found in adata.")
+
+
 def get_expression_figure(adata, feature_values, feature_range):
     """
     Returns a plotly figure with the expression level of a gene
@@ -115,10 +126,7 @@ def get_expression_figure(adata, feature_values, feature_range):
         high and low expression values. Useful when filtering outliers.
     """
     feature_values = np.array(feature_values, dtype='U200').flatten()
-
-    for feat in feature_values:
-        if feat not in adata.var_names.to_numpy():
-            raise InternalError(f"Feature {feat} not found in var_names.")
+    _check_features(feature_values, adata)
 
     if 'x_emb_2d' not in adata.obsm:
         raise InternalError("No 2d embeddings found.")
@@ -184,24 +192,17 @@ def get_heatmap(adata, feature_list):
         raise InternalError("No labels found in adata.")
 
     feature_list = np.array(feature_list).flatten()
-
-    if not set(feature_list).issubset(set(adata.var_names.to_numpy())):
-        raise UserError("Some features not found in data.")
+    _check_features(feature_list, adata)
+    x = _collect_var_protein(feature_list, adata)
 
     unq_labels = np.unique(adata.obs['labels'])
     aves = []
 
     for label in unq_labels:
-        row = adata[:, feature_list].X[np.where(
-            adata.obs['labels'] == label)]
-        if is_sparse(row):
-            row = np.asarray(row.todense())
+        row = x[np.where(adata.obs['labels'] == label)]
         row = row.mean(axis=0)
         aves.append(row)
     aves = np.array(aves)
-
-    if 'gene_symbols' not in adata.var:
-        cl_add_gene_symbol(adata)
 
     cluster = 'all'
     if aves.shape[1] == 1:
@@ -209,9 +210,10 @@ def get_heatmap(adata, feature_list):
     if aves.shape[0] == 1:
         cluster = 'col'
 
+    symbols = _gene_value_protein_2_symbol(feature_list, adata)
     fig = dashbio.Clustergram(
         data=aves,
-        column_labels=list(adata[:, feature_list].var['gene_symbols']),
+        column_labels=list(symbols),
         row_labels=['Cluster' + str(i) for i in unq_labels],
         color_map=pc.get_colorscale('Magma'),
         cluster=cluster,
@@ -244,10 +246,8 @@ def get_violin_plot(adata, feature_values, feature_range, palette=PALETTE):
     palette: list
         Color palette to use.
     """
-    for feature in feature_values:
-        if feature not in adata.var_names:
-            raise UserError(f"Feature {feature} not found in adata.")
-
+    feature_values = np.array(feature_values, dtype='U200').flatten()
+    _check_features(feature_values, adata)
     title = get_title_from_feature_list(adata, feature_values)
     vect = cl_get_expression(adata, feature_values)
     single_feature = len(feature_values) == 1
