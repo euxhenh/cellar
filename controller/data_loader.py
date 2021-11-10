@@ -254,7 +254,7 @@ def get_update_other_features_func(an, prefix):
         for key in special_keys:
             if key in adata.uns:
                 vals = np.array(adata.uns[key]).astype('U200').flatten()
-                if len(vals) > 20_000:
+                if len(vals) > 40_000:
                     logger.warn(f"Too many features in {key}. Skipping...")
                 other_feats = np.concatenate([other_feats, vals])
                 vals = np.char.add(key + ":", vals)

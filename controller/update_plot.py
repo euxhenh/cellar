@@ -143,8 +143,8 @@ def get_update_plot_func(an, prefix):
     def update_plot(
             s_code,
             dim_method, vis_method, clu_method, ssclu_method, lbt_method,
-            feature_list, feature_range,
-            other_feature_list, other_feature_range,
+            feature_list, feature_range, ase,
+            other_feature_list, other_feature_range, oase,
             *settings):
         ctx = dash.callback_context
         if not ctx.triggered or s_code is None:
@@ -193,7 +193,8 @@ def get_update_plot_func(an, prefix):
                 if feature_list is None:
                     raise PreventUpdate
                 exp = get_expression_figure(
-                    dbroot.adatas[an]['adata'], feature_list, feature_range)
+                    dbroot.adatas[an]['adata'], feature_list, feature_range,
+                    auto_scale=ase)
                 return exp, dash.no_update, dash.no_update
             elif s_code == Signal.OTHER_FEATURE_EXP:
                 # Show gene expression levels and prepare figure
@@ -202,7 +203,8 @@ def get_update_plot_func(an, prefix):
                 exp = get_expression_figure(
                     dbroot.adatas[an]['adata'],
                     other_values=other_feature_list,
-                    feature_range=other_feature_range)
+                    feature_range=other_feature_range,
+                    auto_scale=oase)
                 return exp, dash.no_update, dash.no_update
             elif s_code == Signal.RESET:
                 return get_reset_figure(
@@ -277,8 +279,10 @@ for prefix, an in zip(['main', 'side'], ['a1', 'a2']):
         State("lbt-methods-select", "value"),
         State(prefix + "-feature-list", "value"),
         State(prefix + "-feature-rangeslider", "value"),
+        State(prefix + "-auto-scale-expression", "checked"),
         State(prefix + "-other-feature-list", "value"),
         State(prefix + "-other-feature-rangeslider", "value"),
+        State(prefix + "-other-auto-scale-expression", "checked"),
         [State(m['value'] + '-settings', 'children') for m in dim_list],
         [State(m['value'] + '-settings', 'children') for m in clu_list],
         [State(m['value'] + '-settings', 'children') for m in vis_list],

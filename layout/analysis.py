@@ -94,7 +94,7 @@ def get_de_card(prefix):
                                     )
                                 ]),
                             ])
-                            ],
+                        ],
                             target=prefix + "-de-analysis-btn",
                             trigger="legacy"
                         ),
@@ -195,7 +195,19 @@ def get_feature_body(prefix):
                 )
             ], width=2)
         ], justify='between', no_gutters=True, className="mb-2"),
-        dbc.Row(
+        dbc.Row([
+            dbc.Col([
+                dbc.Row([
+                    dbc.Checkbox(
+                        id=prefix + "-auto-scale-expression",
+                        checked=True
+                    ),
+                    html.Span("auto-scale", className="ml-1",
+                              id=prefix + "-tooltip-auto-scale"),
+                    dbc.Tooltip("Clips outlier values.",
+                                target=prefix + "-tooltip-auto-scale")
+                ], justify='center')
+            ], width=2),
             dbc.Col([
                 dcc.RangeSlider(
                     min=0,
@@ -204,10 +216,10 @@ def get_feature_body(prefix):
                     id=prefix + "-feature-rangeslider",
                     marks={}
                 ),
-
-            ], id=prefix + "-feature-rangeslider-col"),
+            ], id=prefix + "-feature-rangeslider-col")],
             justify='between',
-            no_gutters=True
+            no_gutters=True,
+            align='start'
         ),
         dbc.Tooltip(
             "Clip expression values to this range. " +

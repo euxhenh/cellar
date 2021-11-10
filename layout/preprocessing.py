@@ -39,13 +39,15 @@ row_1 = dbc.Row([
                                             dcc.RangeSlider(
                                                 id="prep-filter-cells-counts-slider",
                                                 min=0,
-                                                max=3000,
+                                                max=5000,
                                                 step=50,
                                                 value=[100, 3000],
                                                 marks={i: str(i) for i in
-                                                       range(0, 3001, 500)},
-                                                # tooltip={
-                                                #   'always_visible': True}
+                                                       range(0, 5001, 500)},
+                                                tooltip={
+                                                    'always_visible': True,
+                                                    'placement': 'bottom'
+                                                }
                                             )
                                         ]
                                     )
@@ -75,13 +77,15 @@ row_1 = dbc.Row([
                                             dcc.RangeSlider(
                                                 id="prep-filter-cells-genes-slider",
                                                 min=0,
-                                                max=3000,
+                                                max=5000,
                                                 step=50,
                                                 value=[100, 3000],
                                                 marks={i: str(i) for i in
-                                                       range(0, 3001, 500)},
-                                                # tooltip={
-                                                #   'always_visible': True}
+                                                       range(0, 5001, 500)},
+                                                tooltip={
+                                                    'always_visible': True,
+                                                    'placement': 'bottom'
+                                                }
                                             )
                                         ]
                                     )
@@ -89,19 +93,19 @@ row_1 = dbc.Row([
                             ],
                             no_gutters=True
                         ),
-                        html.P(
-                            [
-                                "Details: ",
-                                html.A("scanpy.readthedocs.io/en/stable/api/"
-                                       "scanpy.pp.filter_cells.html#scanpy.pp."
-                                       "filter_cells",
-                                       href="https://scanpy.readthedocs.io/en/"
-                                       "stable/api/scanpy.pp.filter_cells."
-                                       "html#scanpy.pp.filter_cells",
-                                       target="_blank")
-                            ],
-                            className="small"
-                        )
+                        # html.P(
+                        #     [
+                        #         "Details: ",
+                        #         html.A("scanpy.readthedocs.io/en/stable/api/"
+                        #                "scanpy.pp.filter_cells.html#scanpy.pp."
+                        #                "filter_cells",
+                        #                href="https://scanpy.readthedocs.io/en/"
+                        #                "stable/api/scanpy.pp.filter_cells."
+                        #                "html#scanpy.pp.filter_cells",
+                        #                target="_blank")
+                        #     ],
+                        #     className="small"
+                        # )
                     ]
                 )
             ],
@@ -137,13 +141,15 @@ row_1 = dbc.Row([
                                             dcc.RangeSlider(
                                                 id="prep-filter-genes-counts-slider",
                                                 min=0,
-                                                max=3000,
+                                                max=5000,
                                                 step=50,
                                                 value=[100, 3000],
                                                 marks={i: str(i) for i in
-                                                       range(0, 3001, 500)},
-                                                # tooltip={
-                                                #     'always_visible': True}
+                                                       range(0, 5001, 500)},
+                                                tooltip={
+                                                    'always_visible': True,
+                                                    'placement': 'bottom'
+                                                }
                                             )
                                         ]
                                     )
@@ -173,13 +179,15 @@ row_1 = dbc.Row([
                                             dcc.RangeSlider(
                                                 id="prep-filter-genes-cells-slider",
                                                 min=0,
-                                                max=3000,
+                                                max=5000,
                                                 step=50,
                                                 value=[100, 3000],
                                                 marks={i: str(i) for i in
-                                                       range(0, 3001, 500)},
-                                                # tooltip={
-                                                #     'always_visible': True}
+                                                       range(0, 5001, 500)},
+                                                tooltip={
+                                                    'always_visible': True,
+                                                    'placement': 'bottom'
+                                                }
                                             )
                                         ]
                                     )
@@ -187,19 +195,19 @@ row_1 = dbc.Row([
                             ],
                             no_gutters=True
                         ),
-                        html.P(
-                            [
-                                "Details: ",
-                                html.A("scanpy.readthedocs.io/en/stable/api/"
-                                       "scanpy.pp.filter_genes.html#scanpy.pp."
-                                       "filter_genes",
-                                       href="https://scanpy.readthedocs.io/en/"
-                                       "stable/api/scanpy.pp.filter_genes."
-                                       "html#scanpy.pp.filter_genes",
-                                       target="_blank")
-                            ],
-                            className="small"
-                        )
+                        # html.P(
+                        #     [
+                        #         "Details: ",
+                        #         html.A("scanpy.readthedocs.io/en/stable/api/"
+                        #                "scanpy.pp.filter_genes.html#scanpy.pp."
+                        #                "filter_genes",
+                        #                href="https://scanpy.readthedocs.io/en/"
+                        #                "stable/api/scanpy.pp.filter_genes."
+                        #                "html#scanpy.pp.filter_genes",
+                        #                target="_blank")
+                        #     ],
+                        #     className="small"
+                        # )
                     ]
                 )
             ],
@@ -339,20 +347,20 @@ row_1 = dbc.Row([
                                 )
                             ]
                         ),
-                        html.P(
-                            [
-                                "Details: ",
-                                html.A("scanpy.readthedocs.io/en/stable/api/"
-                                       "scanpy.pp.highly_variable_genes.html#"
-                                       "scanpy.pp.highly_variable_genes",
-                                       href="https://scanpy.readthedocs.io/en/"
-                                       "stable/api/scanpy.pp.highly_"
-                                       "variable_genes.html#scanpy.pp."
-                                       "highly_variable_genes",
-                                       target="_blank")
-                            ],
-                            className="small"
-                        )
+                        # html.P(
+                        #     [
+                        #         "Details: ",
+                        #         html.A("scanpy.readthedocs.io/en/stable/api/"
+                        #                "scanpy.pp.highly_variable_genes.html#"
+                        #                "scanpy.pp.highly_variable_genes",
+                        #                href="https://scanpy.readthedocs.io/en/"
+                        #                "stable/api/scanpy.pp.highly_"
+                        #                "variable_genes.html#scanpy.pp."
+                        #                "highly_variable_genes",
+                        #                target="_blank")
+                        #     ],
+                        #     className="small"
+                        # )
                     ]
                 )
             ],
@@ -496,9 +504,9 @@ row_1 = dbc.Row([
                             [
                                 "Details: ",
                                 html.A("https://scanpy.readthedocs.io/en/"
-                                       "stable/api/index.html",
+                                       "stable/api.html#module-scanpy.pp",
                                        href="https://scanpy.readthedocs.io/"
-                                       "en/stable/api/index.html",
+                                       "en/stable/api.html#module-scanpy.pp",
                                        target="_blank")
                             ],
                             className="small"

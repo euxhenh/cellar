@@ -3,12 +3,37 @@ import os
 import numpy as np
 import scipy.sparse
 from anndata._core.sparse_dataset import SparseDataset
+from scipy.stats.stats import zscore
+from app import logger
+from .exceptions import InternalError
 
 
 def is_sparse(x):
     if isinstance(x, SparseDataset):
         return True
     return scipy.sparse.issparse(x)
+
+
+def _filter_outliers(arr, thresh=3):
+    zscores = zscore(arr, axis=None)
+    good_min = arr[zscores >= -thresh].min()
+    good_max = arr[zscores <= thresh].max()
+    filtered_arr = np.where(zscores <= thresh, arr, good_max)
+    filtered_arr = np.where(zscores >= -thresh, filtered_arr, good_min)
+    logger.info(
+        f"Clipped {(filtered_arr != arr).sum()} values from {arr.size}.")
+    return filtered_arr
+
+
+def _clip_2_range(arr, feature_range):
+    arr = arr.copy()
+    if feature_range[0] > feature_range[1]:
+        raise InternalError("Incorrect feature range found.")
+    new_min = np.min(arr[arr >= feature_range[0]])
+    new_max = np.max(arr[arr <= feature_range[1]])
+    arr[arr < feature_range[0]] = new_min
+    arr[arr > feature_range[1]] = new_max
+    return arr
 
 
 def _gene_value_2_symbol(feature_values, adata):

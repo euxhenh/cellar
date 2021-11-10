@@ -77,27 +77,25 @@ def cl_add_gene_symbol(adata, spliton='.'):
     adata.var_names_make_unique(join='-')
     var_names_trimmed = adata.var_names.to_numpy().astype(str)
     var_names_trimmed = [v.split(spliton)[0] for v in var_names_trimmed]
-    var_names_trimmed = [i.upper() for i in var_names_trimmed]
+    var_names_trimmed = np.char.upper(var_names_trimmed)
     # determine format
     if var_names_trimmed[0][:4] == 'ENSG':
         data = EnsemblRelease(104)
-        gene_symbols = []
-        for i in var_names_trimmed:
-            try:
-                gene_name = data.gene_name_of_gene_id(i)
-                gene_symbols.append(gene_name)
-            except:
-                gene_symbols.append(i)
     elif var_names_trimmed[0][:4] == 'ENSM':
         data = EnsemblRelease(104, species='mouse')
-        gene_symbols = []
-        for i in var_names_trimmed:
-            try:
-                gene_name = data.gene_name_of_gene_id(i)
-                gene_symbols.append(gene_name)
-            except ValueError:
-                gene_symbols.append(i)
     else:
-        gene_symbols = var_names_trimmed
+        adata.var['gene_symbols'] = var_names_trimmed
+        return
+
+    gene_symbols = []
+    for i in var_names_trimmed:
+        try:
+            gene_name = data.gene_name_of_gene_id(i)
+            if len(gene_name) > 0:
+                gene_symbols.append(gene_name)
+            else:
+                gene_symbols.append(i)
+        except ValueError:
+            gene_symbols.append(i)
 
     adata.var['gene_symbols'] = np.char.upper(gene_symbols)

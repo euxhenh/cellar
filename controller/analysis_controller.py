@@ -2,6 +2,7 @@ import dash
 import os
 import pandas as pd
 import numpy as np
+from zope.interface.declarations import ProvidesClass
 from app import app, dbroot, logger
 from dash.dependencies import Input, Output, State
 from dash.exceptions import PreventUpdate
@@ -371,7 +372,7 @@ for prefix, an in zip(['main', 'side'], ['a1', 'a2']):
 
 # Analysis plots
 def get_plot_analysis_func(prefix, an):
-    def _func(n1, n2, clean, feature_list, feature_range):
+    def _func(n1, n2, clean, feature_list, feature_range, auto_scale):
         """
         Given a single or list of features, return a heatmap or violin plot.
         The violin plot can only be run when a single feature is selected.
@@ -422,11 +423,13 @@ def get_plot_analysis_func(prefix, an):
                     fig = get_violin_plot(
                         dbroot.adatas[an]['adata'], other_values=feature_list,
                         feature_range=feature_range,
-                        palette=dbroot.palettes[prefix[:4]])
+                        palette=dbroot.palettes[prefix[:4]],
+                        auto_scale=auto_scale)
                 else:
                     fig = get_violin_plot(
                         dbroot.adatas[an]['adata'], feature_list, feature_range,
-                        palette=dbroot.palettes[prefix])
+                        palette=dbroot.palettes[prefix],
+                        auto_scale=auto_scale)
             except UserError as ue:
                 logger.error(str(ue))
                 return dash.no_update, _prep_notification(str(ue), "warning")
@@ -451,6 +454,7 @@ for prefix, an in zip(['main', 'side'], ['a1', 'a2']):
         Input(prefix + "-data-load-clean", "data"),
         State(prefix + "-feature-list", "value"),
         State(prefix + "-feature-rangeslider", "value"),
+        State(prefix + "-auto-scale-expression", "checked"),
         prevent_initial_call=True
     )(get_plot_analysis_func(prefix, an))
 
@@ -465,8 +469,24 @@ for prefix, an in zip(['main-other', 'side-other'], ['a1', 'a2']):
         Input(prefix[:4] + "-data-load-clean", "data"),
         State(prefix + "-feature-list", "value"),
         State(prefix + "-feature-rangeslider", "value"),
+        State(prefix + "-auto-scale-expression", "checked"),
         prevent_initial_call=True
     )(get_plot_analysis_func(prefix, an))
+
+
+def get_feature_range_disable_func(prefix):
+    def _func(auto_scale):
+        if auto_scale:
+            return True
+        return False
+    return _func
+
+
+for prefix in ['main', 'side', 'main-other', 'side-other']:
+    app.callback(
+        Output(prefix + "-feature-rangeslider", "disabled"),
+        Input(prefix + "-auto-scale-expression", "checked")
+    )(get_feature_range_disable_func(prefix))
 
 
 def get_feature_range_func(an, prefix):
@@ -513,20 +533,9 @@ def get_feature_range_func(an, prefix):
     return _func
 
 
-for prefix, an in zip(['main', 'side'], ['a1', 'a2']):
-    app.callback(
-        Output(prefix + "-feature-rangeslider", "min"),
-        Output(prefix + "-feature-rangeslider", "max"),
-        Output(prefix + "-feature-rangeslider", "step"),
-        Output(prefix + "-feature-rangeslider", "marks"),
-        Output(prefix + "-feature-rangeslider", "value"),
-
-        Input(prefix + "-feature-list", "value"),
-        prevent_initial_call=True
-    )(get_feature_range_func(an, prefix))
-
-
-for prefix, an in zip(['main-other', 'side-other'], ['a1', 'a2']):
+for prefix, an in zip(
+        ['main', 'side', 'main-other', 'side-other'],
+        ['a1', 'a2', 'a1', 'a2']):
     app.callback(
         Output(prefix + "-feature-rangeslider", "min"),
         Output(prefix + "-feature-rangeslider", "max"),

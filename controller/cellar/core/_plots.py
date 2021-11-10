@@ -1,3 +1,5 @@
+from enum import auto
+
 import dash_bio as dashbio
 import numpy as np
 import plotly.colors as pc
@@ -6,7 +8,8 @@ import plotly.graph_objects as go
 
 from ..utils.colors import PALETTE, get_col_i
 from ..utils.exceptions import InternalError, UserError
-from ..utils.misc import (_gene_value_2_symbol, get_title_from_feature_list,
+from ..utils.misc import (_clip_2_range, _filter_outliers,
+                          _gene_value_2_symbol, get_title_from_feature_list,
                           get_title_from_other_list)
 from ._tools import (_collect_x_from_other, _collect_x_from_vars,
                      cl_add_gene_symbol, cl_get_expression)
@@ -115,7 +118,7 @@ def _check_other(other_values, adata):
 
 def get_expression_figure(
         adata, feature_values=None, feature_range=None,
-        other_values=None):
+        other_values=None, auto_scale=True):
     """
     Returns a plotly figure with the expression level of a gene
     or list of genes. In case a list of genes is used, then the
@@ -156,15 +159,11 @@ def get_expression_figure(
     if 'labels' in adata.obs:
         hover_data['Cluster ID'] = adata.obs['labels'].to_numpy()
 
-    if single_feature:
-        if feature_range[0] > feature_range[1]:
-            raise InternalError("Incorrect feature range found.")
-
+    if single_feature and not auto_scale:
+        expression = _clip_2_range(expression, feature_range)
         hover_data['Normalized Val.'] = expression.copy()
-        new_min = np.min(expression[expression >= feature_range[0]])
-        new_max = np.max(expression[expression <= feature_range[1]])
-        expression[expression < feature_range[0]] = new_min
-        expression[expression > feature_range[1]] = new_max
+    elif auto_scale:
+        expression = _filter_outliers(expression)
 
     exp_max = expression.max()
 
@@ -247,7 +246,7 @@ def get_heatmap(adata, feature_list=None, other_list=None):
 
 def get_violin_plot(
         adata, feature_values=None, feature_range=None,
-        other_values=None, other_range=None, palette=PALETTE):
+        other_values=None, palette=PALETTE, auto_scale=True):
     """
     Returns a plotly figure with a heatmap of gene expression values
     in feature_values. If multiple genes are selected, then the
@@ -263,7 +262,7 @@ def get_violin_plot(
     feature_range: (float, float)
         Contains upper and lower thresholds to use for filtering
         high and low expression values. Useful when filtering outliers.
-    other_values, other_range: same as above. used for other features.
+    other_values: same as above. used for other features.
     palette: list
         Color palette to use.
     """
@@ -280,15 +279,10 @@ def get_violin_plot(
         vect = cl_get_expression(adata, other_names=other_values)
         single_feature = len(other_values) == 1
 
-    if single_feature:
-        if feature_range[0] > feature_range[1]:
-            raise InternalError("Incorrect feature range found.")
-
-        # hover_data['Normalized Val.'] = vect.copy()
-        new_min = np.min(vect[vect >= feature_range[0]])
-        new_max = np.max(vect[vect <= feature_range[1]])
-        vect[vect < feature_range[0]] = new_min
-        vect[vect > feature_range[1]] = new_max
+    if single_feature and not auto_scale:
+        vect = _clip_2_range(vect, feature_range)
+    elif auto_scale:
+        vect = _filter_outliers(vect)
 
     unq_labels = np.unique(adata.obs['labels'])
     pal = [px.colors.convert_colors_to_same_type(i)[0][0] for i in palette]

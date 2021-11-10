@@ -286,7 +286,7 @@ label_tabs = dbc.Tabs(
     [
         dbc.Tab(clu_block, label="Unsupervised", tab_id="clu"),
         dbc.Tab(ssclu_block, label="Semi-Supervised", tab_id="ssclu"),
-        dbc.Tab(lbt_block, label="Label Transfer", tab_id="lbt"),
+        dbc.Tab(lbt_block, label="Transfer", tab_id="lbt"),
     ],
     id="label-tabs"
 )

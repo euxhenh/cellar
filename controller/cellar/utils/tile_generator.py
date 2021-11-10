@@ -1,16 +1,12 @@
-from genericpath import exists
 import os
-from numpy.core.fromnumeric import sort
-from scipy.stats.stats import zscore
 import tifffile
 import pandas as pd
 import numpy as np
 import matplotlib
 import json
 import matplotlib.pyplot as plt
-import plotly.colors as pc
-from scipy import stats
 
+from .misc import _filter_outliers
 from .exceptions import InternalError, InvalidArgument, UserError
 from .colors import palette_to_rgb, interpolate_grayimage
 from skimage import draw
@@ -40,17 +36,6 @@ def _validate_codex_dataframe(data):
                         "must be provided.")
     if not (data.dtypes[cols] == int).all():
         raise UserError("Columns were not of integer type.")
-
-
-def _filter_outliers(arr, thresh=3):
-    zscores = stats.zscore(arr, axis=None)
-    good_min = arr[zscores >= -thresh].min()
-    good_max = arr[zscores <= thresh].max()
-    filtered_arr = np.where(zscores <= thresh, arr, good_max)
-    filtered_arr = np.where(zscores >= -thresh, filtered_arr, good_min)
-    logger.info(
-        f"Clipped {(filtered_arr != arr).sum()} values from {arr.size}.")
-    return filtered_arr
 
 
 def _read_tiff_images(path_to_tiff):
