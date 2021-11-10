@@ -2,14 +2,13 @@ import dash
 import os
 import pandas as pd
 import numpy as np
-from scipy.cluster.hierarchy import cut_tree
 from app import app, dbroot, logger
 from dash.dependencies import Input, Output, State
 from dash.exceptions import PreventUpdate
 
 from .cellar.core import ttest, enrich, get_heatmap, get_violin_plot
+from .cellar.core._tools import _collect_x_from_vars, _collect_x_from_other
 from .cellar.utils.exceptions import InternalError, UserError
-from .cellar.utils.misc import _check_proteins
 from .multiplexer import MultiplexerOutput
 from .notifications import _prep_notification
 from layout.misc import empty_analysis_figure
@@ -384,12 +383,13 @@ def get_plot_analysis_func(prefix, an):
             raise PreventUpdate
         if 'adata' not in dbroot.adatas[an]:
             raise PreventUpdate
+        adata = dbroot.adatas[an]['adata']
 
-        if ctx.triggered[0]["prop_id"].split(".")[0] == \
-                prefix + "-data-load-clean":
+        if ctx.triggered[0][
+                "prop_id"].split(".")[0].endswith("-data-load-clean"):
             return empty_analysis_figure, dash.no_update
 
-        if 'labels' not in dbroot.adatas[an]['adata'].obs:
+        if 'labels' not in adata.obs:
             error_msg = "No labels found; cannot visualize features. Run " +\
                 "clustering first."
             logger.info(error_msg)
@@ -404,7 +404,10 @@ def get_plot_analysis_func(prefix, an):
 
         if button_id == prefix + '-heatmap':
             try:
-                fig = get_heatmap(dbroot.adatas[an]['adata'], feature_list)
+                if prefix.endswith('other'):
+                    fig = get_heatmap(adata, other_list=feature_list)
+                else:
+                    fig = get_heatmap(adata, feature_list)
             except UserError as ue:
                 logger.error(str(ue))
                 return dash.no_update, _prep_notification(str(ue), "warning")
@@ -415,9 +418,15 @@ def get_plot_analysis_func(prefix, an):
                 return dash.no_update, _prep_notification(error_msg, "danger")
         elif button_id == prefix + '-violin-plot':
             try:
-                fig = get_violin_plot(
-                    dbroot.adatas[an]['adata'], feature_list, feature_range,
-                    palette=dbroot.palettes[prefix])
+                if prefix.endswith('other'):
+                    fig = get_violin_plot(
+                        dbroot.adatas[an]['adata'], other_values=feature_list,
+                        feature_range=feature_range,
+                        palette=dbroot.palettes[prefix[:4]])
+                else:
+                    fig = get_violin_plot(
+                        dbroot.adatas[an]['adata'], feature_list, feature_range,
+                        palette=dbroot.palettes[prefix])
             except UserError as ue:
                 logger.error(str(ue))
                 return dash.no_update, _prep_notification(str(ue), "warning")
@@ -446,7 +455,21 @@ for prefix, an in zip(['main', 'side'], ['a1', 'a2']):
     )(get_plot_analysis_func(prefix, an))
 
 
-def get_feature_range_func(an):
+for prefix, an in zip(['main-other', 'side-other'], ['a1', 'a2']):
+    app.callback(
+        Output(prefix + "-analysis-plot", "figure"),
+        MultiplexerOutput("push-notification", "data"),
+
+        Input(prefix + "-heatmap", "n_clicks"),
+        Input(prefix + "-violin-plot", "n_clicks"),
+        Input(prefix[:4] + "-data-load-clean", "data"),
+        State(prefix + "-feature-list", "value"),
+        State(prefix + "-feature-rangeslider", "value"),
+        prevent_initial_call=True
+    )(get_plot_analysis_func(prefix, an))
+
+
+def get_feature_range_func(an, prefix):
     def _func(feature_list):
         """
         Updates the range slider to the range of the first feature selected.
@@ -465,14 +488,11 @@ def get_feature_range_func(an):
             return 0, 0, 0, {}, [0, 0]
 
         feature = feature_list[0]  # Only apply range slider to first feature
-        if feature in adata.var_names:
-            feature_vec = adata[:, feature].X.copy()
+        if prefix.endswith('other'):
+            feature_vec = _collect_x_from_other([feature], adata).flatten()
         else:
-            proteins = _check_proteins(adata)
-            if proteins is None or feature not in proteins:
-                raise InternalError(f"Could not find feature {feature}.")
-            feature_vec = adata.obsm[
-                'protein.X'][:, (proteins == feature)][:, 0].flatten()
+            feature_vec = _collect_x_from_vars([feature], adata).flatten()
+
         vmin, vmax = float(feature_vec.min()), float(feature_vec.max())
         rang = vmax - vmin
         eps = 1e-3
@@ -503,7 +523,20 @@ for prefix, an in zip(['main', 'side'], ['a1', 'a2']):
 
         Input(prefix + "-feature-list", "value"),
         prevent_initial_call=True
-    )(get_feature_range_func(an))
+    )(get_feature_range_func(an, prefix))
+
+
+for prefix, an in zip(['main-other', 'side-other'], ['a1', 'a2']):
+    app.callback(
+        Output(prefix + "-feature-rangeslider", "min"),
+        Output(prefix + "-feature-rangeslider", "max"),
+        Output(prefix + "-feature-rangeslider", "step"),
+        Output(prefix + "-feature-rangeslider", "marks"),
+        Output(prefix + "-feature-rangeslider", "value"),
+
+        Input(prefix + "-feature-list", "value"),
+        prevent_initial_call=True
+    )(get_feature_range_func(an, prefix))
 
 
 def get_asct_table_func():

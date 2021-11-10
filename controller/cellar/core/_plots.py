@@ -6,9 +6,9 @@ import plotly.graph_objects as go
 
 from ..utils.colors import PALETTE, get_col_i
 from ..utils.exceptions import InternalError, UserError
-from ..utils.misc import (_check_proteins, get_title_from_feature_list,
-                          is_sparse, _gene_value_protein_2_symbol)
-from ._tools import (_collect_var_protein, _split_var_protein,
+from ..utils.misc import (_gene_value_2_symbol, get_title_from_feature_list,
+                          get_title_from_other_list)
+from ._tools import (_collect_x_from_other, _collect_x_from_vars,
                      cl_add_gene_symbol, cl_get_expression)
 
 
@@ -101,14 +101,21 @@ def get_reset_figure(adata, title, palette=PALETTE):
 
 def _check_features(feature_values, adata):
     all_feats = adata.var_names.to_numpy().astype(str)
-    proteins = _check_proteins(adata)
-    if proteins is not None:
-        all_feats = np.concatenate([all_feats, proteins])
     if not set(list(feature_values)).issubset(set(list(all_feats))):
         raise InternalError(f"Some features not found in adata.")
 
 
-def get_expression_figure(adata, feature_values, feature_range):
+def _check_other(other_values, adata):
+    prefix = other_values[0].split(':')[0]
+    other_values = [i.split(':')[1] for i in other_values]
+    all_feats = np.array(adata.uns[prefix]).astype('U200')
+    if not set(list(other_values)).issubset(set(list(all_feats))):
+        raise InternalError(f"Some features not found in adata.")
+
+
+def get_expression_figure(
+        adata, feature_values=None, feature_range=None,
+        other_values=None):
     """
     Returns a plotly figure with the expression level of a gene
     or list of genes. In case a list of genes is used, then the
@@ -124,26 +131,31 @@ def get_expression_figure(adata, feature_values, feature_range):
     feature_range: (float, float)
         Contains upper and lower thresholds to use for filtering
         high and low expression values. Useful when filtering outliers.
+    other_values: same as above. used for other features.
     """
-    feature_values = np.array(feature_values, dtype='U200').flatten()
-    _check_features(feature_values, adata)
-
     if 'x_emb_2d' not in adata.obsm:
         raise InternalError("No 2d embeddings found.")
 
+    if feature_values is not None:
+        feature_values = np.array(feature_values, dtype='U200').flatten()
+        _check_features(feature_values, adata)
+        title = get_title_from_feature_list(adata, feature_values)
+        expression = cl_get_expression(adata, feature_values)
+        single_feature = len(feature_values) == 1
+    else:
+        other_values = np.array(other_values, dtype='U200').flatten()
+        _check_other(other_values, adata)
+        title = get_title_from_other_list(adata, other_values)
+        expression = cl_get_expression(adata, other_names=other_values)
+        single_feature = len(other_values) == 1
     # Construct title with gene symbols
     # If more than 3 genes were used, we append dots
-    title = get_title_from_feature_list(adata, feature_values)
     hover_data = {}
-
     if 'annotations' in adata.obs:
         hover_data['Annotation'] = adata.obs['annotations'].to_numpy()
     if 'labels' in adata.obs:
         hover_data['Cluster ID'] = adata.obs['labels'].to_numpy()
 
-    expression = cl_get_expression(adata, feature_values)
-
-    single_feature = len(feature_values) == 1
     if single_feature:
         if feature_range[0] > feature_range[1]:
             raise InternalError("Incorrect feature range found.")
@@ -183,7 +195,7 @@ def get_expression_figure(adata, feature_values, feature_range):
     return fig
 
 
-def get_heatmap(adata, feature_list):
+def get_heatmap(adata, feature_list=None, other_list=None):
     """
     Returns a plotly figure with a heatmap of gene expression values
     in feature_list. Uses dashbio.Clustergram.
@@ -191,9 +203,16 @@ def get_heatmap(adata, feature_list):
     if 'labels' not in adata.obs:
         raise InternalError("No labels found in adata.")
 
-    feature_list = np.array(feature_list).flatten()
-    _check_features(feature_list, adata)
-    x = _collect_var_protein(feature_list, adata)
+    if feature_list is not None:
+        feature_list = np.array(feature_list).flatten()
+        _check_features(feature_list, adata)
+        x = _collect_x_from_vars(feature_list, adata)
+        symbols = _gene_value_2_symbol(feature_list, adata)
+    else:
+        other_list = np.array(other_list).flatten()
+        _check_other(other_list, adata)
+        x = _collect_x_from_other(other_list, adata)
+        symbols = [i.split(':')[1] for i in other_list]
 
     unq_labels = np.unique(adata.obs['labels'])
     aves = []
@@ -210,7 +229,6 @@ def get_heatmap(adata, feature_list):
     if aves.shape[0] == 1:
         cluster = 'col'
 
-    symbols = _gene_value_protein_2_symbol(feature_list, adata)
     fig = dashbio.Clustergram(
         data=aves,
         column_labels=list(symbols),
@@ -227,7 +245,9 @@ def get_heatmap(adata, feature_list):
     return fig
 
 
-def get_violin_plot(adata, feature_values, feature_range, palette=PALETTE):
+def get_violin_plot(
+        adata, feature_values=None, feature_range=None,
+        other_values=None, other_range=None, palette=PALETTE):
     """
     Returns a plotly figure with a heatmap of gene expression values
     in feature_values. If multiple genes are selected, then the
@@ -243,14 +263,23 @@ def get_violin_plot(adata, feature_values, feature_range, palette=PALETTE):
     feature_range: (float, float)
         Contains upper and lower thresholds to use for filtering
         high and low expression values. Useful when filtering outliers.
+    other_values, other_range: same as above. used for other features.
     palette: list
         Color palette to use.
     """
-    feature_values = np.array(feature_values, dtype='U200').flatten()
-    _check_features(feature_values, adata)
-    title = get_title_from_feature_list(adata, feature_values)
-    vect = cl_get_expression(adata, feature_values)
-    single_feature = len(feature_values) == 1
+    if feature_values is not None:
+        feature_values = np.array(feature_values, dtype='U200').flatten()
+        _check_features(feature_values, adata)
+        title = get_title_from_feature_list(adata, feature_values)
+        vect = cl_get_expression(adata, feature_values)
+        single_feature = len(feature_values) == 1
+    else:
+        other_values = np.array(other_values, dtype='U200').flatten()
+        _check_other(other_values, adata)
+        title = get_title_from_other_list(adata, other_values)
+        vect = cl_get_expression(adata, other_names=other_values)
+        single_feature = len(other_values) == 1
+
     if single_feature:
         if feature_range[0] > feature_range[1]:
             raise InternalError("Incorrect feature range found.")

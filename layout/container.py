@@ -143,6 +143,10 @@ main_page = dbc.Col(
         # Signal notification
         dcc.Store(id="push-notification",
                   storage_type="memory", data=1, clear_data=True),
+        dcc.Store(id="main-other-features-change",
+                  storage_type="memory", data=1, clear_data=True),
+        dcc.Store(id="side-other-features-change",
+                  storage_type="memory", data=1, clear_data=True),
 
         # Palette Signal
         dcc.Store(id="main-clear-palette-signal",

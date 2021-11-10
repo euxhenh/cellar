@@ -10,287 +10,251 @@ from .misc import (empty_analysis_figure, empty_colocalization_figure,
 
 
 def get_de_card(prefix):
-    de_card = dbc.Card(
-        [
-            dbc.CardBody(
-                [
-                    html.H5("DE Analysis", className="card-title"),
-                    dbc.Col(
-                        [
-                            dbc.Row(
-                                dbc.InputGroup(
-                                    [
-                                        dbc.Select(
-                                            options=[],
-                                            id=prefix + "-de-cluster-select"
-                                        ),
-                                        dbc.Tooltip(
-                                            "Subset to find DE genes for",
-                                            target=prefix + "-de-cluster-select",
-                                            delay=500,
-                                            placement='top'
-                                        ),
-                                        dbc.Select(
-                                            options=[],
-                                            id=prefix + "-de-cluster-select2",
-                                            className="mr-1"
-                                        ),
-                                        dbc.Tooltip(
-                                            "Subset to compare against",
-                                            target=prefix + "-de-cluster-select2",
-                                            delay=500,
-                                            placement='top'
-                                        ),
-                                        dbc.Button(
-                                            html.I(className="fas fa-cog"),
-                                            id=prefix + "-de-analysis-btn",
-                                            color='primary',
-                                            outline=True
-                                        ),
-                                        dbc.Popover(
-                                            [
-                                                dbc.PopoverHeader(
-                                                    "DE Settings"),
-                                                dbc.PopoverBody([
-                                                    dbc.FormGroup(
-                                                        [
-                                                            dbc.Label(
-                                                                "Alpha"),
-                                                            dbc.Input(
-                                                                id=prefix + "-de-analysis-alpha",
-                                                                type="number",
-                                                                value=0.05
-                                                            ),
-                                                            dbc.Tooltip(
-                                                                "q-Value Threshold",
-                                                                target=prefix + "-de-analysis-alpha",
-                                                                delay=500
-                                                            )
-                                                        ]
-                                                    ),
-                                                    dbc.FormGroup(
-                                                        [
-                                                            dbc.Label(
-                                                                "FoldChange Threshold"),
-                                                            dbc.Input(
-                                                                id=prefix + "-de-analysis-fc",
-                                                                type="number",
-                                                                value=1
-                                                            ),
-                                                            dbc.Tooltip(
-                                                                "Genes with FC less than this value will be filtered. " +
-                                                                "If set to 0, no filtering will be applied.",
-                                                                target=prefix + "-de-analysis-fc",
-                                                                delay=500
-                                                            )
-                                                        ]
-                                                    ),
-                                                    dbc.FormGroup(
-                                                        [
-                                                            dbc.Label(
-                                                                "Is Data Logged?"),
-                                                            dbc.RadioItems(
-                                                                options=[
-                                                                    {"label": "True",
-                                                                        "value": True},
-                                                                    {"label": "False",
-                                                                        "value": False},
-                                                                ],
-                                                                value=True,
-                                                                id=prefix + "-de-analysis-logged",
-                                                                inline=True
-                                                            ),
-                                                            dbc.Tooltip(
-                                                                "If your data has been log-transformed " +
-                                                                "during the preprocessing step, set this to True.",
-                                                                target=prefix + "-de-analysis-logged",
-                                                                delay=500
-                                                            )
-                                                        ]
-                                                    ),
-                                                ])
-                                            ],
-                                            target=prefix + "-de-analysis-btn",
-                                            trigger="legacy"
-                                        ),
-                                        dbc.InputGroupAddon(
-                                            dbc.Button(
-                                                "Find DE Genes",
-                                                id=prefix+"-find-de-genes-btn",
-                                                color='primary'
-                                            ),
-                                            addon_type="append"
-                                        )
-                                    ]
-                                ),
-                                className="mb-2",
-                                no_gutters=True
+    de_card = dbc.Card([
+        dbc.CardBody([
+            html.H5("DE Analysis", className="card-title"),
+            dbc.Col([
+                dbc.Row(
+                    dbc.InputGroup([
+                        dbc.Select(
+                            options=[],
+                            id=prefix + "-de-cluster-select"
+                        ),
+                        dbc.Tooltip(
+                            "Subset to find DE genes for",
+                            target=prefix + "-de-cluster-select",
+                            delay=500,
+                            placement='top'
+                        ),
+                        dbc.Select(
+                            options=[],
+                            id=prefix + "-de-cluster-select2",
+                            className="mr-1"
+                        ),
+                        dbc.Tooltip(
+                            "Subset to compare against",
+                            target=prefix + "-de-cluster-select2",
+                            delay=500,
+                            placement='top'
+                        ),
+                        dbc.Button(
+                            html.I(className="fas fa-cog"),
+                            id=prefix + "-de-analysis-btn",
+                            color='primary',
+                            outline=True
+                        ),
+                        dbc.Popover([
+                            dbc.PopoverHeader("DE Settings"),
+                            dbc.PopoverBody([
+                                dbc.FormGroup([
+                                    dbc.Label("Alpha"),
+                                    dbc.Input(
+                                        id=prefix + "-de-analysis-alpha",
+                                        type="number",
+                                        value=0.05
+                                    ),
+                                    dbc.Tooltip(
+                                        "q-Value Threshold",
+                                        target=prefix + "-de-analysis-alpha",
+                                        delay=500
+                                    )
+                                ]),
+                                dbc.FormGroup([
+                                    dbc.Label("FoldChange Threshold"),
+                                    dbc.Input(
+                                        id=prefix + "-de-analysis-fc",
+                                        type="number",
+                                        value=1
+                                    ),
+                                    dbc.Tooltip(
+                                        "Genes with FC less than this value will be filtered. " +
+                                        "If set to 0, no filtering will be applied.",
+                                        target=prefix + "-de-analysis-fc",
+                                        delay=500
+                                    )
+                                ]),
+                                dbc.FormGroup([
+                                    dbc.Label("Is Data Logged?"),
+                                    dbc.RadioItems(
+                                        options=[
+                                            {"label": "True",
+                                                "value": True},
+                                            {"label": "False",
+                                                "value": False},
+                                        ],
+                                        value=True,
+                                        id=prefix + "-de-analysis-logged",
+                                        inline=True
+                                    ),
+                                    dbc.Tooltip(
+                                        "If your data has been log-transformed " +
+                                        "during the preprocessing step, set this to True.",
+                                        target=prefix + "-de-analysis-logged",
+                                        delay=500
+                                    )
+                                ]),
+                            ])
+                            ],
+                            target=prefix + "-de-analysis-btn",
+                            trigger="legacy"
+                        ),
+                        dbc.InputGroupAddon(
+                            dbc.Button(
+                                "Find DE Genes",
+                                id=prefix+"-find-de-genes-btn",
+                                color='primary'
                             ),
-                            dbc.Row(
-                                dbc.Col(
-                                    [
-                                        dcc.Loading(
-                                            [
-                                                html.H6(
-                                                    "",
-                                                    id=prefix + "-de-analysis-title",
-                                                    className="card-subtitle m-2"
-                                                ),
-                                                dash_table.DataTable(
-                                                    id=prefix + "-de-table",
-                                                    page_size=10,
-                                                    export_format='none',
-                                                    style_table={
-                                                        'overflowX': 'auto'}
-                                                ),
-                                            ],
-                                            type="circle"
-                                        )
-                                    ],
-                                    width=12
-                                ),
-                                no_gutters=True
-                            )
-                        ]
-                    )
-                ]
-            )
-        ]
-    )
+                            addon_type="append"
+                        )
+                    ]),
+                    className="mb-2",
+                    no_gutters=True
+                ),
+                dbc.Row(
+                    dbc.Col([
+                        dcc.Loading([
+                            html.H6(
+                                "",
+                                id=prefix + "-de-analysis-title",
+                                className="card-subtitle m-2"
+                            ),
+                            dash_table.DataTable(
+                                id=prefix + "-de-table",
+                                page_size=10,
+                                export_format='none',
+                                style_table={
+                                    'overflowX': 'auto'}
+                            ),
+                        ], type="circle")
+                    ], width=12),
+                    no_gutters=True
+                )
+            ])
+        ])
+    ])
     return de_card
 
 
-def get_feature_card(prefix):
-    feature_card = dbc.Card(
-        [
-            dbc.CardBody(
-                [
-                    html.H5("Feature Visualization",
-                            className="card-title", id=prefix + "-feat-title"),
-                    dbc.Row(
-                        [
-                            dbc.Col([
-                                dbc.Button(
-                                    dbc.Row(
-                                        [
-                                            html.Span("DE")
-                                        ],
-                                        align='baseline',
-                                        justify='center',
-                                        no_gutters=True
-                                    ),
-                                    id=prefix + "-paste-de-genes",
-                                    color='secondary'
-                                ),
-                                dbc.Tooltip(
-                                    "Paste DE features from the current page",
-                                    target=prefix + "-paste-de-genes",
-                                    delay=500
-                                )
-                            ], width=1),
-                            dbc.Col([
-                                dcc.Loading(
-                                    dcc.Dropdown(
-                                        options=[],
-                                        multi=True,
-                                        id=prefix + '-feature-list',
-                                        placeholder="Search features",
-                                    ), type="circle")
-                            ], width=7, id=prefix + "-feature-list-col"),
-                            dbc.Tooltip(
-                                "Select one or multiple features " +
-                                "for visualization purposes. This input " +
-                                "will automatically parse any selected " +
-                                "feature from the DE table. To understand " +
-                                "what is shown when multiple features are " +
-                                "selected, please check the documentation.",
-                                target=prefix + "-feat-title",
-                                delay=1000
-                            ),
-                            dbc.Col(
-                                dbc.DropdownMenu(
-                                    [
-                                        dbc.DropdownMenuItem(
-                                            "Plot Expression",
-                                            id=prefix + "-expression"
-                                        ),
-                                        dbc.DropdownMenuItem(
-                                            "Heatmap",
-                                            id=prefix + "-heatmap"
-                                        ),
-                                        dbc.DropdownMenuItem(
-                                            "Violin Plot",
-                                            id=prefix + "-violin-plot"
-                                        )
-                                    ],
-                                    label="Plotting",
-                                    id=prefix + "-plotting-menu"
-                                ),
-                                width=2
-                            ),
-                            dbc.Col([
-                                dbc.Button(
-                                    "Clear",
-                                    id=prefix + "-clear-expression-btn",
-                                    color='primary'
-                                ),
-                                dbc.Tooltip(
-                                    "Clears the expression view from the plot",
-                                    target=prefix + "-clear-expression-btn",
-                                    delay=500
-                                )
-                            ], width=2)
-                        ],
-                        justify='between',
-                        no_gutters=True,
-                        className="mb-2"
-                    ),
-                    dbc.Row(
-                        dbc.Col([
-                            dcc.RangeSlider(
-                                min=0,
-                                max=0,
-                                step=None,
-                                id=prefix + "-feature-rangeslider",
-                                marks={}
-                            ),
-
-                        ], id=prefix + "-feature-rangeslider-col"),
-                        justify='between',
-                        no_gutters=True
-                    ),
-                    dbc.Tooltip(
-                        "Clip expression values to this range. " +
-                        "Can be useful to filter outliers or modify " +
-                        "the colorbar scale. Only works for a " +
-                        "single feature.",
-                        target=prefix + "-feature-rangeslider-col",
-                        delay=500
-                    ),
-                    dcc.Loading(
-                        dcc.Graph(
-                            id=prefix + '-analysis-plot',
-                            figure=empty_analysis_figure,
-                            config={'autosizable': True,
-                                    'displaylogo': False,
-                                    'displayModeBar': True}
+def get_feature_body(prefix):
+    body = [
+        dbc.Row([
+            dbc.Col([
+                dbc.Button(
+                    dbc.Row([
+                        html.Span("DE")
+                    ], align='baseline', justify='center', no_gutters=True),
+                    id=prefix + "-paste-de-genes",
+                    color='secondary'
+                ),
+                dbc.Tooltip(
+                    "Paste DE features from the current page",
+                    target=prefix + "-paste-de-genes",
+                    delay=500
+                )
+            ], width=1),
+            dbc.Col([
+                dcc.Loading(
+                    dcc.Dropdown(
+                        options=[],
+                        multi=True,
+                        id=prefix + '-feature-list',
+                        placeholder="Search features",
+                    ), type="circle")
+            ], width=7, id=prefix + "-feature-list-col"),
+            dbc.Col(
+                dbc.DropdownMenu(
+                    [
+                        dbc.DropdownMenuItem(
+                            "Plot Expression",
+                            id=prefix + "-expression"
                         ),
-                        type="circle"
-                    )
-                ],
-                style={'overflow': 'auto'}
-            )
-        ]
-    )
+                        dbc.DropdownMenuItem(
+                            "Heatmap",
+                            id=prefix + "-heatmap"
+                        ),
+                        dbc.DropdownMenuItem(
+                            "Violin Plot",
+                            id=prefix + "-violin-plot"
+                        )
+                    ],
+                    label="Plotting",
+                    id=prefix + "-plotting-menu"
+                ),
+                width=2
+            ),
+            dbc.Col([
+                dbc.Button(
+                    "Clear",
+                    id=prefix + "-clear-expression-btn",
+                    color='primary'
+                ),
+                dbc.Tooltip(
+                    "Clears the expression view from the plot",
+                    target=prefix + "-clear-expression-btn",
+                    delay=500
+                )
+            ], width=2)
+        ], justify='between', no_gutters=True, className="mb-2"),
+        dbc.Row(
+            dbc.Col([
+                dcc.RangeSlider(
+                    min=0,
+                    max=0,
+                    step=None,
+                    id=prefix + "-feature-rangeslider",
+                    marks={}
+                ),
 
-    return feature_card
+            ], id=prefix + "-feature-rangeslider-col"),
+            justify='between',
+            no_gutters=True
+        ),
+        dbc.Tooltip(
+            "Clip expression values to this range. " +
+            "Can be useful to filter outliers or modify " +
+            "the colorbar scale. Only works for a " +
+            "single feature.",
+            target=prefix + "-feature-rangeslider-col",
+            delay=500
+        ),
+        dcc.Loading(
+            dcc.Graph(
+                id=prefix + '-analysis-plot',
+                figure=empty_analysis_figure,
+                config={'autosizable': True,
+                        'displaylogo': False,
+                        'displayModeBar': True}
+            ),
+            type="circle"
+        )
+    ]
+    return body
 
 
 def get_features_carddeck(prefix):
     features = dbc.CardDeck(
         [
             get_de_card(prefix),
-            get_feature_card(prefix)
+            dbc.Card(dbc.CardBody([
+                dbc.Tabs([
+                    dbc.Tab(
+                        get_feature_body(prefix),
+                        label="Feature Visualization"),
+                    dbc.Tab(
+                        get_feature_body(prefix + '-other'),
+                        label="Other")
+                ], className="mb-2"),
+                # dbc.Tooltip(
+                #     "Select one or multiple features " +
+                #     "for visualization purposes. This input " +
+                #     "will automatically parse any selected " +
+                #     "feature from the DE table. To understand " +
+                #     "what is shown when multiple features are " +
+                #     "selected, please check the documentation.",
+                #     target=prefix + "-feat-title",
+                #     delay=500
+                # ),
+            ]), style={'overflow': 'auto'})
         ],
         className="mb-2 analysis-container"
     )

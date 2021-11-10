@@ -11,7 +11,7 @@ import dash_bootstrap_components as dbc
 from app import app, logger, dbroot
 from controller.cellar.utils.exceptions import UserError
 from .cellar.core import read_adata, cl_add_gene_symbol
-from .cellar.utils.misc import is_sparse, _check_proteins
+from .cellar.utils.misc import is_sparse
 from .multiplexer import MultiplexerOutput
 from .notifications import _prep_notification
 
@@ -24,6 +24,8 @@ from .notifications import _prep_notification
     Output("data-loaded-annotation-table-signal", "data"),
     Output("main-data-load-clean", "data"),
     Output("side-data-load-clean", "data"),
+    MultiplexerOutput("main-other-features-change", "data"),
+    MultiplexerOutput("side-other-features-change", "data"),
     MultiplexerOutput("push-notification", "data"),
 
     Input("load-dataset-btn", "n_clicks"),
@@ -55,7 +57,7 @@ def load_dataset(n1, dname, actp):
         error_msg = "Error encountered while reading file. Maybe the file " +\
             "is not formatted properly, or invalid entries were found."
         logger.error(error_msg)
-        return [dash.no_update] * 7 + [_prep_notification(error_msg, "danger")]
+        return [dash.no_update] * 9 + [_prep_notification(error_msg, "danger")]
 
     dbroot.adatas[an]['name'] = os.path.splitext(
         os.path.basename(dname))[0]
@@ -63,10 +65,10 @@ def load_dataset(n1, dname, actp):
     if is_sparse(dbroot.adatas[an]['adata'].X):
         logger.info("Found Sparse Matrix.")
 
-    mclean = 1 if an == 'a1' else dash.no_update
-    sclean = 1 if an == 'a2' else dash.no_update
+    t1 = 1 if an == 'a1' else dash.no_update
+    t2 = 1 if an == 'a2' else dash.no_update
 
-    return 1, 1, {}, 1, 1, mclean, sclean, dash.no_update
+    return 1, 1, {}, 1, 1, t1, t2, t1, t2, dash.no_update
 
 
 def _prettify_time(s):
@@ -220,25 +222,57 @@ def update_feature_list(s1, s2, s3, actp):
             cl_add_gene_symbol(adata)
     except Exception as e:
         logger.error(str(e))
-        error_msg = "Error occurred when adding gene symbols."
+        error_msg = "Error occurred when adding gene names."
         logger.error(error_msg)
         return [dash.no_update] * 4 + [_prep_notification(error_msg, "danger")]
 
     features = adata.var['gene_symbols'].to_numpy().astype(str)
     unique_index = adata.var_names.to_numpy().astype(str)
-    # Check for CITE-seq data
-    msg = None
-    proteins = _check_proteins(adata)
-    if proteins is not None:
-        features = np.concatenate([features, proteins])
-        unique_index = np.concatenate([unique_index, proteins])
-        msg = "Found proteins in file. These were added as features " +\
-            "prefixed by Protein_."
-
     to_return = [dash.no_update] * 4
     to_return[actp - 1] = to_return[actp + 1] = [
         {'label': f, 'value': g}
         for f, g in zip(features, unique_index)]
 
-    return to_return + [
-        dash.no_update if msg is None else _prep_notification(msg, "info")]
+    return to_return + [dash.no_update]
+
+
+def get_update_other_features_func(an, prefix):
+    def _func(n1):
+        ctx = dash.callback_context
+        if not ctx.triggered:
+            raise PreventUpdate
+        if an not in dbroot.adatas:
+            raise PreventUpdate
+        if 'adata' not in dbroot.adatas[an]:
+            raise PreventUpdate
+        adata = dbroot.adatas[an]['adata']
+        special_keys = ['proteins', 'genes']
+
+        other_feats = np.array([]).astype('U200')
+        values = np.array([]).astype('U200')
+
+        for key in special_keys:
+            if key in adata.uns:
+                vals = np.array(adata.uns[key]).astype('U200').flatten()
+                if len(vals) > 20_000:
+                    logger.warn(f"Too many features in {key}. Skipping...")
+                other_feats = np.concatenate([other_feats, vals])
+                vals = np.char.add(key + ":", vals)
+                values = np.concatenate([values, vals])
+
+        if len(other_feats) == 0:
+            return [], dash.no_update
+        return [{'label': f, 'value': g}
+                for f, g in zip(other_feats, values)], dash.no_update
+
+    return _func
+
+
+for prefix, an in zip(['main', 'side'], ['a1', 'a2']):
+    app.callback(
+        Output(prefix + "-other-feature-list", "options"),
+        MultiplexerOutput("push-notification", "data"),
+
+        Input(prefix + "-other-features-change", "data"),
+        prevent_initial_call=True
+    )(get_update_other_features_func(an, prefix))

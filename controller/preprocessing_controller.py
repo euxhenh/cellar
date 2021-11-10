@@ -165,8 +165,13 @@ def run_prep(
             if nt == "":
                 nt = None
             sc.pp.normalize_total(adata, target_sum=nt, max_fraction=nmax)
-
         if clog is not None and clog:
+            if adata.X.min() < 0:
+                adata = adata.raw
+                return [dash.no_update] * 4 + [
+                    _prep_notification(
+                        "Data contains negative values. Cannot take log.",
+                        "danger")]
             sc.pp.log1p(adata)
 
         if cscale is not None and cscale:
@@ -174,6 +179,7 @@ def run_prep(
                 smax = None
             sc.pp.scale(adata, zero_center=sz, max_value=smax)
     except Exception as e:
+        adata = adata.raw
         logger.error(str(e))
         error_msg = "An error occurred in preprocessing."
         logger.error(error_msg)

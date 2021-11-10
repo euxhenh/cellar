@@ -6,7 +6,7 @@ from app import logger
 from pyensembl import EnsemblRelease
 from controller.cellar.utils.exceptions import InternalError, InvalidArgument
 from controller.cellar.utils.exceptions import IncorrectFileFormat
-from controller.cellar.utils.misc import is_sparse, _check_proteins
+from controller.cellar.utils.misc import is_sparse
 
 
 def read_adata(path, mode='r'):
@@ -17,33 +17,32 @@ def read_adata(path, mode='r'):
         raise IncorrectFileFormat
 
 
-def _split_var_protein(var_names, adata):
-    in_idx = np.isin(var_names, adata.var_names)
-    vars = var_names[in_idx]
-    proteins = var_names[~in_idx]
-    return vars, proteins
-
-
-def _collect_var_protein(var_names, adata):
-    vars, proteins = _split_var_protein(var_names, adata)
-    all_proteins = _check_proteins(adata)
-    xvar = adata[:, vars].X if len(vars) > 0 else None
-    xprot = adata.obsm['protein.X'][:, np.isin(
-        all_proteins, proteins)] if len(proteins) > 0 else None
-    if xvar is not None and is_sparse(xvar):
+def _collect_x_from_vars(var_names, adata):
+    xvar = adata[:, var_names].X if len(var_names) > 0 else None
+    if is_sparse(xvar):
         xvar = np.array(xvar.todense())
-    if xprot is not None and is_sparse(xprot):
-        xprot = np.array(xprot.todense())
-    if xvar is not None and xprot is not None:
-        x = np.hstack([xvar, xprot])
-    elif xvar is None:
-        x = xprot
-    else:
-        x = xvar
-    return x
+    return xvar
 
 
-def cl_get_expression(adata, var_names, op='min'):
+def _collect_x_from_other(other_names, adata):
+    prefix = other_names[0].split(':')[0]
+    other_names = [i.split(':')[1] for i in other_names]
+    if prefix not in adata.obsm:
+        raise InternalError(f"No data with prefix {prefix} found in obsm.")
+
+    all_other_names = np.array(adata.uns[prefix]).astype('U200')
+    indices = []
+    for oname in other_names:
+        indices.append(np.where(all_other_names == oname)[0][0])
+    indices = np.array(indices)
+
+    xvar = adata.obsm[prefix][:, indices]
+    if is_sparse(xvar):
+        xvar = np.array(xvar.todense())
+    return xvar
+
+
+def cl_get_expression(adata, var_names=None, other_names=None, op='min'):
     """
     Given an AnnData object and a list of var_names, return the
     expression (if single var) or co-expression (if more than one var)
@@ -54,8 +53,12 @@ def cl_get_expression(adata, var_names, op='min'):
     to the (0, 1) range and then applying the 'op' operation across
     all participating features for every sample point.
     """
-    var_names = np.array(var_names, dtype=str).flatten()
-    x = _collect_var_protein(var_names, adata)
+    if var_names is not None:
+        var_names = np.array(var_names, dtype=str).flatten()
+        x = _collect_x_from_vars(var_names, adata)
+    else:
+        other_names = np.array(other_names, dtype=str).flatten()
+        x = _collect_x_from_other(other_names, adata)
     if x.shape[1] == 1:  # single feature
         return x.flatten()
     rang = np.ptp(x, axis=0)  # range of values

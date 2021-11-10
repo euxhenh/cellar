@@ -32,6 +32,7 @@ class Signal(int, Enum):
     PALETTE = 280
     LABEL_TRANSFER = 301
     FEATURE_EXP = 401
+    OTHER_FEATURE_EXP = 402
     ANNOTATION = 501
     DATA_LOAD = 801
     RESET = 901
@@ -48,8 +49,12 @@ class Signal(int, Enum):
     Input("label-run-btn", "n_clicks"),
     Input("main-expression", "n_clicks"),
     Input("side-expression", "n_clicks"),
+    Input("main-other-expression", "n_clicks"),
+    Input("side-other-expression", "n_clicks"),
     Input("main-clear-expression-btn", "n_clicks"),
     Input("side-clear-expression-btn", "n_clicks"),
+    Input("main-other-clear-expression-btn", "n_clicks"),
+    Input("side-other-clear-expression-btn", "n_clicks"),
     Input("annotation-signal", "data"),
     Input("merge-plot-signal", "data"),
     Input("data-loaded-plot-signal", "data"),
@@ -65,7 +70,8 @@ class Signal(int, Enum):
     prevent_initial_call=True
 )
 def signal_plot(
-        n1, n2, mexp, sexp, c1, c2, ans, mps, dlps, dlpsp, dlpspa, mapp, sapp,
+        n1, n2, mexp, sexp, moexp, soexp, c1, c2, c3, c4, ans, mps,
+        dlps, dlpsp, dlpspa, mapp, sapp,
         singlery, singlerno, actp, actt):
     ctx = dash.callback_context
     if not ctx.triggered:
@@ -105,8 +111,10 @@ def signal_plot(
             raise InternalError(f"No tab with name {actt} found.")
     elif button_id == "main-expression" or button_id == "side-expression":
         to_return[index] = Signal.FEATURE_EXP
-    elif button_id == "main-clear-expression-btn" or \
-            button_id == "side-clear-expression-btn":
+    elif button_id == "main-other-expression" or \
+            button_id == "side-other-expression":
+        to_return[index] = Signal.OTHER_FEATURE_EXP
+    elif button_id.endswith('-clear-expression-btn'):
         to_return[index] = Signal.RESET
     elif button_id == "annotation-signal":
         if ans is not None:
@@ -136,6 +144,7 @@ def get_update_plot_func(an, prefix):
             s_code,
             dim_method, vis_method, clu_method, ssclu_method, lbt_method,
             feature_list, feature_range,
+            other_feature_list, other_feature_range,
             *settings):
         ctx = dash.callback_context
         if not ctx.triggered or s_code is None:
@@ -185,6 +194,15 @@ def get_update_plot_func(an, prefix):
                     raise PreventUpdate
                 exp = get_expression_figure(
                     dbroot.adatas[an]['adata'], feature_list, feature_range)
+                return exp, dash.no_update, dash.no_update
+            elif s_code == Signal.OTHER_FEATURE_EXP:
+                # Show gene expression levels and prepare figure
+                if other_feature_list is None:
+                    raise PreventUpdate
+                exp = get_expression_figure(
+                    dbroot.adatas[an]['adata'],
+                    other_values=other_feature_list,
+                    feature_range=other_feature_range)
                 return exp, dash.no_update, dash.no_update
             elif s_code == Signal.RESET:
                 return get_reset_figure(
@@ -259,6 +277,8 @@ for prefix, an in zip(['main', 'side'], ['a1', 'a2']):
         State("lbt-methods-select", "value"),
         State(prefix + "-feature-list", "value"),
         State(prefix + "-feature-rangeslider", "value"),
+        State(prefix + "-other-feature-list", "value"),
+        State(prefix + "-other-feature-rangeslider", "value"),
         [State(m['value'] + '-settings', 'children') for m in dim_list],
         [State(m['value'] + '-settings', 'children') for m in clu_list],
         [State(m['value'] + '-settings', 'children') for m in vis_list],
