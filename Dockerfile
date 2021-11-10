@@ -30,6 +30,7 @@ RUN conda env create -f /home/nonroot/downloads/env.yml && \
         conda clean -a && rm -rf /home/nonroot/downloads && \
         rm -rf /home/nonroot/.conda/pkgs/*
 
+RUN conda run --no-capture-output -n cellar pip install pyensembl
 RUN mkdir /home/nonroot/cellar
 ARG VER=unknown
 RUN git clone https://github.com/ferrocactus/CellarV /home/nonroot/cellar
