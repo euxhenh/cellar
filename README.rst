@@ -85,7 +85,7 @@ Dependencies
 
 Cellar requires the following Python packages:
 
-- dash (>= 1.21.0), dash-bootstrap-components (>= 0.13.0), dash-bio (>= 0.7.1)
+- dash (== 1.21.0), dash-bootstrap-components (== 0.13.0), dash-bio (>= 0.7.1)
 - numpy (>= 1.21.1), scipy (>= 1.6.3)
 - scikit-learn (>= 0.24.2), scikit-learn-extra (>= 0.2.0), scikit-image (>= 0.18.1)
 - pandas (>= 1.3.1), anndata (>= 0.7.6), scanpy (>= 1.8.1)
@@ -98,7 +98,7 @@ Cellar requires the following Python packages:
 - zodb (>= 5.6.0)
 - r-base (>= 4.1.0), r-stringi (>= 1.7.3), rpy2 (>= 3.4.5), anndata2ri (>= 1.0.6)
 - pydiffmap (>= 0.2.0.1)
-- diffxpy (>= 0.7.4), gseapy (>= 0.10.5), bintogene (>= 1.23)
+- diffxpy (>= 0.7.4), gseapy (>= 0.10.5), pyensembl (>=1.9.4), bintogene (>= 1.23)
 - kneed (>= 0.7.0)
 
 and the following R packages
