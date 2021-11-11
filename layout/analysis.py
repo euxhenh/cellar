@@ -151,7 +151,7 @@ def get_feature_body(prefix):
                     target=prefix + "-paste-de-genes",
                     delay=500
                 )
-            ], width=1),
+            ], width=1) if not prefix.endswith('other') else html.Span(),
             dbc.Col([
                 dcc.Loading(
                     dcc.Dropdown(
@@ -160,7 +160,8 @@ def get_feature_body(prefix):
                         id=prefix + '-feature-list',
                         placeholder="Search features",
                     ), type="circle")
-            ], width=7, id=prefix + "-feature-list-col"),
+            ], width=7 + prefix.endswith('other'),
+                id=prefix + "-feature-list-col"),
             dbc.Col(
                 dbc.DropdownMenu(
                     [
@@ -418,7 +419,7 @@ def get_spatial_card(prefix):
                                         options=[
                                             {'label': 'CODEX',
                                              'value': 'spatial-codex'},
-                                            {'label': '10X Genomics',
+                                            {'label': 'Visium 10x',
                                              'value': 'spatial-10x'}
                                         ],
                                         className="mw-300",

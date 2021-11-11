@@ -2,7 +2,7 @@ from .cellar.core import (cl_Agglomerative, cl_Ingest, cl_KMeans, cl_KMedoids,
                           cl_kPCA, cl_Leiden, cl_MDS, cl_PCA, cl_TSNE,
                           cl_Diffmap, cl_SingleR, cl_cisTopic, cl_ExactLT,
                           cl_SpectralClustering, cl_ssLeiden, cl_TruncatedSVD,
-                          cl_UMAP, cl_uncertainty)
+                          cl_UMAP, cl_uncertainty, cl_STvEA)
 
 dim_list = [
     {'label': 'PCA', 'value': 'dim-PCA', 'func': cl_PCA},
@@ -56,6 +56,11 @@ lbt_list = [
         'value': 'lbt-Scanpy-Ingest', 'func': cl_Ingest},
     {'label': 'SingleR', 'value': 'lbt-SingleR', 'func': cl_SingleR},
     {'label': 'Cell ID Based', 'value': 'lbt-exact', 'func': cl_ExactLT}
+]
+
+
+intg_list = [
+    {'label': 'STvEA', 'value': 'intg-STvEA', 'func': cl_STvEA}
 ]
 
 

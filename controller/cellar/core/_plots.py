@@ -161,7 +161,7 @@ def get_expression_figure(
 
     if single_feature and not auto_scale:
         expression = _clip_2_range(expression, feature_range)
-        hover_data['Normalized Val.'] = expression.copy()
+        hover_data['Exp.'] = expression.copy()
     elif auto_scale:
         expression = _filter_outliers(expression)
 
@@ -176,7 +176,7 @@ def get_expression_figure(
         color=expression,
         opacity=0.8,
         labels={
-            'color': 'Clipped Val.' if single_feature else 'Min Co-Exp.'},
+            'color': 'Exp.' if single_feature else 'Min Co-Exp.'},
         range_color=[expression.min(), 1 if exp_max == 0 else exp_max],
         render_mode='webgl',
         color_continuous_scale=px.colors.sequential.Magma

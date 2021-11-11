@@ -20,8 +20,8 @@ def _filter_outliers(arr, thresh=3):
     good_max = arr[zscores <= thresh].max()
     filtered_arr = np.where(zscores <= thresh, arr, good_max)
     filtered_arr = np.where(zscores >= -thresh, filtered_arr, good_min)
-    logger.info(
-        f"Clipped {(filtered_arr != arr).sum()} values from {arr.size}.")
+    # logger.info(
+        # f"Clipped {(filtered_arr != arr).sum()} values from {arr.size}.")
     return filtered_arr
 
 

@@ -5,8 +5,11 @@ from dash.dependencies import Input, Output, State
 from dash.exceptions import PreventUpdate
 
 from app import app, logger, dbroot
+from controller.cellar.utils.exceptions import InternalError
 from .multiplexer import MultiplexerOutput
 from .notifications import _prep_notification
+from .operations import intg_filter
+from .methods import intg_list
 
 
 @app.callback(
@@ -89,7 +92,6 @@ def merge_subset(n1, main_select, side_select, actp):
     ctx = dash.callback_context
     if not ctx.triggered:
         raise PreventUpdate
-
     ctx = dash.callback_context
     if not ctx.triggered:
         raise PreventUpdate
@@ -137,3 +139,39 @@ def merge_subset(n1, main_select, side_select, actp):
             f"Merged subset {select}.", "info")
     return 1, dash.no_update, 1, _prep_notification(
         f"Merged subset {select}.", "info")
+
+
+def get_integrate_func(an):
+    def _func(n1, intg_method, actp, *settings):
+        ctx = dash.callback_context
+        if (actp == 1 and an != 'a1') or (actp == 2 and an != 'a2'):
+            raise PreventUpdate
+        if not ctx.triggered:
+            raise PreventUpdate
+        ref_an = 'a2' if an == 'a1' else 'a1'
+        if an not in dbroot.adatas or ref_an not in dbroot.adatas:
+            return [], dash.no_update, _prep_notification(
+                "Must load a reference dataset.", "warn")
+        if 'adata' not in dbroot.adatas[an] or 'adata' not in dbroot.adatas[ref_an]:
+            return [], dash.no_update, _prep_notification(
+                "Must load a reference dataset.", "warn")
+        try:
+            intg_filter(dbroot.adatas[an]['adata'], intg_method, settings,
+                        extras={'ref': dbroot.adatas[ref_an]['adata']})
+        except:
+            raise InternalError("An error occurred during integration.")
+        return [], 1, _prep_notification("Finished integrating.")
+    return _func
+
+
+for prefix, an in zip(["main", "side"], ["a1", "a2"]):
+    app.callback(
+        Output(prefix + "-buf-integrate", "children"),
+        MultiplexerOutput(prefix + "-other-features-change", "data"),
+        MultiplexerOutput("push-notification", "data"),
+        Input("run-integrate-btn", "n_clicks"),
+        State("intg-methods-select", "value"),
+        State("active-plot", "data"),
+        [State(m['value'] + '-settings', 'children') for m in intg_list],
+        prevent_initial_call=True
+    )(get_integrate_func(an))

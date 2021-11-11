@@ -3,13 +3,14 @@ import dash_core_components as dcc
 import dash_html_components as html
 import dash_table
 from controller.methods import (clu_list, dim_list, lbt_list, ssclu_list,
-                                vis_list)
+                                vis_list, intg_list)
 
 from .method_settings.dim_settings import dim_settings
 from .method_settings.clu_settings import clu_settings
 from .method_settings.vis_settings import vis_settings
 from .method_settings.ssclu_settings import ssclu_settings
 from .method_settings.lbt_settings import lbt_settings
+from .method_settings.intg_settings import intg_settings
 
 
 def get_cog_btn(id, display='none'):
@@ -481,7 +482,7 @@ tools_block = dbc.Card(
             outline=False
         ),
         dbc.Collapse(
-            dbc.CardBody(
+            dcc.Loading(dbc.CardBody(
                 [
                     dbc.Row(
                         [
@@ -557,9 +558,39 @@ tools_block = dbc.Card(
                             )
                         ],
                         no_gutters=True
-                    )
+                    ),
+                    dbc.FormGroup([
+                        dbc.InputGroup([
+                            dbc.InputGroupAddon([
+                                "Integrate"
+                            ], addon_type="prepend"),
+                            dbc.Select(
+                                options=[
+                                    {
+                                        'label': m['label'],
+                                        'value': m['value']
+                                    } for m in intg_list],
+                                required=True,
+                                id="intg-methods-select",
+                                value=intg_list[0]['value']
+                            ),
+                            dbc.InputGroupAddon([
+                                get_cog_btn(
+                                    i['value'] + '-btn')
+                                for i in intg_list
+                            ], addon_type="append"),
+                            dbc.InputGroupAddon([
+                                dbc.Button(
+                                    "Run", id="run-integrate-btn",
+                                    color="primary"),
+                            ]),
+                            html.Span(id="main-buf-integrate"),
+                            html.Span(id="side-buf-integrate"),
+                            *intg_settings
+                        ])
+                    ], className="mt-2")
                 ]
-            ),
+            )),
             is_open=True,
             id="tools-collapse"
         )

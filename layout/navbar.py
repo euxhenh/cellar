@@ -296,9 +296,8 @@ dataset_bar = dbc.Row(
                         block=True,
                         id='load-dataset-btn'
                     ),
-                    dbc.Spinner(
-                        children=[html.Div(id="dataset-load")],
-                        size='lg'
+                    dcc.Loading(
+                        id="dataset-load",
                     )
                 ],
                 className='mw-150',
