@@ -21,7 +21,7 @@ from .cellar.utils.tile_generator import (generate_10x_spatial,
 from .cellar.utils.exceptions import InternalError
 from .cellar.utils.misc import get_title_from_feature_list
 from .cellar.core import adjScoreProteinsCODEX, adjScoreClustersCODEX
-from .cellar.core import adjScoreClusters10x#,adjScoreProteins10x
+from .cellar.core import adjScoreClusters10x
 from .cellar.core import cl_get_expression
 from .multiplexer import MultiplexerOutput
 from .notifications import _prep_notification
@@ -305,7 +305,7 @@ for prefix, an in zip(["main", "side"], ["a1", "a2"]):
 
 
 def get_generate_protein_scores_func(an, prefix):
-    def _func(n1, clean, n_neighbors):
+    def _func(n1, clean, data_type, n_neighbors):
         ctx = dash.callback_context
         if not ctx.triggered:
             raise PreventUpdate
@@ -317,6 +317,7 @@ def get_generate_protein_scores_func(an, prefix):
         button_id = ctx.triggered[0]["prop_id"].split(".")[0]
         if button_id == prefix + "-data-load-clean":
             return empty_colocalization_figure, dash.no_update
+
 
         tile_list = os.listdir('data/codex_tile')
         fname = dbroot.adatas[an]['name']
@@ -390,6 +391,7 @@ for prefix, an in zip(["main", "side"], ["a1", "a2"]):
 
         Input(prefix + "-generate-protein-scores-btn", "n_clicks"),
         Input(prefix + "-data-load-clean", "data"),
+        State(prefix + "-spatial-type-dropdown", "value"),
         State(prefix + "-spatial-protein-scores-nneigh", "value"),
         prevent_initial_call=True
     )(get_generate_protein_scores_func(an, prefix))

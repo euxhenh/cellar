@@ -216,6 +216,15 @@ def get_spatial_knn_graph_10x(
         spatial_dict = _read_verify_10x_df(path_to_df,in_tissue=False)
 
 
+    ######### filter dic##########
+    # some points are not in adata
+    topop=[]
+    for k in spatial_dict.keys():
+        if k not in adata.obs.index:
+            topop.append(k)
+    for k in topop:
+        spatial_dict.pop(k)
+
     ######### Neighbors ##########
 
     coords = np.array(list(spatial_dict.values())).astype('float')
@@ -232,9 +241,20 @@ def get_spatial_knn_graph_10x(
 
     # Construct sparse matrix from nn_indices
     n, d = nn_indices.shape
-    x_cord = np.repeat(np.arange(n), d)
+    
+    dic_idx = list(spatial_dict.keys())
+    idx=[]
+    nidx=[] 
+    for aidx in adata.obs.index:
+        if aidx in dic_idx:
+            idx.append(dic_idx.index(aidx))
+            nidx.append(nn_indices[dic_idx.index(aidx)])
+    
+    nidx=np.array(nidx)
+    idx=np.repeat(idx,d)       
+    
     adj = csr_matrix(
-        (np.full(n * d, 1), (x_cord, nn_indices.flatten())),
+        (np.full(n * d, 1), (idx, nidx.flatten())),
         shape=(adata.shape[0], adata.shape[0]))
     adj = ((adj + adj.transpose()) > 0).astype(float)
 
