@@ -115,7 +115,7 @@ def get_generate_tile_func(an, prefix):
                     f'tmp/{an}/s10x/spatial/scalefactors_json.json',
                     adata=adata,
                     colors=colors,
-                    in_tissue=True,
+                    in_tissue=False,
                     savepath=savepath,
                     palette=dbroot.palettes[prefix])
             except Exception as e:
