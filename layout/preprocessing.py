@@ -800,8 +800,8 @@ cite = html.Div([
 prep_tabs = dbc.Tabs(
     [
         dbc.Tab(prep, label="Preprocessing", tab_id="prep"),
-        dbc.Tab(atac, label="scATAC-seq", tab_id="atacseq"),
-        dbc.Tab(cite, label="CITE-seq", tab_id="citeseq"),
+        dbc.Tab(atac, label="scATAC-seq", tab_id="atacseq")
+        # dbc.Tab(cite, label="CITE-seq", tab_id="citeseq"),
     ],
     id="prep-tabs"
 )

@@ -65,6 +65,7 @@ class Signal(int, Enum):
     Input("singler-runtime-yes", "n_clicks"),
     Input("singler-runtime-no", "n_clicks"),
 
+    State("lbt-methods-select", "value"),
     State("active-plot", "data"),
     State("label-tabs", "active_tab"),
     prevent_initial_call=True
@@ -72,7 +73,7 @@ class Signal(int, Enum):
 def signal_plot(
         n1, n2, mexp, sexp, moexp, soexp, c1, c2, c3, c4, ans, mps,
         dlps, dlpsp, dlpspa, mapp, sapp,
-        singlery, singlerno, actp, actt):
+        singlery, singlerno, lbtsel, actp, actt):
     ctx = dash.callback_context
     if not ctx.triggered:
         raise PreventUpdate
@@ -101,11 +102,12 @@ def signal_plot(
                     "Label Transfer can only be run if a reference dataset "
                     "has been loaded under Dual Mode.", "warning")
                 return to_return
-            if dbroot.adatas[an]['adata'].shape[0] >= 10_000:
-                to_return[2] = True
-                nos, nof = dbroot.adatas[an]['adata'].shape
-                to_return[3] = _get_singler_warning(nos, nof)
-                return to_return
+            if lbtsel == "lbt-SingleR":
+                if dbroot.adatas[an]['adata'].shape[0] >= 10_000:
+                    to_return[2] = True
+                    nos, nof = dbroot.adatas[an]['adata'].shape
+                    to_return[3] = _get_singler_warning(nos, nof)
+                    return to_return
             to_return[index] = Signal.LABEL_TRANSFER
         else:
             raise InternalError(f"No tab with name {actt} found.")
