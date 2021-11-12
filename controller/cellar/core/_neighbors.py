@@ -239,16 +239,27 @@ def get_spatial_knn_graph_10x(
     nn_indices = nn_indices[:, 1:]  # Remove self
     ######### Neighbors ##########
 
+    # map index in spatial_dict to adata
+    dic_to_a = []
+    for k in spatial_dict.keys():
+        aidx = list(adata.obs.index).index(k)
+        dic_to_a.append(aidx)
+
     # Construct sparse matrix from nn_indices
     n, d = nn_indices.shape
     
     dic_idx = list(spatial_dict.keys())
-    idx=[]
+    #idx=[]
+    idx=np.arange(n)
     nidx=[] 
     for aidx in adata.obs.index:
         if aidx in dic_idx:
-            idx.append(dic_idx.index(aidx))
-            nidx.append(nn_indices[dic_idx.index(aidx)])
+            #idx.append(dic_idx.index(aidx))
+            didx = dic_idx.index(aidx)
+            nn_idx_in_dic = nn_indices[didx]
+            for i in nn_idx_in_dic:
+                nidx_in_adata = dic_to_a[i]
+                nidx.append(nidx_in_adata)
     
     nidx=np.array(nidx)
     idx=np.repeat(idx,d)       
