@@ -58,7 +58,7 @@ visualization techniques that can be applied to any feature.
     for $$p\geq 0$$. In all these three cases we would want the co-expression
     to be $$0$$.
 
-    <img src="/images/expression.png" width="400" class="center"/>
+    <img src="../../../images/expression.png" width="400" class="center"/>
 
 2. *Heatmap*
 
@@ -70,7 +70,7 @@ visualization techniques that can be applied to any feature.
     in the [Clustergram](https://dash.plotly.com/dash-bio/clustergram)
     function of dash-bio.
 
-    <img src="/images/heatmap.png" width="400" class="center"/>
+    <img src="../../../images/heatmap.png" width="400" class="center"/>
 
 3. *Violin Plot*
 
@@ -79,7 +79,7 @@ visualization techniques that can be applied to any feature.
     described under *Plot Expression* applies when multiple features are
     selected.
 
-    <img src="/images/violin.png" width="400" class="center"/>
+    <img src="../../../images/violin.png" width="400" class="center"/>
 
 4. *Other*
 

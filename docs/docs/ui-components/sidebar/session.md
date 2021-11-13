@@ -29,4 +29,4 @@ installation of Cellar.
 If only the annotations are desired, `Export Annotations` will generate
 a `.csv` file with the cell barcodes and any cluster assignments / cell types.
 
-<img src="/images/session.png" width="400" class="center"/>
+<img src="../../../images/session.png" width="400" class="center"/>

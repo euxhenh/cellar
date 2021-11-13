@@ -44,7 +44,7 @@ This dataset can be found on Cellar under the name *CODEX_Florida_19-003-lymph-n
 - Expand the data panel by clicking `Load Data` and select
     *CODEX_Florida_19-003-lymph-node-R2* from the dropdown menu. Click `Load`.
 
-    <img src="/images/tut2-dataset.png" class="center"/>
+    <img src="../../images/tut2-dataset.png" class="center"/>
 </div>
 
 You will note that the plot gets populated automatically.
@@ -60,7 +60,7 @@ straight for the spatial tile.
 - Under the `Spatial Data` tab, select `CODEX` from the dropdown menu and click
   `Generate Tile`.
 
-    <img src="/images/tut2-codex-select.png" class="center"/>
+    <img src="../../images/tut2-codex-select.png" class="center"/>
 </div>
 
 For your own uploaded CODEX data you may need to upload additional
@@ -70,7 +70,7 @@ check the section on [Spatial Tiles](/docs/ui-components/spatial/tile).
 Cellar will now read each cell's coordinates and attempt to color each
 cell by the cluster assignments.
 
-<img src="/images/tut2-codex-tile.png" class="center"/>
+<img src="../../images/tut2-codex-tile.png" class="center"/>
 
 Hovering over cells will display that cell's cluster ID.
 
@@ -81,7 +81,7 @@ Additionally, you can choose to display the expression levels of a protein.
   "Generate Tile".
 </div>
 
-<img src="/images/tut2-codex-select-protein.png" class="center"/>
+<img src="../../images/tut2-codex-select-protein.png" class="center"/>
 
 We will also compute cluster co-localization scores to see which clusters
 are close to each-other in the spatial tile.
@@ -90,7 +90,7 @@ are close to each-other in the spatial tile.
 - Under `Cluster Co-Localization Score` click `Compute Scores.`
 </div>
 
-<img src="/images/tut2-cluster-coloc.png" width="400" class="center"/>
+<img src="../../images/tut2-cluster-coloc.png" width="400" class="center"/>
 
 One can notice from this heatmap, for example, that Cluster 2 and Cluster 9
 are co-localized. Looking at the spatial tile above, we see that cells

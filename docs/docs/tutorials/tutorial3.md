@@ -59,7 +59,7 @@ which can be interpreted as a reduced version of the data. Running cisTopic on
 done this for you and you should already see a 2D representation
 of the topics on the screen, clustered by Leiden.
 
-<img src="/images/tut3-snare-atac.png" width="400" class="center"/>
+<img src="../../images/tut3-snare-atac.png" width="400" class="center"/>
 
 Next, we enter Dual Mode and load the expression data on the 2nd plot.
 
@@ -73,7 +73,7 @@ Next, we enter Dual Mode and load the expression data on the 2nd plot.
 - Reduce the dimensions of the expression data via PCA + UMAP.
 </div>
 
-<img src="/images/tut3-snare-dim.png" class="center"/>
+<img src="../../images/tut3-snare-dim.png" class="center"/>
 
 We now wish to transfer labels from one plot to the other. This can be obtained
 by going to the `Label Transfer` panel. Since cell IDs between the two datasets match,
@@ -93,4 +93,4 @@ follows.
 We can now see the cluster assignments mapped from the first modality
 to the second.
 
-<img src="/images/tut3-dual-mode.png" class="center"/>
+<img src="../../images/tut3-dual-mode.png" class="center"/>

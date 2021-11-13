@@ -42,4 +42,4 @@ normalization was applied during the preprocessing step), therefore,
 it may contain negative values. However, the data is scaled back
 during the computation of fold-change.
 
-<img src="/images/de-table.png" width="400" class="center"/>
+<img src="../../../images/de-table.png" width="400" class="center"/>

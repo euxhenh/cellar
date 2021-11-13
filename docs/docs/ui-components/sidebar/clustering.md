@@ -41,7 +41,7 @@ use the embeddings obtained by the first method selected in the dimensionality
 reduction panel.
 
 <div class="code-example" markdown="1">
-<img src="/images/clustering.png" width="400" class="center"/>
+<img src="../../../images/clustering.png" width="400" class="center"/>
 
 1. *Unsupervised*
 

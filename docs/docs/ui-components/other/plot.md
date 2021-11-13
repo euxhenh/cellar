@@ -37,4 +37,4 @@ and all Cellar related functionality will be applied to that plot only.
 
 The plot title can be modified by clicking on it.
 
-<img src="/images/plot-ui.png" class="center"/>
+<img src="../../../images/plot-ui.png" class="center"/>

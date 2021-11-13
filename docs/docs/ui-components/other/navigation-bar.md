@@ -69,7 +69,7 @@ dual mode can also be activated from here.
     clear the session for the other plot and hitting `Dual Mode` again will
     recover the analysis.
 
-    <img src="/images/dual-mode.png" class="center"/>
+    <img src="../../../images/dual-mode.png" class="center"/>
 
 3. *Preprocessing*
 
@@ -93,7 +93,7 @@ dual mode can also be activated from here.
     been preprocessed using the default options. Therefore, there is no need to
     run preprocessing for these datasets and doing so might raise an error.
 
-    <img src="/images/prep.png" class="center"/>
+    <img src="../../../images/prep.png" class="center"/>
 
     scATAC-seq
     {: .fs-5 .fw-500}
@@ -139,7 +139,7 @@ dual mode can also be activated from here.
     The newly obtained cell $$\small\times$$ gene matrix undergoes basic
     preprocessing and filtering just like in the previous tab.
 
-    <img src="/images/atac-prep.png" width="400" class="center"/>
+    <img src="../../../images/atac-prep.png" width="400" class="center"/>
 </div>
 
 Running any preprocessing

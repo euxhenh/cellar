@@ -30,14 +30,14 @@ to define new subsets or merge existing ones, and for performing STvEA
 data integration between CITE-seq and CODEX protein data.
 
 <div class="code-example" markdown="1">
-<img src="/images/tools.png" width="400" class="center"/>
+<img src="../../../images/tools.png" width="400" class="center"/>
 
 1. *Store Subset*
 
     To store a subset, a group of cells must be selected from the plot first.
     This can be done using the *lasso tool* that is active by default, but
     can also be switched to anytime in the plot's toolbox.
-    <img src="/images/lasso.png" width="400" class="center"/>
+    <img src="../../../images/lasso.png" width="400" class="center"/>
     Clicking and dragging your mouse while the lasso tool is active
     will select and highlight a group of cells which can then be given
     a name tag. Double clicking on the plot will reset the selection.

@@ -25,7 +25,7 @@ type to a cluster, first select that cluster from the dropdown menu and
 type the annotation you wish to assign. The annotations table will only
 list those clusters which have been assigned some cell type.
 
-<img src="/images/annotations.png" width="400" class="center"/>
+<img src="../../../images/annotations.png" width="400" class="center"/>
 
 Hovering at any point in the scatter plot will show the annotation for
 that point or an empty string if there is none.

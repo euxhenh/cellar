@@ -63,14 +63,14 @@ of the CODEX dataset.
   [Joint Analysis & Label Transfer](/docs/tutorials/tutorial3) tutorial.
 </div>
 
-<img src="/images/tut4-dual-mode.png" class="center"/>
+<img src="../../images/tut4-dual-mode.png" class="center"/>
 
 To perform the integration, first make sure the CODEX dataset is active.
 
 <div class="code-example step" markdown="1">
 - Under the `Tools` menu, select STvEA next to `Integrate` and click `Run`.
 
-  <img src="/images/stvea-tools.png" width="400" class="center"/>
+  <img src="../../images/stvea-tools.png" width="400" class="center"/>
 </div>
 
 By default, we clean both datasets since STvEA works best
@@ -81,6 +81,6 @@ takes longer than a gaussian model). Once the integration is complete,
 you can color the CODEX data by the expression level of any gene that
 was mapped from CITE-seq by going to the `Other Features` tab.
 
-<img src="/images/tut4-other.png" width="400" class="center"/>
+<img src="../../images/tut4-other.png" width="400" class="center"/>
 
-<img src="/images/tut4-stvea-gene.png" width="400" class="center"/>
+<img src="../../images/tut4-stvea-gene.png" width="400" class="center"/>

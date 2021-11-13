@@ -32,7 +32,7 @@ followed by Uniform Manifold Approximation and Projection
 ([*UMAP*](https://umap-learn.readthedocs.io/en/latest/)).
 
 <div class="code-example" markdown="1">
-<img src="/images/dim-reduce.png" width="400" class="center"/>
+<img src="../../../images/dim-reduce.png" width="400" class="center"/>
 
 1. *Obtain Embeddings*
 
@@ -57,7 +57,7 @@ followed by Uniform Manifold Approximation and Projection
    menu which will expand various hyperparameters and settings related
    to the selected method.
 
-    <img src="/images/dim-reduce-gear.png" width="500" class="center"/>
+    <img src="../../../images/dim-reduce-gear.png" width="500" class="center"/>
 
 2. *Obtain 2D Embeddings*
 

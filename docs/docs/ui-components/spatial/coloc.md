@@ -31,9 +31,9 @@ the adjacency score.
 ## Cluster Co-Localization
 {: .no_toc }
 
-<img src="/images/cluster-coloc.png" width="400" class="center"/>
+<img src="../../../images/cluster-coloc.png" width="400" class="center"/>
 
 ## Protein Co-Localization
 {: .no_toc }
 
-<img src="/images/protein-coloc.png" width="400" class="center"/>
+<img src="../../../images/protein-coloc.png" width="400" class="center"/>
