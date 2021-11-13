@@ -21,6 +21,7 @@ from .cellar.utils.tile_generator import (generate_10x_spatial,
 from .cellar.utils.exceptions import InternalError
 from .cellar.utils.misc import get_title_from_feature_list
 from .cellar.core import adjScoreProteinsCODEX, adjScoreClustersCODEX
+from .cellar.core import adjScoreClusters10x
 from .cellar.core import cl_get_expression
 from .multiplexer import MultiplexerOutput
 from .notifications import _prep_notification
@@ -115,7 +116,7 @@ def get_generate_tile_func(an, prefix):
                     f'tmp/{an}/s10x/spatial/scalefactors_json.json',
                     adata=adata,
                     colors=colors,
-                    in_tissue=True,
+                    in_tissue=False,
                     savepath=savepath,
                     palette=dbroot.palettes[prefix])
             except Exception as e:
@@ -206,7 +207,7 @@ def _remap_indices(x, old, new):
 
 
 def get_generate_cluster_scores_func(an, prefix):
-    def _func(n1, clean, n_neighbors):
+    def _func(n1, clean, data_type, n_neighbors):
         ctx = dash.callback_context
         if not ctx.triggered:
             raise PreventUpdate
@@ -219,17 +220,29 @@ def get_generate_cluster_scores_func(an, prefix):
         if button_id == prefix + "-data-load-clean":
             return empty_colocalization_figure, dash.no_update
 
-        tile_list = os.listdir('data/codex_tile')
-        fname = dbroot.adatas[an]['name']
+        if data_type == 'spatial-10x':
+            if 'spatial_dict' in dbroot.adatas[an]['adata'].uns:
+                csv_path=None
+            else:
+                csv_path=f'tmp/{an}/s10x/spatial/tissue_positions_list.csv'
 
-        if fname not in tile_list:
-            msg = "Could not find spatial data or data type not supported."
-            logger.warn(msg)
-            return dash.no_update, _prep_notification(msg, icon="warning")
+            res = adjScoreClusters10x(
+                dbroot.adatas[an]['adata'], csv_path, n_neighbors=n_neighbors)
+        elif data_type == 'spatial-codex':
+            tile_list = os.listdir('data/codex_tile')
+            fname = dbroot.adatas[an]['name']
 
-        csv_path = f'data/codex_tile/{fname}/data.csv'
-        res = adjScoreClustersCODEX(
-            dbroot.adatas[an]['adata'], csv_path, n_neighbors=n_neighbors)
+            if fname not in tile_list:
+                msg = "Could not find spatial data or data type not supported."
+                logger.warn(msg)
+                return dash.no_update, _prep_notification(msg, icon="warning")
+
+            csv_path = f'data/codex_tile/{fname}/data.csv'
+            res = adjScoreClustersCODEX(
+                dbroot.adatas[an]['adata'], csv_path, n_neighbors=n_neighbors)
+        else:
+            return dash.no_update, _prep_notification(
+                "Please select a data type.", icon="info")
 
         x_cord = res['f'].to_numpy().astype(int)
         y_cord = res['g'].to_numpy().astype(int)
@@ -288,13 +301,14 @@ for prefix, an in zip(["main", "side"], ["a1", "a2"]):
 
         Input(prefix + "-generate-cluster-scores-btn", "n_clicks"),
         Input(prefix + "-data-load-clean", "data"),
+        State(prefix + "-spatial-type-dropdown", "value"),
         State(prefix + "-spatial-cluster-scores-nneigh", "value"),
         prevent_initial_call=True
     )(get_generate_cluster_scores_func(an, prefix))
 
 
 def get_generate_protein_scores_func(an, prefix):
-    def _func(n1, clean, n_neighbors):
+    def _func(n1, clean, data_type, n_neighbors):
         ctx = dash.callback_context
         if not ctx.triggered:
             raise PreventUpdate
@@ -306,6 +320,7 @@ def get_generate_protein_scores_func(an, prefix):
         button_id = ctx.triggered[0]["prop_id"].split(".")[0]
         if button_id == prefix + "-data-load-clean":
             return empty_colocalization_figure, dash.no_update
+
 
         tile_list = os.listdir('data/codex_tile')
         fname = dbroot.adatas[an]['name']
@@ -379,6 +394,7 @@ for prefix, an in zip(["main", "side"], ["a1", "a2"]):
 
         Input(prefix + "-generate-protein-scores-btn", "n_clicks"),
         Input(prefix + "-data-load-clean", "data"),
+        State(prefix + "-spatial-type-dropdown", "value"),
         State(prefix + "-spatial-protein-scores-nneigh", "value"),
         prevent_initial_call=True
     )(get_generate_protein_scores_func(an, prefix))

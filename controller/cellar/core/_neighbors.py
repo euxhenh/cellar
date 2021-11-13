@@ -8,7 +8,7 @@ from app import logger
 from numpy.core.fromnumeric import shape
 from scipy.sparse import csr_matrix
 from sklearn.neighbors import KDTree, kneighbors_graph
-
+from ..utils.tile_generator import _read_verify_10x_df
 from ..utils.exceptions import InternalError, UserError
 
 
@@ -168,6 +168,104 @@ def get_spatial_knn_graph(
     x_cord = np.repeat(sample_idx, d)
     adj = csr_matrix(
         (np.full(n * d, 1), (x_cord, sample_idx[nn_indices.flat])),
+        shape=(adata.shape[0], adata.shape[0]))
+    adj = ((adj + adj.transpose()) > 0).astype(float)
+
+    if not subsample:
+        adata.obsp[key] = adj
+        adata.uns[key] = {
+            'n_neighbors': n_neighbors
+        }
+
+    return adj
+
+
+def get_spatial_knn_graph_10x(
+        path_to_df, adata, n_neighbors=3, key='spatial_nneigh',
+        subsample=False, subsample_n=5000):
+    """
+    Constructs a nearest neighbors graph using 10x spatial tiles
+    and return a sparse adjacency matrix.
+
+    Parameters
+    __________
+    path_to_df: string
+        Path to data.csv, the file with spatial coordinates. If None, check 
+        whether 'sptial_dict' is already stored in adata.uns
+    n_neighbors: int
+        Number of neighbors to compute.
+    adata: anndata.AnnData object
+    key: str
+        If adata is not None, will use this key to store the adjacency
+        matrix in adata.obsp
+    subsample: bool
+        If set to True, will sample points instead of using the full data.
+
+    Returns
+    _______
+    sparse.csr_matrix symmetric, binary adjacency matrix.
+    If adata is not None, will also add the adjacency matrix to adata.obsp,
+    indices if subsample is set to True
+    """
+    
+    if 'spatial_dict' in adata.uns:
+        spatial_dict = adata.uns['spatial_dict']
+    else:
+        if not os.path.exists(path_to_df):
+            raise UserError("No data.csv file containing spatial info was found.")
+        spatial_dict = _read_verify_10x_df(path_to_df,in_tissue=False)
+
+
+    ######### filter dic##########
+    # some points are not in adata
+    topop=[]
+    for k in spatial_dict.keys():
+        if k not in adata.obs.index:
+            topop.append(k)
+    for k in topop:
+        spatial_dict.pop(k)
+
+    ######### Neighbors ##########
+
+    coords = np.array(list(spatial_dict.values())).astype('float')
+    # Use a KD-Tree for fast neighbors computation
+    kdt = KDTree(coords, leaf_size=5)
+    if n_neighbors + 1 >= coords.shape[0]:
+        logger.warn(f"Not enough samples found for f{n_neighbors}." +
+                    f"Switching to f{coords.shape[0] // 2 + 1} neighbors.")
+        n_neighbors = coords.shape[0] // 2 + 1
+    # Add one neighbor since we do not want to include self
+    nn_indices = kdt.query(coords, return_distance=False, k=n_neighbors + 1)
+    nn_indices = nn_indices[:, 1:]  # Remove self
+    ######### Neighbors ##########
+
+    # map index in spatial_dict to adata
+    dic_to_a = []
+    for k in spatial_dict.keys():
+        aidx = list(adata.obs.index).index(k)
+        dic_to_a.append(aidx)
+
+    # Construct sparse matrix from nn_indices
+    n, d = nn_indices.shape
+    
+    dic_idx = list(spatial_dict.keys())
+    #idx=[]
+    idx=np.arange(n)
+    nidx=[] 
+    for aidx in adata.obs.index:
+        if aidx in dic_idx:
+            #idx.append(dic_idx.index(aidx))
+            didx = dic_idx.index(aidx)
+            nn_idx_in_dic = nn_indices[didx]
+            for i in nn_idx_in_dic:
+                nidx_in_adata = dic_to_a[i]
+                nidx.append(nidx_in_adata)
+    
+    nidx=np.array(nidx)
+    idx=np.repeat(idx,d)       
+    
+    adj = csr_matrix(
+        (np.full(n * d, 1), (idx, nidx.flatten())),
         shape=(adata.shape[0], adata.shape[0]))
     adj = ((adj + adj.transpose()) > 0).astype(float)
 

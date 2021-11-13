@@ -8,7 +8,7 @@ import anndata2ri
 from anndata._core.sparse_dataset import SparseDataset
 from controller.cellar.utils.exceptions import UserError
 
-from ._neighbors import get_spatial_knn_graph
+from ._neighbors import get_spatial_knn_graph, get_spatial_knn_graph_10x
 from app import logger
 
 
@@ -126,6 +126,59 @@ def adjScoreClustersCODEX(
         adj = adata.obsp[key]
     else:
         adj = get_spatial_knn_graph(
+            path_to_df, n_neighbors=n_neighbors, adata=adata, key=key)
+
+    x_cords, y_cords = adj.nonzero()
+    adj_mat = Matrix.sparseMatrix(
+        i=ro.IntVector(x_cords + 1),
+        j=ro.IntVector(y_cords + 1),
+        x=1,
+        dims=ro.IntVector(np.array([*adj.shape])))
+
+    labels = ro.IntVector(adata.obs[labels_key])
+
+    res = STvEA.AdjScoreClustersCODEX_internal(
+        adj_mat, labels, num_cores=num_cores)
+    res = ro.pandas2ri.rpy2py_dataframe(res)
+    return res
+
+
+
+def adjScoreClusters10x(
+        adata, path_to_df, n_neighbors=3, key='spatial_nneigh',
+        labels_key='labels', num_cores=1):
+    """
+    Same thing for 10x spatial transcriptomics data 
+    
+    Computes a neighbors graph using the spatial tile
+    and use it to compute a colocalization score of the clusters.
+    See https://github.com/CamaraLab/STvEA
+
+    Parameters
+    __________
+    adata: anndata.AnnData object
+    path_to_df: str
+        The path to data.csv file containing spatial information.
+        If None, try to use the 'spatial_dict' stored in adata.
+    n_neighbors: int
+        Number of neighbors to compute.
+    key: str
+        If adata is not None, will use this key to store the adjacency
+        matrix in adata.obsp
+    num_cores: int
+        Number of cores to use.
+    num_perms: int
+        Number of permutations to use.
+    """
+    if labels_key not in adata.obs:
+        raise UserError("No labels found in adata. Cannot compute " +
+                        "colocalization score.")
+
+    if key in adata.obsp and key in adata.uns and\
+            adata.uns[key]['n_neighbors'] == n_neighbors:
+        adj = adata.obsp[key]
+    else:
+        adj = get_spatial_knn_graph_10x(
             path_to_df, n_neighbors=n_neighbors, adata=adata, key=key)
 
     x_cords, y_cords = adj.nonzero()

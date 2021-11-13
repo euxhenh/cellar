@@ -67,7 +67,8 @@ def upload_data(contents, filename, actp):
             return dash.no_update, _prep_notification(error_msg, "danger")
 
         try:
-            adata = sc.read_10x_mtx(extract_path, var_names='gene_symbols')
+            
+            adata = sc.read_10x_mtx(extract_path+'/filtered_feature_bc_matrix', var_names='gene_symbols')
             adata.write(os.path.join(DATA_PATH, 'uploaded', filename))
         except Exception as e:
             logger.error(str(e))

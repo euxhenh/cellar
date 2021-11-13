@@ -318,7 +318,7 @@ def _read_verify_10x_df(path_to_df, in_tissue=True):
 
 def generate_10x_spatial(
         path_to_img=None, path_to_df=None, path_to_json=None, colors=None,
-        adata=None, savepath=None, in_tissue=True, palette=None):
+        adata=None, savepath=None, in_tissue=False, palette=None):
     '''
     in_tissue:
         True: Only show spots that are in the tissue
@@ -341,10 +341,9 @@ def generate_10x_spatial(
         spatial_dict = adata.uns['spatial_dict']
     else:
         spatial_dict = _read_verify_10x_df(path_to_df, in_tissue)
-
     owner = np.zeros(small_img.shape[:2]) - 1
-    barcodes = list(adata.obs['barcodes'])
-
+    #barcodes = list(adata.obs['barcodes'])
+    barcodes = list(adata.obs.index)
     if colors is None:
         colors = np.full(len(barcodes), 1, dtype=int)
     elif colors.dtype == int:
@@ -355,7 +354,6 @@ def generate_10x_spatial(
         small_img.fill(0)
         small_img = small_img[..., 0]
         small_img = small_img.astype(float)
-
     for i in range(len(adata.obs)):
         center = np.array(spatial_dict[(barcodes[i])]) * scaling_factor
         center = center.astype('int')
