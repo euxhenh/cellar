@@ -4,13 +4,6 @@ layout: default
 nav_order: 4
 ---
 
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-    TeX: { equationNumbers: { autoNumber: "AMS" } }
-    });
-</script>
-<script type="text/javascript" async src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
 # Accepted File Formats
 {: .no_toc}
 
@@ -26,7 +19,7 @@ uploaded to Cellar as `.h5ad` files. We also accept
 [cellranger](https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/output/matrices) or
 [spaceranger](https://support.10xgenomics.com/spatial-gene-expression/software/pipelines/latest/output/matrices) format as `.gz` files.
 In the case of `.h5ad` or `.csv` files,
-please make sure the data follows the *cell* $$\small\times $$ *feature*
+please make sure the data follows the *cell* x *feature*
 format, i.e., rows of the matrix correspond to cells and columns
 to features (genes, proteins).
 Additionally, row and columns names must be provided with the file.

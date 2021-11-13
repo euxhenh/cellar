@@ -19,13 +19,6 @@ usemathjax: true
 }
 </style>
 
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-    TeX: { equationNumbers: { autoNumber: "AMS" } }
-    });
-</script>
-<script type="text/javascript" async src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
 # Tutorial - Visualizing CODEX Spatial Tiles
 {: .no_toc }
 

@@ -14,17 +14,10 @@ grand_parent: UI Components
 }
 </style>
 
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-    TeX: { equationNumbers: { autoNumber: "AMS" } }
-    });
-</script>
-<script type="text/javascript" async src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
 # Enrichment Analysis
 {: .no_toc }
 
-If the DE table is not empty, the top $$k$$ genes can be used to
+If the DE table is not empty, the top k genes can be used to
 perform enrichment analysis. We use the
 [GSEAPY](https://gseapy.readthedocs.io/en/latest/introduction.html)
 Python package to perform the analysis.

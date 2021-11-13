@@ -19,13 +19,6 @@ usemathjax: true
 }
 </style>
 
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-    TeX: { equationNumbers: { autoNumber: "AMS" } }
-    });
-</script>
-<script type="text/javascript" async src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
 # Tutorial - Basic Analysis Pipeline
 {: .no_toc }
 
@@ -57,7 +50,7 @@ variance.
 <div class="code-example step" markdown="1">
 - Expand the preprocessing panel by clicking `Preprocessing`. Make sure
    `Filter Cells by Genes` and `Filter Genes by Cells` are ticked. We set
-   the min and max values for each to $$100$$ and $$3000$$, respectively.
+   the min and max values for each to 100 and 3000, respectively.
    Tick `Highly Variable Genes`. This will identify highly variable genes
    and filter the rest.
    Under `Misc`, tick `Normalize Total`. `Log1p` and `Scale`. Leave their

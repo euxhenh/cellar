@@ -15,13 +15,6 @@ grand_parent: UI Components
 }
 </style>
 
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-    TeX: { equationNumbers: { autoNumber: "AMS" } }
-    });
-</script>
-<script type="text/javascript" async src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
 # Tools
 {: .no_toc }
 
@@ -64,7 +57,7 @@ data integration between CITE-seq and CODEX protein data.
     selected for visualization under "Other" Features in the Analysis panel.
 
     STvEA works best if the protein expression levels are contained in the
-    $$(0, 1)$$ interval, so we recommend having the cleaning settings set to
+    (0, 1) interval, so we recommend having the cleaning settings set to
     True.
 
 </div>
