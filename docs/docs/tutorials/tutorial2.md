@@ -6,19 +6,6 @@ parent: Tutorials
 usemathjax: true
 ---
 
-<style type="text/css">
-.center {
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-.step {
-    background-color: #f5f6fa;
-    /* color: #7253ed; */
-}
-</style>
-
 # Tutorial - Visualizing CODEX Spatial Tiles
 {: .no_toc }
 

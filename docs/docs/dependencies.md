@@ -48,7 +48,7 @@ We use *Dash* open-source for the interface and all the UI components. *NumPy*
 is divine, and *Scikit-learn* is at the core of many of the tools
 that Cellar uses, including several dimensionality reduction and
 clustering methods. *AnnData* is the data structure that we use to store
-annotations and are is used as a session file.
+annotations and is also used as a session file.
 *Scanpy* is at the core of the preprocessing tools as well as the Ingest
 integration algorithm. *Leidenalg* is used for Leiden clustering, which is the
 default clustering algorithm that Cellar uses, and *faiss-cpu* is used for fast

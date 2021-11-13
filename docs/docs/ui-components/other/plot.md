@@ -6,14 +6,6 @@ parent: Other
 grand_parent: UI Components
 ---
 
-<style type="text/css">
-  .center {
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-}
-</style>
-
 # Plot
 {: .no_toc }
 

@@ -7,14 +7,6 @@ usemathjax: true
 grand_parent: UI Components
 ---
 
-<style type="text/css">
-  .center {
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-}
-</style>
-
 # Co-Localization Scores
 {: .no_toc }
 

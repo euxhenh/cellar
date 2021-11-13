@@ -4,6 +4,7 @@ baseurl: "/CellarV" # the subpath of your site, e.g. /blog
 url: "https://ferrocactus.github.io"
 
 remote_theme: pmarsceill/just-the-docs
+# theme: just-the-docs
 search_enabled: true
 
 defaults:
@@ -25,6 +26,6 @@ aux_links:
   "Cellar on GitHub":
     - "//github.com/ferrocactus/CellarV"
 
-aux_links_new_tab: false
+aux_links_new_tab: true
 
 ga_tracking: UA-158371100-2

@@ -6,14 +6,6 @@ parent: Analysis
 grand_parent: UI Components
 ---
 
-<style type="text/css">
-  .center {
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-}
-</style>
-
 # DE Analysis
 {: .no_toc }
 
