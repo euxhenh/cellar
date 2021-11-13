@@ -16,6 +16,8 @@ back_to_top: true
 back_to_top_text: "Back to top"
 
 markdown: kramdown
+kramdown:
+  math_engine: katex
 
 footer_content: "Copyright &copy; 2020-2021 Systems Biology Group, Carnegie Mellon University."
 
