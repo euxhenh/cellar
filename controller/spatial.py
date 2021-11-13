@@ -225,7 +225,7 @@ def get_generate_cluster_scores_func(an, prefix):
                 csv_path=None
             else:
                 csv_path=f'tmp/{an}/s10x/spatial/tissue_positions_list.csv'
-            
+
             res = adjScoreClusters10x(
                 dbroot.adatas[an]['adata'], csv_path, n_neighbors=n_neighbors)
         elif data_type == 'spatial-codex':
@@ -240,6 +240,9 @@ def get_generate_cluster_scores_func(an, prefix):
             csv_path = f'data/codex_tile/{fname}/data.csv'
             res = adjScoreClustersCODEX(
                 dbroot.adatas[an]['adata'], csv_path, n_neighbors=n_neighbors)
+        else:
+            return dash.no_update, _prep_notification(
+                "Please select a data type.", icon="info")
 
         x_cord = res['f'].to_numpy().astype(int)
         y_cord = res['g'].to_numpy().astype(int)
