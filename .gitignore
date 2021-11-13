@@ -20,3 +20,4 @@ PaperImages
 .DS_Store
 cellar-env.txt
 docs/_site*
+docs/.jekyll-cache

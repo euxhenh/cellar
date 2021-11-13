@@ -14,12 +14,22 @@ grand_parent: UI Components
 }
 </style>
 
-<script type="text/x-mathjax-config">
+<!-- <script type="text/x-mathjax-config">
     MathJax.Hub.Config({
     TeX: { equationNumbers: { autoNumber: "AMS" } }
     });
 </script>
-<script type="text/javascript" async src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script type="text/javascript" async src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script> -->
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+    inlineMath: [['$','$']]
+    }
+});
+</script>
+<script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
 
 
 # Navigation bar
