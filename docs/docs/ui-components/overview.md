@@ -16,7 +16,7 @@ will be described in detail in the following pages.
 
 This is Cellar's main view during a typical workflow.
 
-<img src="/images/main-ui-numbered.png"/>
+<img src="../../images/main-ui-numbered.png"/>
 
 Sidebar
 {: .label .label-blue}
@@ -44,7 +44,7 @@ Other
 
 ---
 
-<img src="/images/spatial-ui-numbered.png"/>
+<img src="../../images/spatial-ui-numbered.png"/>
 
 Spatial Related
 {: .label .label-green}
