@@ -3,8 +3,8 @@ description: An interactive tool for analyzing single-cell omics data
 baseurl: "/CellarV" # the subpath of your site, e.g. /blog
 url: "https://ferrocactus.github.io"
 
-remote_theme: pmarsceill/just-the-docs
-# theme: just-the-docs
+# remote_theme: pmarsceill/just-the-docs
+theme: just-the-docs
 search_enabled: true
 
 defaults:
