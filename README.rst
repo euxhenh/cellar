@@ -29,7 +29,7 @@ for a local installation.
 An accompanying preprint and supplementary files can be accessed through
 `bioRxiv <https://www.biorxiv.org/content/10.1101/2021.03.19.436162v1?rss=1>`__.
 
-The `documentation <https://jingtaowang22.github.io/cellar_docs/>`__
+The `documentation <https://ferrocactus.github.io/CellarV/>`__
 includes details on how to use Cellar and the data types
 it supports. These include but are not limited to scRNA-seq, scATAC-seq,
 CODEX, SNARE-seq, sciRNA-seq, Visium. Cellar supports preprocessing,
@@ -46,7 +46,7 @@ _____
 
 - Cellar Web Server: https://data.test.hubmapconsortium.org/app/cellar
 - Official Source Code Repository: https://github.com/ferrocactus/CellarV
-- Documentation & Tutorials: https://jingtaowang22.github.io/cellar_docs/
+- Documentation & Tutorials: https://ferrocactus.github.io/CellarV/
 - Video Tutorials: https://www.youtube.com/playlist?list=PL5sLSLkTYpWgfBQ0M8ObfBIqDMAzx0-D2
 - Issue Tracker: https://github.com/ferrocactus/CellarV/issues
 - Preprint: https://www.biorxiv.org/content/10.1101/2021.03.19.436162v1?rss=1
