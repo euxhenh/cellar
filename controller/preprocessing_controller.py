@@ -185,6 +185,11 @@ def run_prep(
         logger.error(error_msg)
         return [dash.no_update] * 4 + [_prep_notification(error_msg, "danger")]
 
+    if 'spatial_nneigh' in adata.obsp:
+        _ = adata.obsp.pop('spatial_nneigh')
+    if 'spatial_nneigh' in adata.uns:
+        _ = adata.uns.pop('spatial_nneigh')
+
     filename = f'tmp/{an}/adata.h5ad'
     if not os.path.isdir('tmp'):
         os.mkdir('tmp')

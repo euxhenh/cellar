@@ -13,6 +13,35 @@ from skimage import draw
 from app import logger
 
 
+def get_owner_from_coordinates(x, y, NO_OWNER=-1, OUTLINE=-2, cell_radius=10):
+    """
+    Generates a simple tile given only x and y coordinates.
+    """
+    x, y = np.array(x), np.array(y)
+    xmin, xmax = x.min(), x.max()
+    ymin, ymax = y.min(), y.max()
+    x = x - xmin
+    y = y - ymin
+    width = xmax - xmin
+    height = ymax - ymin
+    n_samples = len(x)
+
+    n_samples_per_row = int((width / height * n_samples) ** (1/2))
+    n_samples_per_col = int(n_samples / n_samples_per_row)
+    im_height = n_samples_per_col * cell_radius * 2
+    im_width = n_samples_per_row * cell_radius * 2
+    x_cord = (x * im_width / width).astype(int)
+    y_cord = (y * im_height / height).astype(int)
+
+    im = np.full((im_height + cell_radius + 1,
+                 im_width + cell_radius + 1), NO_OWNER)
+    for i, (x, y) in enumerate(zip(y_cord, x_cord)):
+        circle = draw.disk((x, y), max(1, int(cell_radius * 2 / 3)))
+        im[circle[0], circle[1]] = i
+
+    return im
+
+
 def get_name_index(x, y, im_names):
     """
     Given integer coordinates x and y, and a list of image filenames,
@@ -134,6 +163,43 @@ def _get_global_owner_single_image(
     return global_owner
 
 
+def get_owner_from_paths(path_to_tiff, path_to_df, NO_OWNER=-1, OUTLINE=-2):
+    ims, im_names = _read_tiff_images(path_to_tiff)  # list of images
+    if not os.path.exists(path_to_df):
+        raise UserError(
+            "No dataframe was found. Please upload " +
+            "a 'data.csv' file along with an 'images' subfolder.")
+    data = pd.read_csv(path_to_df)
+    _validate_codex_dataframe(data)
+    # Begin Grid Construction
+    grid = []
+    owner = []  # Needed to return which cell a pixel belongs to
+    grid_x_len = np.max(data['tile_x']) + 1  # assuming min = 0
+    grid_y_len = np.max(data['tile_y']) + 1  # assuming min = 0
+
+    for y in range(grid_y_len):  # columns first
+        owner_row = []
+        for x in range(grid_x_len):
+            # Make sure we are looking at the right image
+            i = get_name_index(x, y, im_names)
+            my_cells = data[(data['tile_x'] == x) & (data['tile_y'] == y)]
+            # Convert the image into a tile of shape (height, width)
+            # where each pixel is assigned a RID value.
+            # -1 means no owner, and -2 means cell boundary.
+            global_owner = _get_global_owner_single_image(
+                ims[i], my_cells, no_owner=NO_OWNER, outline=OUTLINE)
+            owner_row.append(global_owner)
+        logger.info(f"Finished row {y}.")
+        owner.append(owner_row)
+    try:
+        owner = np.block(owner)  # Stitch all tiles together
+    except ValueError as ve:
+        raise UserError("Tile row dimensions do not match. Make sure " +
+                        "images form a valid rectangular tile.")
+
+    return owner
+
+
 def generate_tile(
         path_to_tiff, path_to_df, adata=None,
         colors=None, palette=None, savepath=None, key='spatial_idx'):
@@ -171,38 +237,14 @@ def generate_tile(
     if adata is not None and key in adata.uns:
         owner = adata.uns[key].astype(int).copy()
     else:
-        ims, im_names = _read_tiff_images(path_to_tiff)  # list of images
-        if not os.path.exists(path_to_df):
-            raise UserError(
-                "No dataframe was found. Please upload " +
-                "a 'data.csv' file along with an 'images' subfolder.")
-        data = pd.read_csv(path_to_df)
-        _validate_codex_dataframe(data)
-        # Begin Grid Construction
-        grid = []
-        owner = []  # Needed to return which cell a pixel belongs to
-        grid_x_len = np.max(data['tile_x']) + 1  # assuming min = 0
-        grid_y_len = np.max(data['tile_y']) + 1  # assuming min = 0
-
-        for y in range(grid_y_len):  # columns first
-            owner_row = []
-            for x in range(grid_x_len):
-                # Make sure we are looking at the right image
-                i = get_name_index(x, y, im_names)
-                my_cells = data[(data['tile_x'] == x) & (data['tile_y'] == y)]
-                # Convert the image into a tile of shape (height, width)
-                # where each pixel is assigned a RID value.
-                # -1 means no owner, and -2 means cell boundary.
-                global_owner = _get_global_owner_single_image(
-                    ims[i], my_cells, no_owner=NO_OWNER, outline=OUTLINE)
-                owner_row.append(global_owner)
-            logger.info(f"Finished row {y}.")
-            owner.append(owner_row)
-        try:
-            owner = np.block(owner)  # Stitch all tiles together
-        except ValueError as ve:
-            raise UserError("Tile row dimensions do not match. Make sure " +
-                            "images form a valid rectangular tile.")
+        if 'x' in adata.obs and 'y' in adata.obs:
+            logger.info("Reading x and y coordinates from adata.")
+            x = adata.obs['x'].to_numpy().astype(float)
+            y = adata.obs['y'].to_numpy().astype(float)
+            owner = get_owner_from_coordinates(x, y)
+        else:
+            owner = get_owner_from_paths(
+                path_to_tiff, path_to_df, NO_OWNER, OUTLINE)
         if adata is not None:
             adata.uns[key] = owner.copy()  # Make sure to copy
 

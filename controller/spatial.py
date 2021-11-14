@@ -134,9 +134,12 @@ def get_generate_tile_func(an, prefix):
                 datapath = f'data/codex_tile/{fname}/data.csv'
             # In case no necessary spatial tile information has been uploaded
             elif not os.path.isdir(f'tmp/{an}/codex'):
-                error_msg = "No spatial files have been uploaded."
-                logger.error(error_msg)
-                return dash.no_update, _prep_notification(error_msg, "warn")
+                if 'x' not in adata.obs or 'y' not in adata.obs:
+                    error_msg = "No spatial files have been uploaded."
+                    logger.error(error_msg)
+                    return dash.no_update, _prep_notification(error_msg, "warn")
+                impath = None
+                datapath = None
             else:
                 impath = f'tmp/{an}/codex/images'
                 datapath = f'tmp/{an}/codex/data.csv'
@@ -215,31 +218,38 @@ def get_generate_cluster_scores_func(an, prefix):
             raise PreventUpdate
         if 'adata' not in dbroot.adatas[an]:
             raise PreventUpdate
+        adata = dbroot.adatas[an]['adata']
 
         button_id = ctx.triggered[0]["prop_id"].split(".")[0]
         if button_id == prefix + "-data-load-clean":
             return empty_colocalization_figure, dash.no_update
 
         if data_type == 'spatial-10x':
-            if 'spatial_dict' in dbroot.adatas[an]['adata'].uns:
-                csv_path=None
+            if 'spatial_dict' in adata.uns:
+                csv_path = None
             else:
-                csv_path=f'tmp/{an}/s10x/spatial/tissue_positions_list.csv'
+                csv_path = f'tmp/{an}/s10x/spatial/tissue_positions_list.csv'
 
             res = adjScoreClusters10x(
-                dbroot.adatas[an]['adata'], csv_path, n_neighbors=n_neighbors)
+                adata, csv_path, n_neighbors=n_neighbors)
         elif data_type == 'spatial-codex':
-            tile_list = os.listdir('data/codex_tile')
-            fname = dbroot.adatas[an]['name']
+            if 'x' in adata.obs and 'y' in adata.obs:
+                res = adjScoreClustersCODEX(
+                    adata, None, n_neighbors=n_neighbors)
+            else:
+                tile_list = os.listdir('data/codex_tile')
+                fname = dbroot.adatas[an]['name']
 
-            if fname not in tile_list:
-                msg = "Could not find spatial data or data type not supported."
-                logger.warn(msg)
-                return dash.no_update, _prep_notification(msg, icon="warning")
+                if fname not in tile_list:
+                    msg = "Could not find spatial data or data type " + \
+                        "not supported."
+                    logger.warn(msg)
+                    return dash.no_update, _prep_notification(
+                        msg, icon="warning")
 
-            csv_path = f'data/codex_tile/{fname}/data.csv'
-            res = adjScoreClustersCODEX(
-                dbroot.adatas[an]['adata'], csv_path, n_neighbors=n_neighbors)
+                csv_path = f'data/codex_tile/{fname}/data.csv'
+                res = adjScoreClustersCODEX(
+                    adata, csv_path, n_neighbors=n_neighbors)
         else:
             return dash.no_update, _prep_notification(
                 "Please select a data type.", icon="info")
@@ -255,7 +265,7 @@ def get_generate_cluster_scores_func(an, prefix):
         heatmap, qvals = np.zeros((n, n)), np.zeros((n, n))
         heatmap[x_cord, y_cord] = scores
         heatmap[y_cord, x_cord] = scores
-        heatmap = np.log10(heatmap + 1)
+        # heatmap = np.log10(heatmap + 1)
         qvals[x_cord, y_cord] = q
         qvals[y_cord, x_cord] = q
         heatmap = np.flip(heatmap, axis=1)
@@ -268,7 +278,7 @@ def get_generate_cluster_scores_func(an, prefix):
             text=qvals.astype(str).flatten(),
             colorscale='magma',
             hovertemplate="Cluster x: %{x}<br>Cluster y: " +
-            "%{y}<br>log10(score+1): %{z}<br>q-val: %{text}"
+            "%{y}<br>score: %{z}<br>q-val: %{text}"
         )])
         fig.update_layout(
             width=500,
@@ -276,20 +286,8 @@ def get_generate_cluster_scores_func(an, prefix):
             autosize=False,
             xaxis=dict(tickmode='linear'),
             yaxis=dict(tickmode='linear'),
-            legend_title_text="log10(score+1)"
+            legend_title_text="score"
         )
-
-        # fig = px.imshow(
-        #     heatmap,
-        #     x=unq_labels.astype(str),
-        #     y=unq_labels.astype(str),
-        #     labels={
-        #         'color': 'log10(score+1)',
-        #         'x': 'Cluster x ID',
-        #         'y': 'Cluster y ID'
-        #     },
-        #     color_continuous_scale='magma'
-        # )
         return fig, dash.no_update
     return _func
 
@@ -316,23 +314,27 @@ def get_generate_protein_scores_func(an, prefix):
             raise PreventUpdate
         if 'adata' not in dbroot.adatas[an]:
             raise PreventUpdate
+        adata = dbroot.adatas[an]['adata']
 
         button_id = ctx.triggered[0]["prop_id"].split(".")[0]
         if button_id == prefix + "-data-load-clean":
             return empty_colocalization_figure, dash.no_update
 
+        if 'x' in adata.obs and 'y' in adata.obs:
+            res = adjScoreProteinsCODEX(
+                adata, None, n_neighbors=n_neighbors)
+        else:
+            tile_list = os.listdir('data/codex_tile')
+            fname = dbroot.adatas[an]['name']
 
-        tile_list = os.listdir('data/codex_tile')
-        fname = dbroot.adatas[an]['name']
+            if fname not in tile_list:
+                msg = "Could not find spatial data or data type not supported."
+                logger.warn(msg)
+                return dash.no_update, _prep_notification(msg, icon="warning")
 
-        if fname not in tile_list:
-            msg = "Could not find spatial data or data type not supported."
-            logger.warn(msg)
-            return dash.no_update, _prep_notification(msg, icon="warning")
-
-        csv_path = f'data/codex_tile/{fname}/data.csv'
-        res = adjScoreProteinsCODEX(
-            dbroot.adatas[an]['adata'], csv_path, n_neighbors=n_neighbors)
+            csv_path = f'data/codex_tile/{fname}/data.csv'
+            res = adjScoreProteinsCODEX(
+                dbroot.adatas[an]['adata'], csv_path, n_neighbors=n_neighbors)
 
         features = dbroot.adatas[an]['adata'].var['gene_symbols'].to_numpy()
         x_cord, y_cord = res['f'].astype(int), res['g'].astype(int)
@@ -356,7 +358,7 @@ def get_generate_protein_scores_func(an, prefix):
             text=qvals.astype(str).flatten(),
             colorscale='magma',
             hovertemplate="Cluster x: %{x}<br>Cluster y: " +
-            "%{y}<br>log10(score+1): %{z}<br>q-val: %{text}"
+            "%{y}<br>score: %{z}<br>q-val: %{text}"
         )])
         fig.update_layout(
             width=500,
@@ -364,25 +366,8 @@ def get_generate_protein_scores_func(an, prefix):
             autosize=False,
             xaxis=dict(tickmode='linear'),
             yaxis=dict(tickmode='linear'),
-            legend_title_text="log10(score+1)"
+            legend_title_text="score"
         )
-
-        # fig = px.imshow(
-        #     heatmap,
-        #     x=features,
-        #     y=features,
-        #     labels={
-        #         'color': 'score',
-        #         'x': 'Gene x ID',
-        #         'y': 'Gene y ID'
-        #     },
-        #     color_continuous_scale='magma'
-        # )
-        # # Show all labels
-        # fig.update_layout(
-        #     xaxis=dict(tickmode='linear'),
-        #     yaxis=dict(tickmode='linear')
-        # )
         return fig, dash.no_update
     return _func
 

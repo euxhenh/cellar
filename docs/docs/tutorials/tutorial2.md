@@ -12,8 +12,9 @@ usemathjax: true
 This tutorial describes how to visualize the spatial tile for any CODEX dataset
 available in Cellar. A related video tutorial can be accessed
 [here](https://www.youtube.com/watch?v=zG3j3DdqLUQ).
+The same pipeline also works for Visium 10x Genomics spatial transcriptomics data.
+For details on the file format, see [Spatial Tile](../ui-components/spatial/tile).
 {: .fs-6 .fw-300 }
-
 ---
 
 We will be analyzing a lymph node dataset, courtesy of the University of Florida and

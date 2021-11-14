@@ -129,18 +129,23 @@ def get_spatial_knn_graph(
     If adata is not None, will also add the adjacency matrix to adata.obsp,
     indices if subsample is set to True
     """
-    if not os.path.exists(path_to_df):
+    if 'x' in adata.obs and 'y' in adata.obs:
+        logger.info("Reading x and y coordinates from adata.")
+        x = adata.obs['x'].to_numpy().astype(float)
+        y = adata.obs['y'].to_numpy().astype(float)
+        rid = np.arange(adata.shape[0])
+    elif not os.path.exists(path_to_df):
         raise UserError("No data.csv file containing spatial info was found.")
-    # Read dataframe
-    data = pd.read_csv(path_to_df)
-    # We will only be using x and y coordinates
-    if 'rx' not in data or 'ry' not in data:
-        raise UserError("data.csv contains incorrect columns. " +
-                        "One of 'rx' or 'ry' not found.")
-
-    x = data['rx'].to_numpy().astype(float)
-    y = data['ry'].to_numpy().astype(float)
-    rid = data['rid'].to_numpy().astype(int)
+    else:
+        # Read dataframe
+        data = pd.read_csv(path_to_df)
+        # We will only be using x and y coordinates
+        if 'rx' not in data or 'ry' not in data:
+            raise UserError("data.csv contains incorrect columns. " +
+                            "One of 'rx' or 'ry' not found.")
+        x = data['rx'].to_numpy().astype(float)
+        y = data['ry'].to_numpy().astype(float)
+        rid = data['rid'].to_numpy().astype(int)
 
     if subsample:
         rid, x, y, sample_idx = _subsample_from_overlap(
@@ -190,7 +195,7 @@ def get_spatial_knn_graph_10x(
     Parameters
     __________
     path_to_df: string
-        Path to data.csv, the file with spatial coordinates. If None, check 
+        Path to data.csv, the file with spatial coordinates. If None, check
         whether 'sptial_dict' is already stored in adata.uns
     n_neighbors: int
         Number of neighbors to compute.
@@ -207,7 +212,7 @@ def get_spatial_knn_graph_10x(
     If adata is not None, will also add the adjacency matrix to adata.obsp,
     indices if subsample is set to True
     """
-    
+
     if 'spatial_dict' in adata.uns:
         spatial_dict = adata.uns['spatial_dict']
     else:
@@ -247,11 +252,11 @@ def get_spatial_knn_graph_10x(
 
     # Construct sparse matrix from nn_indices
     n, d = nn_indices.shape
-    
+
     dic_idx = list(spatial_dict.keys())
     #idx=[]
     idx=np.arange(n)
-    nidx=[] 
+    nidx=[]
     for aidx in adata.obs.index:
         if aidx in dic_idx:
             #idx.append(dic_idx.index(aidx))
@@ -260,10 +265,10 @@ def get_spatial_knn_graph_10x(
             for i in nn_idx_in_dic:
                 nidx_in_adata = dic_to_a[i]
                 nidx.append(nidx_in_adata)
-    
+
     nidx=np.array(nidx)
-    idx=np.repeat(idx,d)       
-    
+    idx=np.repeat(idx,d)
+
     adj = csr_matrix(
         (np.full(n * d, 1), (idx, nidx.flatten())),
         shape=(adata.shape[0], adata.shape[0]))

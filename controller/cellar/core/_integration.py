@@ -1,6 +1,7 @@
 from math import floor
 
 import numpy as np
+from numpy.random import normal
 from sklearn.preprocessing import normalize
 from scipy.sparse import csc_matrix
 import rpy2.robjects as ro
@@ -71,6 +72,7 @@ def cl_STvEA(
             "Found little overlap between CODEX and CITE-seq proteins. " +
             "Please make sure the two datasets are using the same " +
             "naming convention.")
+    logger.info(f"Found {len(protein_overlap)} proteins in common.")
     # Construct R matrices for codex-protein, cite-protein, and cite-latent
     codex_mat = adata.X[:, codex_ind]
     if is_sparse(codex_mat):
@@ -142,9 +144,13 @@ def cl_STvEA(
     indptr = np.array(transfer_mat_r.slots['p'])
     transfer_mat = csc_matrix((data, indices, indptr),
                               (codex_mat.shape[0], cite_mat.shape[0]))
-    cite_exp_mat = adata_ref.X / np.sum(adata_ref.X, axis=1, keepdims=True)
-    cite_exp_mat[np.isnan(cite_exp_mat)] = 0
-    codex_exp_mat = transfer_mat.dot(cite_exp_mat)
+    # This is how STvEA does it, but it does not give good results
+    # cite_exp_mat = adata_ref.X / np.sum(adata_ref.X, axis=1, keepdims=True)
+    # cite_exp_mat[np.isnan(cite_exp_mat)] = 0
+    # We normalize by number of neighbors instead
+    idx = transfer_mat.getnnz(axis=1)
+    transfer_mat.data /= np.repeat(idx, idx).astype(float)
+    codex_exp_mat = transfer_mat.dot(adata_ref.X)
     adata.obsm['genes'] = codex_exp_mat
     if 'gene_symbols' in adata_ref.var:
         genes = adata_ref.var['gene_symbols']
