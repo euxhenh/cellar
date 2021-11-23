@@ -58,7 +58,7 @@ Hovering over cells will display that cell's cluster ID.
 Additionally, you can choose to display the expression levels of a protein.
 
 <div class="code-example step" markdown="1">
-- Select `DAPI` or any other protein from the dropdown menu and click
+- Select `DAPI` or any protein from the dropdown menu and click
   "Generate Tile".
 </div>
 
