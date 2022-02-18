@@ -5,13 +5,13 @@
 .. |PythonVersion| image:: https://img.shields.io/badge/python-3.7%20%7C%203.8%20%7C%203.9-blue
 .. _PythonVersion: https://img.shields.io/badge/python-3.7%20%7C%203.8%20%7C%203.9-blue
 .. |MITLicense| image:: https://img.shields.io/badge/License-MIT-blue
-.. _MITLicense: https://raw.githubusercontent.com/euxhenh/cellar/master/LICENSE.txt
+.. _MITLicense: https://raw.githubusercontent.com/euxhenh/cellar/main/LICENSE.txt
 .. |Website| image:: https://img.shields.io/website-up-down-green-red/http/shields.io
 .. _Website: https://data.test.hubmapconsortium.org/app/cellar
 
 .. |PythonMinVersion| replace:: 3.7
 
-.. image:: https://raw.githubusercontent.com/euxhenh/cellar/master/assets/cellar-logo.png
+.. image:: https://raw.githubusercontent.com/euxhenh/cellar/main/assets/cellar-logo.png
   :width: 400
   :target: https://data.test.hubmapconsortium.org/app/cellar
 

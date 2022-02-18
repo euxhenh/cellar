@@ -52,9 +52,9 @@ An alternative to a Docker installation is to create a local
 [conda](https://docs.conda.io/en/latest/) virtual environment
 with all the required dependencies. If you do not have conda installed, please
 follow these [instructions](https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html) first. Assuming conda is now available, follow the steps below.
-1. Download Cellar's [conda environment](https://github.com/euxhenh/cellar/blob/master/env.yml) yml file
+1. Download Cellar's [conda environment](https://github.com/euxhenh/cellar/blob/main/env.yml) yml file
 ```bash
-$ wget https://raw.githubusercontent.com/euxhenh/cellar/master/env.yml
+$ wget https://raw.githubusercontent.com/euxhenh/cellar/main/env.yml
 ```
 2. Install the conda environment
 ```bash
@@ -65,9 +65,9 @@ This will create an environment named `cellar`.
 ```bash
 $ conda activate cellar
 ```
-4. Download the [install_Rdeps.py](https://github.com/euxhenh/cellar/blob/master/install_Rdeps.py) script
+4. Download the [install_Rdeps.py](https://github.com/euxhenh/cellar/blob/main/install_Rdeps.py) script
 ```bash
-$ wget https://raw.githubusercontent.com/euxhenh/cellar/master/install_Rdeps.py
+$ wget https://raw.githubusercontent.com/euxhenh/cellar/main/install_Rdeps.py
 ```
 5. Install R dependencies
 ```bash
@@ -100,4 +100,4 @@ A preprint is available on [bioRxiv](https://www.biorxiv.org/content/10.1101/202
 
 ### License
 
-Cellar is distributed by an [MIT license](https://github.com/euxhenh/cellar/blob/master/LICENSE.txt).
+Cellar is distributed by an [MIT license](https://github.com/euxhenh/cellar/blob/main/LICENSE.txt).

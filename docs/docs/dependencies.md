@@ -13,7 +13,7 @@ in a conda environment.
 
 ---
 
-View Cellar's [conda environment](https://github.com/euxhenh/cellar/blob/master/env.yml) for a full list of libraries and their
+View Cellar's [conda environment](https://github.com/euxhenh/cellar/blob/main/env.yml) for a full list of libraries and their
 versions. Below we describe only the libraries that Cellar depends on
 explicitly.
 
@@ -39,7 +39,7 @@ explicitly.
 
 NOTE: We prefer to install R (r-base) via conda as seen above.
 The few remaining R libraries can be installed
-by using the [install_Rdeps.py](https://github.com/euxhenh/cellar/blob/master/install_Rdeps.py) script while inside the conda environment.
+by using the [install_Rdeps.py](https://github.com/euxhenh/cellar/blob/main/install_Rdeps.py) script while inside the conda environment.
 
 ---
 
