@@ -17,6 +17,7 @@ data/codex_tile/*
 experiments
 PaperImages
 .idea
+.github_token
 .DS_Store
 cellar-env.txt
 docs/_site*
