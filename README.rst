@@ -5,13 +5,13 @@
 .. |PythonVersion| image:: https://img.shields.io/badge/python-3.7%20%7C%203.8%20%7C%203.9-blue
 .. _PythonVersion: https://img.shields.io/badge/python-3.7%20%7C%203.8%20%7C%203.9-blue
 .. |MITLicense| image:: https://img.shields.io/badge/License-MIT-blue
-.. _MITLicense: https://raw.githubusercontent.com/euxhenh/CellarV/master/LICENSE.txt
+.. _MITLicense: https://raw.githubusercontent.com/euxhenh/cellar/master/LICENSE.txt
 .. |Website| image:: https://img.shields.io/website-up-down-green-red/http/shields.io
 .. _Website: https://data.test.hubmapconsortium.org/app/cellar
 
 .. |PythonMinVersion| replace:: 3.7
 
-.. image:: https://raw.githubusercontent.com/euxhenh/CellarV/master/assets/cellar-logo.png
+.. image:: https://raw.githubusercontent.com/euxhenh/cellar/master/assets/cellar-logo.png
   :width: 400
   :target: https://data.test.hubmapconsortium.org/app/cellar
 
@@ -29,7 +29,7 @@ for a local installation.
 An accompanying preprint and supplementary files can be accessed through
 `bioRxiv <https://www.biorxiv.org/content/10.1101/2021.03.19.436162v1?rss=1>`__.
 
-The `documentation <https://euxhenh.github.io/CellarV/>`__
+The `documentation <https://euxhenh.github.io/cellar/>`__
 includes details on how to use Cellar and the data types
 it supports. These include but are not limited to scRNA-seq, scATAC-seq,
 CODEX, SNARE-seq, sciRNA-seq, Visium. Cellar supports preprocessing,
@@ -45,10 +45,10 @@ Links
 _____
 
 - Cellar Web Server: https://data.test.hubmapconsortium.org/app/cellar
-- Official Source Code Repository: https://github.com/euxhenh/CellarV
-- Documentation & Tutorials: https://euxhenh.github.io/CellarV/
+- Official Source Code Repository: https://github.com/euxhenh/cellar
+- Documentation & Tutorials: https://euxhenh.github.io/cellar/
 - Video Tutorials: https://www.youtube.com/playlist?list=PL5sLSLkTYpWgfBQ0M8ObfBIqDMAzx0-D2
-- Issue Tracker: https://github.com/euxhenh/CellarV/issues
+- Issue Tracker: https://github.com/euxhenh/cellar/issues
 - Preprint: https://www.biorxiv.org/content/10.1101/2021.03.19.436162v1?rss=1
 
 Local Installation
@@ -58,13 +58,13 @@ Docker Installation
 ~~~~~~~~~~~~~~~~~~~
 
 Probably the easiest way to install Cellar locally is using ``Docker``.
-The image name is ``euxhen/cellarv`` and can be pulled with::
+The image name is ``euxhen/cellar`` and can be pulled with::
 
-    docker pull euxhen/cellarv
+    docker pull euxhen/cellar
 
 After the pull is complete, running Cellar is as simple as::
 
-    docker run --rm -p 8050:8050 euxhen/cellarv
+    docker run --rm -p 8050:8050 euxhen/cellar
 
 and visiting ``localhost:8050`` on your web browser.
 
@@ -78,7 +78,7 @@ for installing the dependencies.
 
 Cellar's source code can be downloaded using::
 
-    git clone https://github.com/euxhenh/CellarV
+    git clone https://github.com/euxhenh/cellar
 
 Dependencies
 ++++++++++++

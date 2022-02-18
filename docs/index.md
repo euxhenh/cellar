@@ -14,7 +14,7 @@ is written in Python using [Dash](https://plotly.com/dash/).
 {: .fs-6 .fw-300}
 
 
-[Visit Cellar](https://data.test.hubmapconsortium.org/app/cellar){: .btn .btn-primary .fs-5 .mb-4 .mb-md-0 .mr-2 } [View it on GitHub](https://github.com/euxhenh/CellarV){: .btn .fs-5 .mb-4 .mb-md-0 }
+[Visit Cellar](https://data.test.hubmapconsortium.org/app/cellar){: .btn .btn-primary .fs-5 .mb-4 .mb-md-0 .mr-2 } [View it on GitHub](https://github.com/euxhenh/cellar){: .btn .fs-5 .mb-4 .mb-md-0 }
 
 ---
 
@@ -35,15 +35,15 @@ to use on premises resources and avoid network latency. The easiest way
 to install Cellar locally is via [docker](https://www.docker.com/).
 1. Pull the image
 ```bash
-$ docker pull euxhen/cellarv
+$ docker pull euxhen/cellar
 ```
 2. Start a Cellar server on port 8050
 ```bash
-$ docker run --rm -p 8050:8050 euxhen/cellarv
+$ docker run --rm -p 8050:8050 euxhen/cellar
 ```
 ```bash
 # You can also bind mount a local directory of `.h5ad` files to be read by Cellar
-$ docker run --rm -p 8050:8050 -v /path/to/directory:/home/nonroot/cellar/data euxhen/cellarv
+$ docker run --rm -p 8050:8050 -v /path/to/directory:/home/nonroot/cellar/data euxhen/cellar
 ```
 3. Wait for a few seconds and point your web browser to [localhost:8050](localhost:8050)
 
@@ -52,9 +52,9 @@ An alternative to a Docker installation is to create a local
 [conda](https://docs.conda.io/en/latest/) virtual environment
 with all the required dependencies. If you do not have conda installed, please
 follow these [instructions](https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html) first. Assuming conda is now available, follow the steps below.
-1. Download Cellar's [conda environment](https://github.com/euxhenh/CellarV/blob/master/env.yml) yml file
+1. Download Cellar's [conda environment](https://github.com/euxhenh/cellar/blob/master/env.yml) yml file
 ```bash
-$ wget https://raw.githubusercontent.com/euxhenh/CellarV/master/env.yml
+$ wget https://raw.githubusercontent.com/euxhenh/cellar/master/env.yml
 ```
 2. Install the conda environment
 ```bash
@@ -65,9 +65,9 @@ This will create an environment named `cellar`.
 ```bash
 $ conda activate cellar
 ```
-4. Download the [install_Rdeps.py](https://github.com/euxhenh/CellarV/blob/master/install_Rdeps.py) script
+4. Download the [install_Rdeps.py](https://github.com/euxhenh/cellar/blob/master/install_Rdeps.py) script
 ```bash
-$ wget https://raw.githubusercontent.com/euxhenh/CellarV/master/install_Rdeps.py
+$ wget https://raw.githubusercontent.com/euxhenh/cellar/master/install_Rdeps.py
 ```
 5. Install R dependencies
 ```bash
@@ -75,11 +75,11 @@ $ python install_Rdeps.py
 ```
 6. Download Cellar's source code
 ```bash
-$ git clone https://github.com/euxhenh/CellarV
+$ git clone https://github.com/euxhenh/cellar
 ```
 7. Run Cellar
 ```bash
-$ cd CellarV
+$ cd cellar
 $ python main.py
 ```
 8. Visit [localhost:8050](localhost:8050) on your web browser.
@@ -100,4 +100,4 @@ A preprint is available on [bioRxiv](https://www.biorxiv.org/content/10.1101/202
 
 ### License
 
-Cellar is distributed by an [MIT license](https://github.com/euxhenh/CellarV/blob/master/LICENSE.txt).
+Cellar is distributed by an [MIT license](https://github.com/euxhenh/cellar/blob/master/LICENSE.txt).
