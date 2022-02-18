@@ -14,7 +14,7 @@ is written in Python using [Dash](https://plotly.com/dash/).
 {: .fs-6 .fw-300}
 
 
-[Visit Cellar](https://data.test.hubmapconsortium.org/app/cellar){: .btn .btn-primary .fs-5 .mb-4 .mb-md-0 .mr-2 } [View it on GitHub](https://github.com/ferrocactus/CellarV){: .btn .fs-5 .mb-4 .mb-md-0 }
+[Visit Cellar](https://data.test.hubmapconsortium.org/app/cellar){: .btn .btn-primary .fs-5 .mb-4 .mb-md-0 .mr-2 } [View it on GitHub](https://github.com/euxhenh/CellarV){: .btn .fs-5 .mb-4 .mb-md-0 }
 
 ---
 
@@ -52,9 +52,9 @@ An alternative to a Docker installation is to create a local
 [conda](https://docs.conda.io/en/latest/) virtual environment
 with all the required dependencies. If you do not have conda installed, please
 follow these [instructions](https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html) first. Assuming conda is now available, follow the steps below.
-1. Download Cellar's [conda environment](https://github.com/ferrocactus/CellarV/blob/master/env.yml) yml file
+1. Download Cellar's [conda environment](https://github.com/euxhenh/CellarV/blob/master/env.yml) yml file
 ```bash
-$ wget https://raw.githubusercontent.com/ferrocactus/CellarV/master/env.yml
+$ wget https://raw.githubusercontent.com/euxhenh/CellarV/master/env.yml
 ```
 2. Install the conda environment
 ```bash
@@ -65,9 +65,9 @@ This will create an environment named `cellar`.
 ```bash
 $ conda activate cellar
 ```
-4. Download the [install_Rdeps.py](https://github.com/ferrocactus/CellarV/blob/master/install_Rdeps.py) script
+4. Download the [install_Rdeps.py](https://github.com/euxhenh/CellarV/blob/master/install_Rdeps.py) script
 ```bash
-$ wget https://raw.githubusercontent.com/ferrocactus/CellarV/master/install_Rdeps.py
+$ wget https://raw.githubusercontent.com/euxhenh/CellarV/master/install_Rdeps.py
 ```
 5. Install R dependencies
 ```bash
@@ -75,7 +75,7 @@ $ python install_Rdeps.py
 ```
 6. Download Cellar's source code
 ```bash
-$ git clone https://github.com/ferrocactus/CellarV
+$ git clone https://github.com/euxhenh/CellarV
 ```
 7. Run Cellar
 ```bash
@@ -100,4 +100,4 @@ A preprint is available on [bioRxiv](https://www.biorxiv.org/content/10.1101/202
 
 ### License
 
-Cellar is distributed by an [MIT license](https://github.com/ferrocactus/CellarV/blob/master/LICENSE.txt).
+Cellar is distributed by an [MIT license](https://github.com/euxhenh/CellarV/blob/master/LICENSE.txt).

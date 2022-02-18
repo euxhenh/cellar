@@ -13,7 +13,7 @@ in a conda environment.
 
 ---
 
-View Cellar's [conda environment](https://github.com/ferrocactus/CellarV/blob/master/env.yml) for a full list of libraries and their
+View Cellar's [conda environment](https://github.com/euxhenh/CellarV/blob/master/env.yml) for a full list of libraries and their
 versions. Below we describe only the libraries that Cellar depends on
 explicitly.
 
@@ -29,7 +29,7 @@ explicitly.
 - [faiss-cpu](https://github.com/facebookresearch/faiss) (1.7.1), [joblib](https://joblib.readthedocs.io/en/latest/) (1.0.1)
 - [zodb](https://zodb.org/en/latest/) (5.6.0)
 - [r-base](https://www.r-project.org/) (4.1.0), [r-stringi](https://cran.r-project.org/web/packages/stringi/index.html) (1.7.3), [rpy2](https://rpy2.github.io/) (3.4.5), [anndata2ri](https://github.com/theislab/anndata2ri) (1.0.6)
-- [diffxpy](https://diffxpy.readthedocs.io/en/latest/) (0.7.4), [gseapy](https://gseapy.readthedocs.io/en/latest/introduction.html) (0.10.5), [pyensembl](https://readthedocs.org/projects/pyensembl/downloads/pdf/latest/) (1.9.4), [bintogene](https://github.com/ferrocactus/BinToGene) (1.23)
+- [diffxpy](https://diffxpy.readthedocs.io/en/latest/) (0.7.4), [gseapy](https://gseapy.readthedocs.io/en/latest/introduction.html) (0.10.5), [pyensembl](https://readthedocs.org/projects/pyensembl/downloads/pdf/latest/) (1.9.4), [bintogene](https://github.com/euxhenh/BinToGene) (1.23)
 
 ## R Dependencies
 
@@ -39,7 +39,7 @@ explicitly.
 
 NOTE: We prefer to install R (r-base) via conda as seen above.
 The few remaining R libraries can be installed
-by using the [install_Rdeps.py](https://github.com/ferrocactus/CellarV/blob/master/install_Rdeps.py) script while inside the conda environment.
+by using the [install_Rdeps.py](https://github.com/euxhenh/CellarV/blob/master/install_Rdeps.py) script while inside the conda environment.
 
 ---
 

@@ -1,7 +1,7 @@
 title: "Cellar Docs"
 description: An interactive tool for analyzing single-cell omics data
 baseurl: "/CellarV" # the subpath of your site, e.g. /blog
-url: "https://ferrocactus.github.io"
+url: "https://euxhenh.github.io"
 
 remote_theme: pmarsceill/just-the-docs
 # theme: just-the-docs
@@ -24,7 +24,7 @@ footer_content: "Copyright &copy; 2020-2021 Systems Biology Group, Carnegie Mell
 
 aux_links:
   "Cellar on GitHub":
-    - "//github.com/ferrocactus/CellarV"
+    - "//github.com/euxhenh/CellarV"
 
 aux_links_new_tab: true
 

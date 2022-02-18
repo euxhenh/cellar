@@ -31,7 +31,7 @@ This dataset can be found on Cellar under the name *CODEX_Florida_19-003-lymph-n
 You will note that the plot gets populated automatically.
 After loading a dataset, Cellar will check if 2D embeddings or cluster
 assignments are present in the file. In this case, we have already
-reduced (PCA + UMAP) and clustered (Leiden) the lymph node dataset.
+reduced (UMAP + UMAP) and clustered (Leiden) the lymph node dataset.
 If you wish to recluster or run different dimensionality reduction methods,
 you can follow the same steps as in the
 [Basic Analysis Pipeline](/docs/tutorials/tutorial1) tutorial. We will head
