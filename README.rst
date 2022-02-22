@@ -1,6 +1,6 @@
 .. -*- mode: rst -*-
 
-|PythonVersion|_ |MITLicense|_ |Website|_
+|PythonVersion|_ |MITLicense|_ |Website|_ |DOI|_
 
 .. |PythonVersion| image:: https://img.shields.io/badge/python-3.7%20%7C%203.8%20%7C%203.9-blue
 .. _PythonVersion: https://img.shields.io/badge/python-3.7%20%7C%203.8%20%7C%203.9-blue
@@ -8,6 +8,8 @@
 .. _MITLicense: https://raw.githubusercontent.com/euxhenh/cellar/main/LICENSE.txt
 .. |Website| image:: https://img.shields.io/website-up-down-green-red/http/shields.io
 .. _Website: https://data.test.hubmapconsortium.org/app/cellar
+.. |DOI| image:: https://zenodo.org/badge/372980254.svg
+.. _DOI: https://zenodo.org/badge/latestdoi/372980254
 
 .. |PythonMinVersion| replace:: 3.7
 
@@ -50,6 +52,7 @@ _____
 - Video Tutorials: https://www.youtube.com/playlist?list=PL5sLSLkTYpWgfBQ0M8ObfBIqDMAzx0-D2
 - Issue Tracker: https://github.com/euxhenh/cellar/issues
 - Preprint: https://www.biorxiv.org/content/10.1101/2021.03.19.436162v1?rss=1
+- DOI: https://zenodo.org/badge/latestdoi/372980254
 
 Local Installation
 __________________
