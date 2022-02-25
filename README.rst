@@ -7,7 +7,7 @@
 .. |MITLicense| image:: https://img.shields.io/badge/License-MIT-blue
 .. _MITLicense: https://raw.githubusercontent.com/euxhenh/cellar/main/LICENSE.txt
 .. |Website| image:: https://img.shields.io/website-up-down-green-red/http/shields.io
-.. _Website: https://data.test.hubmapconsortium.org/app/cellar
+.. _Website: https://cellar.cmu.hubmapconsortium.org/app/cellar
 .. |DOI| image:: https://zenodo.org/badge/372980254.svg
 .. _DOI: https://zenodo.org/badge/latestdoi/372980254
 
@@ -15,7 +15,7 @@
 
 .. image:: https://raw.githubusercontent.com/euxhenh/cellar/main/assets/cellar-logo.png
   :width: 400
-  :target: https://data.test.hubmapconsortium.org/app/cellar
+  :target: https://cellar.cmu.hubmapconsortium.org/app/cellar
 
 **Cellar** is an interactive tool for analyzing single-cell omics data. Cellar
 is built in Python using the `Dash <https://plotly.com/dash/>`__ framework
@@ -25,7 +25,7 @@ The app is developed and actively maintained by the
 `Systems Biology Group <http://www.sb.cs.cmu.edu/>`__ at
 `Carnegie Mellon University <https://www.cmu.edu/>`__. Our web-server
 running Cellar can be accessed
-`here <https://data.test.hubmapconsortium.org/app/cellar>`__. See below
+`here <https://cellar.cmu.hubmapconsortium.org/app/cellar>`__. See below
 for a local installation.
 
 An accompanying preprint and supplementary files can be accessed through
@@ -46,7 +46,7 @@ are also available.
 Links
 _____
 
-- Cellar Web Server: https://data.test.hubmapconsortium.org/app/cellar
+- Cellar Web Server: https://cellar.cmu.hubmapconsortium.org/app/cellar
 - Official Source Code Repository: https://github.com/euxhenh/cellar
 - Documentation & Tutorials: https://euxhenh.github.io/cellar/
 - Video Tutorials: https://www.youtube.com/playlist?list=PL5sLSLkTYpWgfBQ0M8ObfBIqDMAzx0-D2
