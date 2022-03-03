@@ -1,15 +1,12 @@
 import io
-from logging import error
 import os
 import shutil
 import tarfile
 from base64 import b64decode
 
 import dash
-import dash_core_components as dcc
-import dash_bio as dashbio
+from dash import dcc
 import numpy as np
-import matplotlib
 import plotly.express as px
 import plotly.graph_objects as go
 from app import app, dbroot, logger
@@ -18,7 +15,6 @@ from dash.exceptions import PreventUpdate
 
 from .cellar.utils.tile_generator import (generate_10x_spatial,
                                           generate_tile)
-from .cellar.utils.exceptions import InternalError
 from .cellar.utils.misc import get_title_from_feature_list
 from .cellar.core import adjScoreProteinsCODEX, adjScoreClustersCODEX
 from .cellar.core import adjScoreClusters10x

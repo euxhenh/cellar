@@ -17,14 +17,14 @@
 }
 
 .vline {
-    border-left: 1px solid var(--secondary);
+    border-left: 1px solid var(--bs-secondary);
     width: 5px;
     height: 30px;
     margin-right: 5px;
 }
 
 .light-text {
-    color: var(--secondary);
+    color: var(--bs-secondary);
 }
 
 #toggle-notifications-btn {
@@ -51,12 +51,12 @@
 
 #modes-nav .btn {
     color: var(--dark-font);
-    background-color: var(--light);
+    background-color: var(--bs-light);
 }
 
 #modes-nav .btn:hover {
     color: white;
-    background-color: var(--primary);
+    background-color: var(--bs-primary);
 }
 
 #modes-nav .btn,
@@ -76,7 +76,7 @@
 
 .card-header {
     font-weight: 500;
-    background-color: var(--primary);
+    background-color: var(--bs-primary);
     color: white;
 }
 
@@ -115,7 +115,7 @@
     max-width: 600px;
 }
 
-.color-popover>.popover {
+.color-popover {
     min-width: 800px;
     width: 800px;
 }
@@ -129,23 +129,23 @@
 }
 
 .active-style {
-    color: var(--success);
+    color: var(--bs-success);
     font-size: 15px;
 }
 
 .disabled-style {
-    color: var(--warning);
+    color: var(--bs-warning);
     font-size: 15px;
 }
 
 .active-plot-bg {
-    background-color: var(--light);
-    color: var(--primary);
+    background-color: var(--bs-light);
+    color: var(--bs-primary);
 }
 
 .non-active-plot-bg {
     background-color: white;
-    color: var(--primary);
+    color: var(--bs-primary);
 }
 
 button.export {
@@ -184,4 +184,8 @@ button.export:hover {
 .tooltip {
     text-transform: unset;
     font-size: 12px;
+}
+
+.small {
+    font-size: 10px;
 }

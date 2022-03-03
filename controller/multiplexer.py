@@ -3,8 +3,7 @@ from typing import List, Optional
 from dash import callback_context
 from dash.dependencies import ALL, Input, Output
 from dash.exceptions import PreventUpdate
-
-import dash_core_components as dcc
+from dash import dcc
 
 from app import app, dbroot
 

@@ -1,5 +1,5 @@
 import dash
-import dash_html_components as html
+from dash import html
 import dash_bootstrap_components as dbc
 import time
 from app import app, dbroot
@@ -23,8 +23,7 @@ def _prep_notification_card(key, value, add_mb=True):
         html.P(value['text']),
         header=time.strftime("%H:%M:%S", time.localtime(key)),
         icon=value["icon"],
-        className="shadow-none",
-        fade=False
+        className="shadow-none"
     )
 
 

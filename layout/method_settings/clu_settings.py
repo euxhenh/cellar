@@ -1,13 +1,12 @@
 import dash_bootstrap_components as dbc
-import dash_core_components as dcc
-import dash_html_components as html
+from dash import dcc, html
 
 clu_leiden_settings = dbc.Popover(
     [
         dbc.PopoverHeader("Leiden Settings"),
         dbc.PopoverBody(
             [
-                dbc.FormGroup(
+                dbc.Form(
                     [
                         dbc.Label("Partition Type"),
                         dbc.Select(
@@ -32,7 +31,7 @@ clu_leiden_settings = dbc.Popover(
                     "Check Leidenalg docs for a description of each.",
                     target="clu-Leiden-partition-type"
                 ),
-                dbc.FormGroup(
+                dbc.Form(
                     [
                         dbc.Label("Number of Iterations"),
                         dbc.Input(
@@ -48,7 +47,7 @@ clu_leiden_settings = dbc.Popover(
                     "If set to -1, will run until convergence.",
                     target="clu-Leiden-n-iter"
                 ),
-                dbc.FormGroup(
+                dbc.Form(
                     [
                         dbc.Label(
                             "Resolution (only for RBConfiguration, RBER, CPM)",
@@ -66,7 +65,7 @@ clu_leiden_settings = dbc.Popover(
                     "Higher resolution results in more clusters.",
                     target="clu-Leiden-tooltip-temp-resolution"
                 ),
-                dbc.FormGroup(
+                dbc.Form(
                     [
                         dbc.Label("Max Community Size"),
                         dbc.Input(
@@ -82,7 +81,7 @@ clu_leiden_settings = dbc.Popover(
                     "to allow any size.",
                     target="clu-Leiden-max-comm"
                 ),
-                dbc.FormGroup(
+                dbc.Form(
                     [
                         dbc.Label("Graph Construction Method"),
                         dbc.Select(
@@ -104,7 +103,7 @@ clu_leiden_settings = dbc.Popover(
                     "exact KNN.",
                     target="clu-Leiden-graph-method"
                 ),
-                dbc.FormGroup(
+                dbc.Form(
                     [
                         dbc.Label(
                             "Number of Neighbors for the Graph",
@@ -122,7 +121,7 @@ clu_leiden_settings = dbc.Popover(
                     "Number of k-Nearest Neighbors to compute.",
                     target="clu-Leiden-tooltip-temp-nneigh"
                 ),
-                dbc.FormGroup(
+                dbc.Form(
                     [
                         dbc.Label("Use Cached Neighbors"),
                         dbc.RadioItems(
@@ -143,7 +142,7 @@ clu_leiden_settings = dbc.Popover(
                     "a new random seed is desired.",
                     target="clu-Leiden-cached-neigh"
                 ),
-                # dbc.FormGroup(
+                # dbc.Form(
                 #     [
                 #         dbc.Label("Construct Weighted Graph"),
                 #         dbc.RadioItems(
@@ -157,7 +156,7 @@ clu_leiden_settings = dbc.Popover(
                 #         )
                 #     ]
                 # ),
-                dbc.FormGroup(
+                dbc.Form(
                     [
                         dbc.Label("Construct Directed Graph"),
                         dbc.RadioItems(
@@ -175,7 +174,7 @@ clu_leiden_settings = dbc.Popover(
                     "If set to True, then the neighbors graph will be directed",
                     target="clu-Leiden-directed"
                 ),
-                dbc.FormGroup(
+                dbc.Form(
                     [
                         dbc.Label("Random State"),
                         dbc.Input(
@@ -224,7 +223,7 @@ clu_kmeans_settings = dbc.Popover(
         dbc.PopoverHeader("KMeans Settings"),
         dbc.PopoverBody(
             [
-                dbc.FormGroup(
+                dbc.Form(
                     [
                         dbc.Label("Number of Clusters"),
                         dbc.Input(
@@ -244,7 +243,7 @@ clu_kmeans_settings = dbc.Popover(
                         )
                     ]
                 ),
-                dbc.FormGroup(
+                dbc.Form(
                     [
                         dbc.Label("Evaluation Method"),
                         dbc.Select(
@@ -268,7 +267,7 @@ clu_kmeans_settings = dbc.Popover(
                         )
                     ]
                 ),
-                dbc.FormGroup(
+                dbc.Form(
                     [
                         dbc.Label("Initialization"),
                         dbc.Select(
@@ -281,7 +280,7 @@ clu_kmeans_settings = dbc.Popover(
                         ),
                     ]
                 ),
-                dbc.FormGroup(
+                dbc.Form(
                     [
                         dbc.Label("No. of Initializations", html_for="slider"),
                         dcc.Slider(
@@ -294,7 +293,7 @@ clu_kmeans_settings = dbc.Popover(
                         )
                     ]
                 ),
-                dbc.FormGroup(
+                dbc.Form(
                     [
                         dbc.Label("Max Iterations", html_for="slider"),
                         dcc.Slider(
@@ -307,7 +306,7 @@ clu_kmeans_settings = dbc.Popover(
                         )
                     ]
                 ),
-                dbc.FormGroup(
+                dbc.Form(
                     [
                         dbc.Label("Algorithm"),
                         dbc.Select(
@@ -321,7 +320,7 @@ clu_kmeans_settings = dbc.Popover(
                         ),
                     ]
                 ),
-                dbc.FormGroup(
+                dbc.Form(
                     [
                         dbc.Label("Random State"),
                         dbc.Input(
@@ -368,7 +367,7 @@ clu_kmedoids_settings = dbc.Popover(
         dbc.PopoverHeader("KMedoids Settings"),
         dbc.PopoverBody(
             [
-                dbc.FormGroup(
+                dbc.Form(
                     [
                         dbc.Label("Number of Clusters"),
                         dbc.Input(
@@ -388,7 +387,7 @@ clu_kmedoids_settings = dbc.Popover(
                         )
                     ]
                 ),
-                dbc.FormGroup(
+                dbc.Form(
                     [
                         dbc.Label("Evaluation Method"),
                         dbc.Select(
@@ -412,7 +411,7 @@ clu_kmedoids_settings = dbc.Popover(
                         )
                     ]
                 ),
-                dbc.FormGroup(
+                dbc.Form(
                     [
                         dbc.Label("Metric"),
                         dbc.Select(
@@ -453,7 +452,7 @@ clu_kmedoids_settings = dbc.Popover(
                         ),
                     ]
                 ),
-                dbc.FormGroup(
+                dbc.Form(
                     [
                         dbc.Label("Method"),
                         dbc.Select(
@@ -466,7 +465,7 @@ clu_kmedoids_settings = dbc.Popover(
                         ),
                     ]
                 ),
-                dbc.FormGroup(
+                dbc.Form(
                     [
                         dbc.Label("Initialization"),
                         dbc.Select(
@@ -482,7 +481,7 @@ clu_kmedoids_settings = dbc.Popover(
                         ),
                     ]
                 ),
-                dbc.FormGroup(
+                dbc.Form(
                     [
                         dbc.Label("Max Iterations", html_for="slider"),
                         dcc.Slider(
@@ -495,7 +494,7 @@ clu_kmedoids_settings = dbc.Popover(
                         )
                     ]
                 ),
-                dbc.FormGroup(
+                dbc.Form(
                     [
                         dbc.Label("Random State"),
                         dbc.Input(
@@ -543,7 +542,7 @@ clu_spectral_clustering_settings = dbc.Popover(
         dbc.PopoverHeader("Spectral Clustering Settings"),
         dbc.PopoverBody(
             [
-                dbc.FormGroup(
+                dbc.Form(
                     [
                         dbc.Label("Number of Clusters"),
                         dbc.Input(
@@ -563,7 +562,7 @@ clu_spectral_clustering_settings = dbc.Popover(
                         )
                     ]
                 ),
-                dbc.FormGroup(
+                dbc.Form(
                     [
                         dbc.Label("Evaluation Method"),
                         dbc.Select(
@@ -587,7 +586,7 @@ clu_spectral_clustering_settings = dbc.Popover(
                         )
                     ]
                 ),
-                dbc.FormGroup(
+                dbc.Form(
                     [
                         dbc.Label("Eigen Solver"),
                         dbc.Select(
@@ -601,7 +600,7 @@ clu_spectral_clustering_settings = dbc.Popover(
                         )
                     ]
                 ),
-                dbc.FormGroup(
+                dbc.Form(
                     [
                         dbc.Label("No. of Components (0 if n_clusters)",
                                   html_for="slider"),
@@ -614,7 +613,7 @@ clu_spectral_clustering_settings = dbc.Popover(
                         )
                     ]
                 ),
-                # dbc.FormGroup(
+                # dbc.Form(
                 #     [
                 #         dbc.Label("Gamma (only for rbf, poly, "
                 #                   "sigmoid, laplacian, chi2)"),
@@ -625,7 +624,7 @@ clu_spectral_clustering_settings = dbc.Popover(
                 #         )
                 #     ]
                 # ),
-                # dbc.FormGroup(
+                # dbc.Form(
                 #     [
                 #         dbc.Label("Affinity"),
                 #         dbc.Select(
@@ -649,7 +648,7 @@ clu_spectral_clustering_settings = dbc.Popover(
                 #         )
                 #     ]
                 # ),
-                dbc.FormGroup(
+                dbc.Form(
                     [
                         dbc.Label("No. of Neighbors", html_for="slider"),
                         dcc.Slider(
@@ -661,7 +660,7 @@ clu_spectral_clustering_settings = dbc.Popover(
                         )
                     ]
                 ),
-                dbc.FormGroup(
+                dbc.Form(
                     [
                         dbc.Label("Assign Labels"),
                         dbc.Select(
@@ -674,7 +673,7 @@ clu_spectral_clustering_settings = dbc.Popover(
                         )
                     ]
                 ),
-                # dbc.FormGroup(
+                # dbc.Form(
                 #     [
                 #         dbc.Label("Degree (only for poly)",
                 #                   html_for="slider"),
@@ -687,7 +686,7 @@ clu_spectral_clustering_settings = dbc.Popover(
                 #         )
                 #     ]
                 # ),
-                dbc.FormGroup(
+                dbc.Form(
                     [
                         dbc.Label("Random State"),
                         dbc.Input(
@@ -739,7 +738,7 @@ clu_agglomerative_settings = dbc.Popover(
         dbc.PopoverHeader("Agglomerative Settings"),
         dbc.PopoverBody(
             [
-                dbc.FormGroup(
+                dbc.Form(
                     [
                         dbc.Label("Number of Clusters"),
                         dbc.Input(
@@ -759,7 +758,7 @@ clu_agglomerative_settings = dbc.Popover(
                         )
                     ]
                 ),
-                dbc.FormGroup(
+                dbc.Form(
                     [
                         dbc.Label("Evaluation Method"),
                         dbc.Select(
@@ -783,7 +782,7 @@ clu_agglomerative_settings = dbc.Popover(
                         )
                     ]
                 ),
-                dbc.FormGroup(
+                dbc.Form(
                     [
                         dbc.Label("Affinity"),
                         dbc.Select(
@@ -797,7 +796,7 @@ clu_agglomerative_settings = dbc.Popover(
                         ),
                     ]
                 ),
-                dbc.FormGroup(
+                dbc.Form(
                     [
                         dbc.Label("Linkage"),
                         dbc.Select(
@@ -846,7 +845,7 @@ clu_uncertainty_settings = dbc.Popover(
         dbc.PopoverHeader("Uncertainty Settings"),
         dbc.PopoverBody(
             [
-                dbc.FormGroup(
+                dbc.Form(
                     [
                         dbc.Label("Uncertainty Method"),
                         dbc.Select(

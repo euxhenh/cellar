@@ -1,369 +1,282 @@
 import dash_bootstrap_components as dbc
-import dash_core_components as dcc
-import dash_html_components as html
+from dash import html, dcc
 
 row_1 = dbc.Row([
     dbc.Col(
-        dbc.Card(
-            [
-                dbc.CardBody(
-                    [
-                        dcc.Loading(
-                            html.H5(
-                                "Filter Cells",
-                                className="card-title",
-                                id="temp-prep-h5"
-                            ),
-                            fullscreen=True
-                        ),
-                        dbc.Row(
-                            [
-                                dbc.Col(
-                                    dbc.FormGroup(
-                                        [
-                                            dbc.Row(
-                                                [
-                                                    dbc.Checkbox(
-                                                        "prep-filter-cells-counts-checkbox",
-                                                        className="mr-3 prep-ckb"
-                                                    ),
-                                                    dbc.Label(
-                                                        "Counts", html_for="slider"),
-                                                ],
-                                                # justify="between",
-                                                align="baseline",
-                                                no_gutters=True
-                                            ),
-                                            # dbc.Label(
-                                            # "Counts", html_for="slider"),
-                                            dcc.RangeSlider(
-                                                id="prep-filter-cells-counts-slider",
-                                                min=0,
-                                                max=5000,
-                                                step=50,
-                                                value=[100, 3000],
-                                                marks={i: str(i) for i in
-                                                       range(0, 5001, 500)},
-                                                tooltip={
-                                                    'always_visible': True,
-                                                    'placement': 'bottom'
-                                                }
-                                            )
-                                        ]
-                                    )
-                                )
-                            ],
-                            no_gutters=True
-                        ),
-                        dbc.Row(
-                            [
-                                dbc.Col(
-                                    dbc.FormGroup(
-                                        [
-                                            dbc.Row(
-                                                [
-                                                    dbc.Checkbox(
-                                                        "prep-filter-cells-genes-checkbox",
-                                                        className="mr-3 prep-ckb",
-                                                        checked=True
-                                                    ),
-                                                    dbc.Label(
-                                                        "Genes", html_for="slider"),
-                                                ],
-                                                # justify="between",
-                                                align="baseline",
-                                                no_gutters=True
-                                            ),
-                                            dcc.RangeSlider(
-                                                id="prep-filter-cells-genes-slider",
-                                                min=0,
-                                                max=5000,
-                                                step=50,
-                                                value=[100, 3000],
-                                                marks={i: str(i) for i in
-                                                       range(0, 5001, 500)},
-                                                tooltip={
-                                                    'always_visible': True,
-                                                    'placement': 'bottom'
-                                                }
-                                            )
-                                        ]
-                                    )
-                                )
-                            ],
-                            no_gutters=True
-                        ),
-                        # html.P(
-                        #     [
-                        #         "Details: ",
-                        #         html.A("scanpy.readthedocs.io/en/stable/api/"
-                        #                "scanpy.pp.filter_cells.html#scanpy.pp."
-                        #                "filter_cells",
-                        #                href="https://scanpy.readthedocs.io/en/"
-                        #                "stable/api/scanpy.pp.filter_cells."
-                        #                "html#scanpy.pp.filter_cells",
-                        #                target="_blank")
-                        #     ],
-                        #     className="small"
-                        # )
+        dbc.Card([
+            dbc.CardBody([
+                dcc.Loading(
+                    html.H5(
+                        "Filter Cells",
+                        className="card-title",
+                        id="temp-prep-h5"
+                    ),
+                    fullscreen=True
+                ),
+                dbc.Row([
+                    dbc.Col([
+                        dbc.Row([
+                            dbc.Col(dbc.Checkbox(
+                                "prep-filter-cells-counts-checkbox",
+                                className="mr-3 prep-ckb",
+                            ), width='auto'),
+                            dbc.Col(dbc.Label(
+                                "Counts", html_for="slider"
+                            ), width='auto'),
+                        ], align="baseline", className="g-0"),
+                        dcc.RangeSlider(
+                            id="prep-filter-cells-counts-slider",
+                            min=0,
+                            max=5000,
+                            step=50,
+                            value=[100, 3000],
+                            marks={i: str(i) for i in
+                                   range(0, 5001, 500)},
+                            tooltip={
+                                'always_visible': True,
+                                'placement': 'bottom'
+                            }
+                        )
+                    ])
+                ], className="g-0 mb-2"),
+                dbc.Row([
+                    dbc.Col([
+                        dbc.Row([
+                            dbc.Col(dbc.Checkbox(
+                                "prep-filter-cells-genes-checkbox",
+                                className="mr-3 prep-ckb",
+                                value=True
+                            ), width='auto'),
+                            dbc.Col(dbc.Label("Genes", html_for="slider"), width='auto'),
+                        ], align="baseline", className="g-0"),
+                        dcc.RangeSlider(
+                            id="prep-filter-cells-genes-slider",
+                            min=0,
+                            max=5000,
+                            step=50,
+                            value=[100, 3000],
+                            marks={i: str(i) for i in range(0, 5001, 500)},
+                            tooltip={
+                                'always_visible': True,
+                                'placement': 'bottom'
+                            }
+                        )
+                    ])
+                ], className="g-0"),
+                # html.P(
+                #     [
+                #         "Details: ",
+                #         html.A("scanpy.readthedocs.io/en/stable/api/"
+                #                "scanpy.pp.filter_cells.html#scanpy.pp."
+                #                "filter_cells",
+                #                href="https://scanpy.readthedocs.io/en/"
+                #                "stable/api/scanpy.pp.filter_cells."
+                #                "html#scanpy.pp.filter_cells",
+                #                target="_blank")
+                #     ],
+                #     className="small"
+                # )
+            ])
+        ], className="prep-card-long"),
+        width=3, xs=12, sm=12, md=3, lg=3
+    ),
+    dbc.Col(
+        dbc.Card([
+            dbc.CardBody([
+                html.H5("Filter Genes", className="card-title"),
+                dbc.Row([
+                    dbc.Col([
+                        dbc.Row([
+                            dbc.Col(dbc.Checkbox(
+                                "prep-filter-genes-counts-checkbox",
+                                className="mr-3 prep-ckb"
+                            ), width='auto'),
+                            dbc.Col(dbc.Label("Counts", html_for="slider"), width='auto'),
+                        ], align="baseline", className="g-0"),
+                        dcc.RangeSlider(
+                            id="prep-filter-genes-counts-slider",
+                            min=0,
+                            max=5000,
+                            step=50,
+                            value=[100, 3000],
+                            marks={i: str(i) for i in range(0, 5001, 500)},
+                            tooltip={
+                                'always_visible': True,
+                                'placement': 'bottom'
+                            }
+                        )
+                    ])
+                ], className="g-0 mb-2"),
+                dbc.Row([
+                    dbc.Col([
+                        dbc.Row([
+                            dbc.Col(dbc.Checkbox(
+                                "prep-filter-genes-cells-checkbox",
+                                className="mr-3 prep-ckb",
+                                value=True
+                            ), width='auto'),
+                            dbc.Col(dbc.Label("Cells", html_for="slider"), width='auto'),
+                        ], align="baseline", className="g-0",),
+                        dcc.RangeSlider(
+                            id="prep-filter-genes-cells-slider",
+                            min=0,
+                            max=5000,
+                            step=50,
+                            value=[100, 3000],
+                            marks={i: str(i) for i in
+                                   range(0, 5001, 500)},
+                            tooltip={
+                                'always_visible': True,
+                                'placement': 'bottom'
+                            }
+                        )
                     ]
-                )
-            ],
+                    )
+                ], className="g-0"),
+                # html.P(
+                #     [
+                #         "Details: ",
+                #         html.A("scanpy.readthedocs.io/en/stable/api/"
+                #                "scanpy.pp.filter_genes.html#scanpy.pp."
+                #                "filter_genes",
+                #                href="https://scanpy.readthedocs.io/en/"
+                #                "stable/api/scanpy.pp.filter_genes."
+                #                "html#scanpy.pp.filter_genes",
+                #                target="_blank")
+                #     ],
+                #     className="small"
+                # )
+            ])
+        ],
             className="prep-card-long"
         ),
         width=3, xs=12, sm=12, md=3, lg=3
     ),
     dbc.Col(
-        dbc.Card(
-            [
-                dbc.CardBody(
+        dbc.Card([
+            dbc.CardBody([
+                dbc.Row([
+                    dbc.Col(dbc.Checkbox(
+                        "prep-high-var-checkbox",
+                        className="mr-3 prep-ckb",
+                        value=False
+                    ), width='auto'),
+                    dbc.Col(html.H5("Highly Variable Genes", className="card-title"), width='auto')
+                ], align="baseline", className="g-0"),
+                dbc.Row([
+                    dbc.Col([
+                        dbc.Label("Flavor"),
+                        dbc.Select(
+                            options=[
+                                {'label': 'seurat',
+                                    'value': 'seurat'},
+                                {'label': 'cell_ranger',
+                                    'value': 'cell_ranger'},
+                                {'label': 'seurat_v3',
+                                    'value': 'seurat_v3'},
+                            ],
+                            id="prep-high-var-flavor",
+                            value="seurat"
+                        )
+                    ]),
+                    dbc.Col(
+                        dbc.Form([
+                            dbc.Label("No. Top Genes"),
+                            dbc.Input(
+                                id="prep-high-var-top-genes",
+                                type="number",
+                                placeholder="None"
+                            )
+                        ])
+                    )
+                ], className="g-0 mb-2"),
+                dbc.Form(
                     [
-                        html.H5("Filter Genes",
-                                className="card-title"),
+                        dbc.Label("Mean"),
                         dbc.Row(
                             [
                                 dbc.Col(
-                                    dbc.FormGroup(
+                                    dbc.InputGroup(
                                         [
-                                            dbc.Row(
-                                                [
-                                                    dbc.Checkbox(
-                                                        "prep-filter-genes-counts-checkbox",
-                                                        className="mr-3 prep-ckb"
-                                                    ),
-                                                    dbc.Label(
-                                                        "Counts", html_for="slider"),
-                                                ],
-                                                # justify="between",
-                                                align="baseline",
-                                                no_gutters=True
-                                            ),
-                                            dcc.RangeSlider(
-                                                id="prep-filter-genes-counts-slider",
-                                                min=0,
-                                                max=5000,
-                                                step=50,
-                                                value=[100, 3000],
-                                                marks={i: str(i) for i in
-                                                       range(0, 5001, 500)},
-                                                tooltip={
-                                                    'always_visible': True,
-                                                    'placement': 'bottom'
-                                                }
-                                            )
-                                        ]
-                                    )
-                                )
-                            ],
-                            no_gutters=True
-                        ),
-                        dbc.Row(
-                            [
-                                dbc.Col(
-                                    dbc.FormGroup(
-                                        [
-                                            dbc.Row(
-                                                [
-                                                    dbc.Checkbox(
-                                                        "prep-filter-genes-cells-checkbox",
-                                                        className="mr-3 prep-ckb",
-                                                        checked=True
-                                                    ),
-                                                    dbc.Label(
-                                                        "Cells", html_for="slider"),
-                                                ],
-                                                # justify="between",
-                                                align="baseline",
-                                                no_gutters=True
-                                            ),
-                                            dcc.RangeSlider(
-                                                id="prep-filter-genes-cells-slider",
-                                                min=0,
-                                                max=5000,
-                                                step=50,
-                                                value=[100, 3000],
-                                                marks={i: str(i) for i in
-                                                       range(0, 5001, 500)},
-                                                tooltip={
-                                                    'always_visible': True,
-                                                    'placement': 'bottom'
-                                                }
-                                            )
-                                        ]
-                                    )
-                                )
-                            ],
-                            no_gutters=True
-                        ),
-                        # html.P(
-                        #     [
-                        #         "Details: ",
-                        #         html.A("scanpy.readthedocs.io/en/stable/api/"
-                        #                "scanpy.pp.filter_genes.html#scanpy.pp."
-                        #                "filter_genes",
-                        #                href="https://scanpy.readthedocs.io/en/"
-                        #                "stable/api/scanpy.pp.filter_genes."
-                        #                "html#scanpy.pp.filter_genes",
-                        #                target="_blank")
-                        #     ],
-                        #     className="small"
-                        # )
-                    ]
-                )
-            ],
-            className="prep-card-long"
-        ),
-        width=3, xs=12, sm=12, md=3, lg=3
-    ),
-    dbc.Col(
-        dbc.Card(
-            [
-                dbc.CardBody(
-                    [
-                        dbc.Row(
-                            [
-                                dbc.Checkbox(
-                                    "prep-high-var-checkbox",
-                                    className="mr-3 prep-ckb",
-                                    checked=False
-                                ),
-                                html.H5("Highly Variable Genes",
-                                        className="card-title")
-                            ],
-                            # justify="between",
-                            align="baseline",
-                            no_gutters=True
-                        ),
-                        dbc.Row(
-                            [
-                                dbc.Col(
-                                    dbc.FormGroup(
-                                        [
-                                            dbc.Label("Flavor"),
-                                            dbc.Select(
-                                                options=[
-                                                    {'label': 'seurat',
-                                                        'value': 'seurat'},
-                                                    {'label': 'cell_ranger',
-                                                        'value': 'cell_ranger'},
-                                                    {'label': 'seurat_v3',
-                                                        'value': 'seurat_v3'},
-                                                ],
-                                                id="prep-high-var-flavor",
-                                                value="seurat"
-                                            )
-                                        ]
-                                    )
-                                ),
-                                dbc.Col(
-                                    dbc.FormGroup(
-                                        [
-                                            dbc.Label("No. Top Genes"),
+                                            dbc.InputGroupText("Min"),
                                             dbc.Input(
-                                                id="prep-high-var-top-genes",
                                                 type="number",
-                                                placeholder="None"
+                                                value=0.0125,
+                                                placeholder="None",
+                                                id="prep-high-var-mean-min"
+                                            )
+                                        ]
+                                    )
+                                ),
+                                dbc.Col(
+                                    dbc.InputGroup(
+                                        [
+                                            dbc.InputGroupText("Max"),
+                                            dbc.Input(
+                                                type="number",
+                                                value=3,
+                                                placeholder="None",
+                                                id="prep-high-var-mean-max"
                                             )
                                         ]
                                     )
                                 )
-                            ]
-                        ),
-                        dbc.FormGroup(
+                            ],
+                            className="g-0",
+                        )
+                    ], className="mb-2"
+                ),
+                dbc.Form(
+                    [
+                        dbc.Label("Dispersion"),
+                        dbc.Row(
                             [
-                                dbc.Label("Mean"),
-                                dbc.Row(
-                                    [
-                                        dbc.Col(
-                                            dbc.InputGroup(
-                                                [
-                                                    dbc.InputGroupAddon(
-                                                        "Min",
-                                                        addon_type="prepend"),
-                                                    dbc.Input(
-                                                        type="number",
-                                                        value=0.0125,
-                                                        placeholder="None",
-                                                        id="prep-high-var-mean-min"
-                                                    )
-                                                ]
-                                            )
-                                        ),
-                                        dbc.Col(
-                                            dbc.InputGroup(
-                                                [
-                                                    dbc.InputGroupAddon(
-                                                        "Max",
-                                                        addon_type="prepend"),
-                                                    dbc.Input(
-                                                        type="number",
-                                                        value=3,
-                                                        placeholder="None",
-                                                        id="prep-high-var-mean-max"
-                                                    )
-                                                ]
-                                            )
-                                        )
-                                    ],
-                                    no_gutters=True
+                                dbc.Col(
+                                    dbc.InputGroup(
+                                        [
+                                            dbc.InputGroupText("Min"),
+                                            dbc.Input(
+                                                id="prep-high-var-disp-min",
+                                                type="number",
+                                                value=0.5,
+                                                placeholder="None")
+                                        ]
+                                    )
+                                ),
+                                dbc.Col(
+                                    dbc.InputGroup(
+                                        [
+                                            dbc.InputGroupText("Max"),
+                                            dbc.Input(
+                                                id="prep-high-var-disp-max",
+                                                type="text",
+                                                value="inf",
+                                                placeholder="None")
+                                        ]
+                                    )
                                 )
-                            ]
-                        ),
-                        dbc.FormGroup(
-                            [
-                                dbc.Label("Dispersion"),
-                                dbc.Row(
-                                    [
-                                        dbc.Col(
-                                            dbc.InputGroup(
-                                                [
-                                                    dbc.InputGroupAddon(
-                                                        "Min",
-                                                        addon_type="prepend"),
-                                                    dbc.Input(
-                                                        id="prep-high-var-disp-min",
-                                                        type="number",
-                                                        value=0.5,
-                                                        placeholder="None")
-                                                ]
-                                            )
-                                        ),
-                                        dbc.Col(
-                                            dbc.InputGroup(
-                                                [
-                                                    dbc.InputGroupAddon(
-                                                        "Max",
-                                                        addon_type="prepend"),
-                                                    dbc.Input(
-                                                        id="prep-high-var-disp-max",
-                                                        type="text",
-                                                        value="inf",
-                                                        placeholder="None")
-                                                ]
-                                            )
-                                        )
-                                    ],
-                                    no_gutters=True
-                                )
-                            ]
-                        ),
-                        # html.P(
-                        #     [
-                        #         "Details: ",
-                        #         html.A("scanpy.readthedocs.io/en/stable/api/"
-                        #                "scanpy.pp.highly_variable_genes.html#"
-                        #                "scanpy.pp.highly_variable_genes",
-                        #                href="https://scanpy.readthedocs.io/en/"
-                        #                "stable/api/scanpy.pp.highly_"
-                        #                "variable_genes.html#scanpy.pp."
-                        #                "highly_variable_genes",
-                        #                target="_blank")
-                        #     ],
-                        #     className="small"
-                        # )
+                            ],
+                            className="g-0",
+                        )
                     ]
-                )
-            ],
+                ),
+                # html.P(
+                #     [
+                #         "Details: ",
+                #         html.A("scanpy.readthedocs.io/en/stable/api/"
+                #                "scanpy.pp.highly_variable_genes.html#"
+                #                "scanpy.pp.highly_variable_genes",
+                #                href="https://scanpy.readthedocs.io/en/"
+                #                "stable/api/scanpy.pp.highly_"
+                #                "variable_genes.html#scanpy.pp."
+                #                "highly_variable_genes",
+                #                target="_blank")
+                #     ],
+                #     className="small"
+                # )
+            ]
+            )
+        ],
             className="prep-card-long"
         ),
         width=3, xs=12, sm=12, md=3, lg=3
@@ -374,29 +287,27 @@ row_1 = dbc.Row([
                 dbc.CardBody(
                     [
                         html.H5("Misc", className="card-title"),
-                        dbc.FormGroup(
+                        dbc.Form(
                             [
                                 dbc.Row(
                                     [
-                                        dbc.Checkbox(
+                                        dbc.Col(dbc.Checkbox(
                                             "prep-normalize-total-checkbox",
                                             className="mr-3 prep-ckb",
-                                            checked=True
-                                        ),
-                                        dbc.Label(
-                                            "Normalize Total"),
+                                            value=True
+                                        ), width='auto'),
+                                        dbc.Col(dbc.Label("Normalize Total"), width='auto'),
                                     ],
-                                    # justify="between",
                                     align="baseline",
-                                    no_gutters=True
+                                    className="g-0",
                                 ),
                                 dbc.Row(
                                     [
                                         dbc.Col(
                                             dbc.InputGroup(
                                                 [
-                                                    dbc.InputGroupAddon(
-                                                        "Target Sum", addon_type="prepend"),
+                                                    dbc.InputGroupText(
+                                                        "Target Sum"),
                                                     dbc.Input(
                                                         id="prep-norm-target",
                                                         type="number",
@@ -408,9 +319,8 @@ row_1 = dbc.Row([
                                         dbc.Col(
                                             dbc.InputGroup(
                                                 [
-                                                    dbc.InputGroupAddon(
-                                                        "Max Fraction",
-                                                        addon_type="prepend"),
+                                                    dbc.InputGroupText(
+                                                        "Max Fraction"),
                                                     dbc.Input(
                                                         id="prep-norm-maxf",
                                                         type="number",
@@ -421,51 +331,50 @@ row_1 = dbc.Row([
                                             )
                                         )
                                     ],
-                                    no_gutters=True
+                                    className="g-0",
                                 )
-                            ]
+                            ], className="mb-2"
                         ),
-                        dbc.FormGroup(
+                        dbc.Form(
                             [
                                 dbc.Row(
                                     [
-                                        dbc.Checkbox(
+                                        dbc.Col(dbc.Checkbox(
                                             "prep-log1p-checkbox",
                                             className="mr-3 prep-ckb",
-                                            checked=True
-                                        ),
-                                        dbc.Label("Log1p"),
+                                            value=True
+                                        ), width='auto'),
+                                        dbc.Col(dbc.Label("Log1p"), width='auto'),
                                     ],
                                     # justify="between",
                                     align="baseline",
-                                    no_gutters=True
+                                    className="g-0",
                                 )
-                            ]
+                            ], className="mb-2"
                         ),
-                        dbc.FormGroup(
+                        dbc.Form(
                             [
                                 dbc.Row(
                                     [
-                                        dbc.Checkbox(
+                                        dbc.Col(dbc.Checkbox(
                                             "prep-scale-checkbox",
                                             className="mr-3 prep-ckb",
-                                            checked=True
-                                        ),
-                                        dbc.Label("Scale"),
+                                            value=True
+                                        ), width='auto'),
+                                        dbc.Col(dbc.Label("Scale"), width='auto'),
                                     ],
                                     # justify="between",
                                     align="baseline",
-                                    no_gutters=True
+                                    className="g-0",
                                 ),
                                 dbc.Row(
                                     [
                                         dbc.Col(
                                             dbc.InputGroup(
                                                 [
-                                                    dbc.InputGroupAddon(
+                                                    dbc.InputGroupText(
                                                         "Zero Center",
-                                                        addon_type="prepend",
-                                                        className="mr-2"),
+                                                        className="me-2"),
                                                     dbc.RadioItems(
                                                         id="prep-scale-zero",
                                                         options=[
@@ -483,9 +392,8 @@ row_1 = dbc.Row([
                                         dbc.Col(
                                             dbc.InputGroup(
                                                 [
-                                                    dbc.InputGroupAddon(
+                                                    dbc.InputGroupText(
                                                         "Max Val.",
-                                                        addon_type="prepend",
                                                         className="mr-2"),
                                                     dbc.Input(
                                                         id="prep-scale-max",
@@ -496,9 +404,9 @@ row_1 = dbc.Row([
                                             )
                                         )
                                     ],
-                                    no_gutters=True
+                                    className="g-0",
                                 )
-                            ]
+                            ], className="mb-2"
                         ),
                         html.P(
                             [
@@ -518,7 +426,7 @@ row_1 = dbc.Row([
         ),
         width=3, xs=12, sm=12, md=3, lg=3
     )
-], no_gutters=True)
+], className="g-0")
 
 
 atac_row = dbc.Row([
@@ -550,8 +458,7 @@ atac_row = dbc.Row([
                             [
                                 dbc.Col(dbc.InputGroup(
                                     [
-                                        dbc.InputGroupAddon(
-                                            "Extend", addon_type="append"),
+                                        dbc.InputGroupText("Extend"),
                                         dbc.Input(
                                             "atac-extend-input",
                                             type="text", value="5x"
@@ -560,8 +467,7 @@ atac_row = dbc.Row([
                                 ), width=6),
                                 dbc.Col(dbc.InputGroup(
                                     [
-                                        dbc.InputGroupAddon(
-                                            "Max Extend", addon_type="append"),
+                                        dbc.InputGroupText("Max Extend"),
                                         dbc.Input(
                                             "atac-max-extend-input",
                                             type="text", value="5000"
@@ -595,8 +501,7 @@ atac_row = dbc.Row([
                             [
                                 dbc.Col(dbc.InputGroup(
                                     [
-                                        dbc.InputGroupAddon(
-                                            "Op Extend", addon_type="append"),
+                                        dbc.InputGroupText("Op Extend"),
                                         dbc.Input(
                                             "atac-op-extend-input",
                                             type="text", value="1x"
@@ -605,9 +510,7 @@ atac_row = dbc.Row([
                                 ), width=6),
                                 dbc.Col(dbc.InputGroup(
                                     [
-                                        dbc.InputGroupAddon(
-                                            "Op Max Extend",
-                                            addon_type="append"),
+                                        dbc.InputGroupText("Op Max Extend"),
                                         dbc.Input(
                                             "atac-max-op-extend-input",
                                             type="text", value="1000"
@@ -622,7 +525,7 @@ atac_row = dbc.Row([
             className="prep-card-long"
         )
     ], width=3, xs=12, sm=12, md=3, lg=3)
-], no_gutters=True)
+], className="g-0")
 
 
 cite_seq_row = dbc.Row([
@@ -636,20 +539,19 @@ cite_seq_row = dbc.Row([
                         id="temp-prep-h5-cite")
                 ),
                 html.H6("Must have a 'protein.X' key under adata.obsm!"),
-                dbc.FormGroup([
+                dbc.Form([
                     dbc.Row([
                         dbc.Checkbox(
                             "cite-prep-normalize-total-checkbox",
                             className="mr-3 prep-ckb",
-                            checked=True
+                            value=True
                         ),
                         dbc.Label("Normalize Total"),
-                    ], align="baseline", no_gutters=True),
+                    ], align="baseline", className="g-0"),
                     dbc.Row([
                         dbc.Col(
                             dbc.InputGroup([
-                                dbc.InputGroupAddon(
-                                    "Target Sum", addon_type="prepend"),
+                                dbc.InputGroupText("Target Sum"),
                                 dbc.Input(
                                     id="cite-prep-norm-target",
                                     type="number",
@@ -659,9 +561,7 @@ cite_seq_row = dbc.Row([
                         ),
                         dbc.Col(
                             dbc.InputGroup([
-                                dbc.InputGroupAddon(
-                                    "Max Fraction",
-                                    addon_type="prepend"),
+                                dbc.InputGroupText("Max Fraction"),
                                 dbc.Input(
                                     id="cite-prep-norm-maxf",
                                     type="number",
@@ -670,33 +570,32 @@ cite_seq_row = dbc.Row([
                                 )
                             ])
                         )
-                    ], no_gutters=True)
+                    ], className="g-0")
                 ]),
-                dbc.FormGroup([
+                dbc.Form([
                     dbc.Row([
                         dbc.Checkbox(
                             "cite-prep-log1p-checkbox",
                             className="mr-3 prep-ckb",
-                            checked=True
+                            value=True
                         ),
                         dbc.Label("Log1p"),
-                    ], align="baseline", no_gutters=True)
+                    ], align="baseline", className="g-0")
                 ]),
-                dbc.FormGroup([
+                dbc.Form([
                     dbc.Row([
                         dbc.Checkbox(
                             "cite-prep-scale-checkbox",
                             className="mr-3 prep-ckb",
-                            checked=True
+                            value=True
                         ),
                         dbc.Label("Scale"),
-                    ], align="baseline", no_gutters=True),
+                    ], align="baseline", className="g-0"),
                     dbc.Row([
                         dbc.Col(
                             dbc.InputGroup([
-                                dbc.InputGroupAddon(
+                                dbc.InputGroupText(
                                     "Zero Center",
-                                    addon_type="prepend",
                                     className="mr-2"),
                                 dbc.RadioItems(
                                     id="cite-prep-scale-zero",
@@ -712,9 +611,8 @@ cite_seq_row = dbc.Row([
                         ),
                         dbc.Col(
                             dbc.InputGroup([
-                                dbc.InputGroupAddon(
+                                dbc.InputGroupText(
                                     "Max Val.",
-                                    addon_type="prepend",
                                     className="mr-2"),
                                 dbc.Input(
                                     id="cite-prep-scale-max",
@@ -723,7 +621,7 @@ cite_seq_row = dbc.Row([
                                 )
                             ])
                         )
-                    ], no_gutters=True)
+                    ], className="g-0",)
                 ]),
                 html.P([
                     "Details: ",
@@ -748,13 +646,12 @@ prep = html.Div([
                 "Run",
                 outline=False,
                 color='primary',
-                block=True,
                 id="prep-run-btn"
             ),
             width=3
         ),
         justify='center',
-        className="mt-2"
+        className="mt-2 d-grid gap-2"
     )
 ], className="mb-3", id="prep-row")
 
@@ -767,13 +664,12 @@ atac = html.Div([
                 "Run",
                 outline=False,
                 color='primary',
-                block=True,
                 id="prep-atac-run-btn"
             ),
             width=3
         ),
         justify='center',
-        className="mt-2"
+        className="mt-2 d-grid gap-2"
     )
 ], className="mb-3", id="prep-atac-row")
 
@@ -786,13 +682,12 @@ cite = html.Div([
                 "Run",
                 outline=False,
                 color='primary',
-                block=True,
                 id="prep-cite-run-btn"
             ),
             width=3
         ),
         justify='center',
-        className="mt-2"
+        className="mt-2 d-grid gap-2"
     )
 ], className="mb-3", id="prep-cite-row")
 

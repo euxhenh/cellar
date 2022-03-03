@@ -1,6 +1,5 @@
 import dash_bootstrap_components as dbc
-import dash_core_components as dcc
-import dash_html_components as html
+from dash import dcc, html
 
 
 vis_pca_settings = dbc.Popover(
@@ -8,7 +7,7 @@ vis_pca_settings = dbc.Popover(
         dbc.PopoverHeader("PCA Settings"),
         dbc.PopoverBody(
             [
-                dbc.FormGroup(
+                dbc.Form(
                     [
                         dbc.Label("Whiten"),
                         dbc.RadioItems(
@@ -22,7 +21,7 @@ vis_pca_settings = dbc.Popover(
                         )
                     ]
                 ),
-                dbc.FormGroup(
+                dbc.Form(
                     [
                         dbc.Label("SVD Solver"),
                         dbc.Select(
@@ -37,7 +36,7 @@ vis_pca_settings = dbc.Popover(
                         )
                     ]
                 ),
-                dbc.FormGroup(
+                dbc.Form(
                     [
                         dbc.Label("Random State"),
                         dbc.Input(
@@ -77,7 +76,7 @@ vis_tsvd_settings = dbc.Popover(
         dbc.PopoverHeader("Truncated SVD Settings"),
         dbc.PopoverBody(
             [
-                dbc.FormGroup(
+                dbc.Form(
                     [
                         dbc.Label("Algorithm"),
                         dbc.Select(
@@ -90,7 +89,7 @@ vis_tsvd_settings = dbc.Popover(
                         )
                     ]
                 ),
-                dbc.FormGroup(
+                dbc.Form(
                     [
                         dbc.Label("Number of Iterations"),
                         dbc.Input(
@@ -100,7 +99,7 @@ vis_tsvd_settings = dbc.Popover(
                         )
                     ]
                 ),
-                dbc.FormGroup(
+                dbc.Form(
                     [
                         dbc.Label("Random State"),
                         dbc.Input(
@@ -140,7 +139,7 @@ vis_kpca_settings = dbc.Popover(
         dbc.PopoverHeader("Kernel PCA Settings"),
         dbc.PopoverBody(
             [
-                dbc.FormGroup(
+                dbc.Form(
                     [
                         dbc.Label("Kernel"),
                         dbc.Select(
@@ -156,7 +155,7 @@ vis_kpca_settings = dbc.Popover(
                         )
                     ]
                 ),
-                dbc.FormGroup(
+                dbc.Form(
                     [
                         dbc.Label("Gamma (only for rbf, poly, sigmoid)"),
                         dbc.Input(
@@ -167,7 +166,7 @@ vis_kpca_settings = dbc.Popover(
                         )
                     ]
                 ),
-                dbc.FormGroup(
+                dbc.Form(
                     [
                         dbc.Label("Degree (only for poly)",
                                   html_for="slider"),
@@ -180,7 +179,7 @@ vis_kpca_settings = dbc.Popover(
                         )
                     ]
                 ),
-                dbc.FormGroup(
+                dbc.Form(
                     [
                         dbc.Label("Coef0 (only for poly, sigmoid)"),
                         dbc.Input(
@@ -191,7 +190,7 @@ vis_kpca_settings = dbc.Popover(
                         )
                     ]
                 ),
-                dbc.FormGroup(
+                dbc.Form(
                     [
                         dbc.Label("Eigen Solver"),
                         dbc.Select(
@@ -205,7 +204,7 @@ vis_kpca_settings = dbc.Popover(
                         )
                     ]
                 ),
-                dbc.FormGroup(
+                dbc.Form(
                     [
                         dbc.Label("Random State"),
                         dbc.Input(
@@ -248,7 +247,7 @@ vis_mds_settings = dbc.Popover(
         dbc.PopoverHeader("MDS Settings"),
         dbc.PopoverBody(
             [
-                dbc.FormGroup(
+                dbc.Form(
                     [
                         dbc.Label("Metric"),
                         dbc.RadioItems(
@@ -262,7 +261,7 @@ vis_mds_settings = dbc.Popover(
                         )
                     ]
                 ),
-                dbc.FormGroup(
+                dbc.Form(
                     [
                         dbc.Label("N Init", html_for="slider"),
                         dcc.Slider(
@@ -274,7 +273,7 @@ vis_mds_settings = dbc.Popover(
                         )
                     ]
                 ),
-                dbc.FormGroup(
+                dbc.Form(
                     [
                         dbc.Label("Max Iter", html_for="slider"),
                         dcc.Slider(
@@ -287,7 +286,7 @@ vis_mds_settings = dbc.Popover(
                         )
                     ]
                 ),
-                dbc.FormGroup(
+                dbc.Form(
                     [
                         dbc.Label("Random State"),
                         dbc.Input(
@@ -329,7 +328,7 @@ vis_umap_settings = dbc.Popover(
         dbc.PopoverHeader("UMAP Settings"),
         dbc.PopoverBody(
             [
-                dbc.FormGroup(
+                dbc.Form(
                     [
                         dbc.Label("No. of neighbors", html_for="slider"),
                         dcc.Slider(
@@ -341,7 +340,7 @@ vis_umap_settings = dbc.Popover(
                         )
                     ]
                 ),
-                dbc.FormGroup(
+                dbc.Form(
                     [
                         dbc.Label("Metric"),
                         dbc.Select(
@@ -377,7 +376,7 @@ vis_umap_settings = dbc.Popover(
                         )
                     ]
                 ),
-                dbc.FormGroup(
+                dbc.Form(
                     [
                         dbc.Label("No. of epochs"),
                         dbc.Input(
@@ -388,7 +387,7 @@ vis_umap_settings = dbc.Popover(
                         )
                     ]
                 ),
-                dbc.FormGroup(
+                dbc.Form(
                     [
                         dbc.Label("Learning Rate"),
                         dbc.Input(
@@ -399,7 +398,7 @@ vis_umap_settings = dbc.Popover(
                         )
                     ]
                 ),
-                dbc.FormGroup(
+                dbc.Form(
                     [
                         dbc.Label("Initialization"),
                         dbc.Select(
@@ -412,7 +411,7 @@ vis_umap_settings = dbc.Popover(
                         )
                     ]
                 ),
-                dbc.FormGroup(
+                dbc.Form(
                     [
                         dbc.Label("Minimum Distance"),
                         dbc.Input(
@@ -423,7 +422,7 @@ vis_umap_settings = dbc.Popover(
                         )
                     ]
                 ),
-                dbc.FormGroup(
+                dbc.Form(
                     [
                         dbc.Label("Spread"),
                         dbc.Input(
@@ -434,7 +433,7 @@ vis_umap_settings = dbc.Popover(
                         )
                     ]
                 ),
-                dbc.FormGroup(
+                dbc.Form(
                     [
                         dbc.Label("Random State"),
                         dbc.Input(
@@ -479,7 +478,7 @@ vis_tsne_settings = dbc.Popover(
         dbc.PopoverHeader("t-SNE Settings"),
         dbc.PopoverBody(
             [
-                dbc.FormGroup(
+                dbc.Form(
                     [
                         dbc.Label("Perplexity"),
                         dcc.Slider(
@@ -491,7 +490,7 @@ vis_tsne_settings = dbc.Popover(
                         )
                     ]
                 ),
-                dbc.FormGroup(
+                dbc.Form(
                     [
                         dbc.Label("Early Exaggeration"),
                         dcc.Slider(
@@ -503,7 +502,7 @@ vis_tsne_settings = dbc.Popover(
                         )
                     ]
                 ),
-                dbc.FormGroup(
+                dbc.Form(
                     [
                         dbc.Label("Learning Rate"),
                         dcc.Slider(
@@ -515,7 +514,7 @@ vis_tsne_settings = dbc.Popover(
                         )
                     ]
                 ),
-                dbc.FormGroup(
+                dbc.Form(
                     [
                         dbc.Label("No. Iterations"),
                         dcc.Slider(
@@ -527,7 +526,7 @@ vis_tsne_settings = dbc.Popover(
                         )
                     ]
                 ),
-                dbc.FormGroup(
+                dbc.Form(
                     [
                         dbc.Label("No. Iterations without Progress"),
                         dcc.Slider(
@@ -539,7 +538,7 @@ vis_tsne_settings = dbc.Popover(
                         )
                     ]
                 ),
-                dbc.FormGroup(
+                dbc.Form(
                     [
                         dbc.Label("Metric"),
                         dbc.Select(
@@ -575,7 +574,7 @@ vis_tsne_settings = dbc.Popover(
                         )
                     ]
                 ),
-                dbc.FormGroup(
+                dbc.Form(
                     [
                         dbc.Label("Init"),
                         dbc.RadioItems(
@@ -589,7 +588,7 @@ vis_tsne_settings = dbc.Popover(
                         )
                     ]
                 ),
-                dbc.FormGroup(
+                dbc.Form(
                     [
                         dbc.Label("Random State"),
                         dbc.Input(
@@ -634,7 +633,7 @@ vis_diffmap_settings = dbc.Popover(
         dbc.PopoverHeader("Diffusion Map Settings"),
         dbc.PopoverBody(
             [
-                dbc.FormGroup(
+                dbc.Form(
                     [
                         dbc.Label("alpha"),
                         dbc.Input(
@@ -644,7 +643,7 @@ vis_diffmap_settings = dbc.Popover(
                         )
                     ]
                 ),
-                dbc.FormGroup(
+                dbc.Form(
                     [
                         dbc.Label("No. Nearest Neighbors", html_for="slider"),
                         dcc.Slider(
@@ -656,7 +655,7 @@ vis_diffmap_settings = dbc.Popover(
                         )
                     ]
                 ),
-                dbc.FormGroup(
+                dbc.Form(
                     [
                         dbc.Label("epsilon"),
                         dbc.Input(
@@ -666,7 +665,7 @@ vis_diffmap_settings = dbc.Popover(
                         )
                     ]
                 ),
-                dbc.FormGroup(
+                dbc.Form(
                     [
                         dbc.Label("Metric"),
                         dbc.Select(

@@ -1,10 +1,10 @@
 import dash_bootstrap_components as dbc
-import dash_html_components as html
+from dash import html
 
 intg_stvea_settings = dbc.Popover([
     dbc.PopoverHeader("STvEA Settings"),
     dbc.PopoverBody([
-        dbc.FormGroup([
+        dbc.Form([
             dbc.Label("Clean CODEX"),
             dbc.RadioItems(
                 options=[
@@ -16,7 +16,7 @@ intg_stvea_settings = dbc.Popover([
                 inline=True
             )
         ]),
-        dbc.FormGroup([
+        dbc.Form([
             dbc.Label("CODEX clean model"),
             dbc.Select(
                 id="intg-clean-codex-method",
@@ -27,7 +27,7 @@ intg_stvea_settings = dbc.Popover([
                 value="gaussian"
             )
         ]),
-        dbc.FormGroup([
+        dbc.Form([
             dbc.Label("Normalize CODEX (used if clean=True and model=nb)"),
             dbc.RadioItems(
                 options=[
@@ -39,7 +39,7 @@ intg_stvea_settings = dbc.Popover([
                 inline=True
             )
         ]),
-        dbc.FormGroup([
+        dbc.Form([
             dbc.Label("Clean CITE protein"),
             dbc.RadioItems(
                 options=[
@@ -51,7 +51,7 @@ intg_stvea_settings = dbc.Popover([
                 inline=True
             )
         ]),
-        dbc.FormGroup([
+        dbc.Form([
             dbc.Label("CITE protein clean model"),
             dbc.Select(
                 id="intg-clean-cite-method",
@@ -62,7 +62,7 @@ intg_stvea_settings = dbc.Popover([
                 value="gaussian"
             )
         ]),
-        dbc.FormGroup([
+        dbc.Form([
             dbc.Label(
                 "Normalize CITE protein (used if clean=True and model=nb)"),
             dbc.RadioItems(

@@ -1,27 +1,26 @@
-from enum import Enum
 import re
+from enum import Enum
 
 import dash
-import dash_core_components as dcc
 import plotly
-from scipy.cluster.hierarchy import single
 from app import app, dbroot, logger
+from dash import dcc
 from dash.dependencies import Input, Output, State
 from dash.exceptions import PreventUpdate
-
 from layout.misc import empty_figure
+from scipy.sparse.linalg import ArpackNoConvergence
+
 from .cellar.core import (clear_x_emb_dependends, get_clu_figure,
                           get_dim_figure, get_expression_figure,
                           get_reset_figure)
+from .cellar.utils.colors import PALETTE
 from .cellar.utils.exceptions import InternalError, InvalidArgument, UserError
+from .data_loader import _get_singler_warning
 from .methods import clu_list, dim_list, lbt_list, ssclu_list, vis_list
-from .operations import (clu_filter, dim_reduce_filter, lbt_filter,
-                         ssclu_filter, vis_filter)
 from .multiplexer import MultiplexerOutput
 from .notifications import _prep_notification
-from scipy.sparse.linalg.eigen.arpack import ArpackNoConvergence
-from .cellar.utils.colors import PALETTE
-from .data_loader import _get_singler_warning
+from .operations import (clu_filter, dim_reduce_filter, lbt_filter,
+                         ssclu_filter, vis_filter)
 
 
 class Signal(int, Enum):
@@ -281,10 +280,10 @@ for prefix, an in zip(['main', 'side'], ['a1', 'a2']):
         State("lbt-methods-select", "value"),
         State(prefix + "-feature-list", "value"),
         State(prefix + "-feature-rangeslider", "value"),
-        State(prefix + "-auto-scale-expression", "checked"),
+        State(prefix + "-auto-scale-expression", "value"),
         State(prefix + "-other-feature-list", "value"),
         State(prefix + "-other-feature-rangeslider", "value"),
-        State(prefix + "-other-auto-scale-expression", "checked"),
+        State(prefix + "-other-auto-scale-expression", "value"),
         [State(m['value'] + '-settings', 'children') for m in dim_list],
         [State(m['value'] + '-settings', 'children') for m in clu_list],
         [State(m['value'] + '-settings', 'children') for m in vis_list],

@@ -1,6 +1,5 @@
 import dash_bootstrap_components as dbc
-import dash_core_components as dcc
-import dash_html_components as html
+from dash import dcc, html
 
 
 ssclu_leiden_settings = dbc.Popover(
@@ -8,7 +7,7 @@ ssclu_leiden_settings = dbc.Popover(
         dbc.PopoverHeader("Constrained Leiden Settings"),
         dbc.PopoverBody(
             [
-                dbc.FormGroup(
+                dbc.Form(
                     [
                         dbc.Label("Constrained Subsets"),
                         dbc.Checklist(
@@ -33,7 +32,7 @@ ssclu_leiden_settings = dbc.Popover(
                     "constrained subset will be set to the same value.",
                     target="ssclu-Leiden-constrained-subsets-form"
                 ),
-                dbc.FormGroup(
+                dbc.Form(
                     [
                         dbc.Label("Partition Type"),
                         dbc.Select(
@@ -58,7 +57,7 @@ ssclu_leiden_settings = dbc.Popover(
                     "Check Leidenalg docs for a description of each.",
                     target="ssclu-Leiden-partition-type"
                 ),
-                dbc.FormGroup(
+                dbc.Form(
                     [
                         dbc.Label("Number of Iterations"),
                         dbc.Input(
@@ -74,7 +73,7 @@ ssclu_leiden_settings = dbc.Popover(
                     "If set to -1, will run until convergence.",
                     target="ssclu-Leiden-n-iter"
                 ),
-                dbc.FormGroup(
+                dbc.Form(
                     [
                         dbc.Label(
                             "Resolution (only for RBConfiguration, RBER, CPM)",
@@ -92,7 +91,7 @@ ssclu_leiden_settings = dbc.Popover(
                     "Higher resolution results in more clusters.",
                     target="ssclu-Leiden-tooltip-temp-resolution"
                 ),
-                # dbc.FormGroup(
+                # dbc.Form(
                 #     [
                 #         dbc.Label("Max Community Size"),
                 #         dbc.Input(
@@ -108,7 +107,7 @@ ssclu_leiden_settings = dbc.Popover(
                 #     "to allow any size.",
                 #     target="ssclu-Leiden-max-comm"
                 # ),
-                dbc.FormGroup(
+                dbc.Form(
                     [
                         dbc.Label("Graph Construction Method"),
                         dbc.Select(
@@ -130,7 +129,7 @@ ssclu_leiden_settings = dbc.Popover(
                     "exact KNN.",
                     target="ssclu-Leiden-graph-method"
                 ),
-                dbc.FormGroup(
+                dbc.Form(
                     [
                         dbc.Label(
                             "Number of Neighbors for the Graph",
@@ -148,7 +147,7 @@ ssclu_leiden_settings = dbc.Popover(
                     "Number of k-Nearest Neighbors to compute.",
                     target="ssclu-Leiden-tooltip-temp-nneigh"
                 ),
-                dbc.FormGroup(
+                dbc.Form(
                     [
                         dbc.Label("Fix Membership for Constraints"),
                         dbc.RadioItems(
@@ -167,7 +166,7 @@ ssclu_leiden_settings = dbc.Popover(
                     "constrained subsets.",
                     target="ssclu-Leiden-fix-membership"
                 ),
-                dbc.FormGroup(
+                dbc.Form(
                     [
                         dbc.Label("Use Cached Neighbors"),
                         dbc.RadioItems(
@@ -188,7 +187,7 @@ ssclu_leiden_settings = dbc.Popover(
                     "a new random seed is desired.",
                     target="ssclu-Leiden-cached-neigh"
                 ),
-                # dbc.FormGroup(
+                # dbc.Form(
                 #     [
                 #         dbc.Label("Construct Weighted Graph"),
                 #         dbc.RadioItems(
@@ -202,7 +201,7 @@ ssclu_leiden_settings = dbc.Popover(
                 #         )
                 #     ]
                 # ),
-                dbc.FormGroup(
+                dbc.Form(
                     [
                         dbc.Label("Construct Directed Graph"),
                         dbc.RadioItems(
@@ -220,7 +219,7 @@ ssclu_leiden_settings = dbc.Popover(
                     "If set to True, then the neighbors graph will be directed",
                     target="ssclu-Leiden-directed"
                 ),
-                # dbc.FormGroup(
+                # dbc.Form(
                 #     [
                 #         dbc.Label("Random State"),
                 #         dbc.Input(

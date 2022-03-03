@@ -454,7 +454,7 @@ for prefix, an in zip(['main', 'side'], ['a1', 'a2']):
         Input(prefix + "-data-load-clean", "data"),
         State(prefix + "-feature-list", "value"),
         State(prefix + "-feature-rangeslider", "value"),
-        State(prefix + "-auto-scale-expression", "checked"),
+        State(prefix + "-auto-scale-expression", "value"),
         prevent_initial_call=True
     )(get_plot_analysis_func(prefix, an))
 
@@ -469,7 +469,7 @@ for prefix, an in zip(['main-other', 'side-other'], ['a1', 'a2']):
         Input(prefix[:4] + "-data-load-clean", "data"),
         State(prefix + "-feature-list", "value"),
         State(prefix + "-feature-rangeslider", "value"),
-        State(prefix + "-auto-scale-expression", "checked"),
+        State(prefix + "-auto-scale-expression", "value"),
         prevent_initial_call=True
     )(get_plot_analysis_func(prefix, an))
 
@@ -485,7 +485,7 @@ def get_feature_range_disable_func(prefix):
 for prefix in ['main', 'side', 'main-other', 'side-other']:
     app.callback(
         Output(prefix + "-feature-rangeslider", "disabled"),
-        Input(prefix + "-auto-scale-expression", "checked")
+        Input(prefix + "-auto-scale-expression", "value")
     )(get_feature_range_disable_func(prefix))
 
 

@@ -1,10 +1,8 @@
 import gc
 import os
 from ast import literal_eval
-import anndata
 
 import dash
-from dash_html_components.Pre import Pre
 import numpy as np
 import scanpy as sc
 from BinToGene import BinToGene
@@ -74,14 +72,14 @@ def _validate_interval_extension(extend):
     Input("prep-run-btn", "n_clicks"),
 
     # Checkboxes
-    State("prep-filter-cells-counts-checkbox", "checked"),
-    State("prep-filter-cells-genes-checkbox", "checked"),
-    State("prep-filter-genes-counts-checkbox", "checked"),
-    State("prep-filter-genes-cells-checkbox", "checked"),
-    State("prep-high-var-checkbox", "checked"),
-    State("prep-normalize-total-checkbox", "checked"),
-    State("prep-log1p-checkbox", "checked"),
-    State("prep-scale-checkbox", "checked"),
+    State("prep-filter-cells-counts-checkbox", "value"),
+    State("prep-filter-cells-genes-checkbox", "value"),
+    State("prep-filter-genes-counts-checkbox", "value"),
+    State("prep-filter-genes-cells-checkbox", "value"),
+    State("prep-high-var-checkbox", "value"),
+    State("prep-normalize-total-checkbox", "value"),
+    State("prep-log1p-checkbox", "value"),
+    State("prep-scale-checkbox", "value"),
 
     # Parameters
     State("prep-filter-cells-counts-slider", "value"),

@@ -1,7 +1,5 @@
 import dash_bootstrap_components as dbc
-import dash_core_components as dcc
-import dash_html_components as html
-import dash_table
+from dash import html, dash_table, dcc
 from controller.methods import (clu_list, dim_list, lbt_list, ssclu_list,
                                 vis_list, intg_list)
 
@@ -29,8 +27,7 @@ dataset_shape = dbc.Row(
             [
                 dbc.InputGroup(
                     [
-                        dbc.InputGroupAddon(
-                            "No. Samples", addon_type="prepend"),
+                        dbc.InputGroupText("No. Samples"),
                         dbc.InputGroupText(
                             "N/A", className="shape-text", id="no-samples"),
                     ]
@@ -41,8 +38,7 @@ dataset_shape = dbc.Row(
             [
                 dbc.InputGroup(
                     [
-                        dbc.InputGroupAddon(
-                            "No. Features", addon_type="prepend"),
+                        dbc.InputGroupText("No. Features"),
                         dbc.InputGroupText(
                             "N/A", className="shape-text", id="no-features"),
                     ]
@@ -76,33 +72,26 @@ dataset_shape = dbc.Row(
             width=1
         )
     ],
-    no_gutters=True,
     justify='between',
-    className="mb-2"
+    className="mb-2 g-0"
 )
 
 dim_block = dbc.Card(
     [
-        dbc.Button(
-            dbc.Row(
-                [
-                    html.Span("Dimensionality Reduction"),
-                    html.Span(style={'width': '5px'}),
-                    html.I(className="fas fa-chevron-down"),
-                ],
-                align='baseline',
-                justify='center',
-                no_gutters=True
-            ),
+        dbc.Button([
+            html.Span("Dimensionality Reduction"),
+            html.I(className="fas fa-chevron-down ms-2"),
+        ],
             id="dim-reduce-collapse-btn",
             color='light',
-            outline=False
+            outline=False,
+            className="text-nowrap"
         ),
         dbc.Collapse(
             [
                 dbc.CardBody(
                     [
-                        dbc.FormGroup(
+                        dbc.Form(
                             [
                                 dbc.Label("Obtain Embeddings via"),
                                 dbc.InputGroup(
@@ -117,20 +106,17 @@ dim_block = dbc.Card(
                                             id="dim-methods-select",
                                             value=dim_list[0]['value']
                                         ),
-                                        dbc.InputGroupAddon(
-                                            [
-                                                get_cog_btn(
-                                                    i['value'] + '-btn')
-                                                for i in dim_list
-                                            ],
-                                            addon_type="append"
-                                        ),
+                                        *([
+                                            get_cog_btn(
+                                                i['value'] + '-btn')
+                                            for i in dim_list
+                                        ]),
                                         *dim_settings
                                     ]
                                 )
-                            ]
+                            ], className="mb-3"
                         ),
-                        dbc.FormGroup(
+                        dbc.Form(
                             [
                                 dbc.Label("Obtain 2D Embeddings via"),
                                 dbc.InputGroup(
@@ -145,25 +131,23 @@ dim_block = dbc.Card(
                                             id="vis-methods-select",
                                             value=vis_list[0]['value']
                                         ),
-                                        dbc.InputGroupAddon(
-                                            [
-                                                get_cog_btn(
-                                                    i['value'] + '-btn')
-                                                for i in vis_list
-                                            ],
-                                            addon_type="append"
-                                        ),
+                                        *([
+                                            get_cog_btn(i['value'] + '-btn')
+                                            for i in vis_list
+                                        ]),
                                         *vis_settings
                                     ]
                                 )
-                            ]
+                            ], className="mb-3"
                         ),
-                        dbc.Button(
-                            "Run",
-                            block=True,
-                            id="dim-run-btn",
-                            color='primary',
-                            outline=False
+                        html.Div(
+                            dbc.Button(
+                                "Run",
+                                id="dim-run-btn",
+                                color='primary',
+                                outline=False
+                            ),
+                            className="d-grid gap-2",
                         ),
                     ]
                 )
@@ -179,7 +163,7 @@ clu_block = dbc.Card(
     [
         dbc.CardBody(
             [
-                dbc.FormGroup(
+                dbc.Form(
                     [
                         dbc.Label("Method to use"),
                         dbc.InputGroup(
@@ -194,13 +178,11 @@ clu_block = dbc.Card(
                                     id="clu-methods-select",
                                     value=clu_list[0]['value']
                                 ),
-                                dbc.InputGroupAddon(
-                                    [
-                                        get_cog_btn(i['value'] + '-btn')
-                                        for i in clu_list
-                                    ],
-                                    addon_type="append"
-                                ),
+                                *([
+                                    get_cog_btn(
+                                        i['value'] + '-btn')
+                                    for i in clu_list
+                                ]),
                                 *clu_settings
                             ]
                         )
@@ -215,7 +197,7 @@ ssclu_block = dbc.Card(
     [
         dbc.CardBody(
             [
-                dbc.FormGroup(
+                dbc.Form(
                     [
                         dbc.Label("Method to use"),
                         dbc.InputGroup(
@@ -230,13 +212,11 @@ ssclu_block = dbc.Card(
                                     id="ssclu-methods-select",
                                     value=ssclu_list[0]['value']
                                 ),
-                                dbc.InputGroupAddon(
-                                    [
-                                        get_cog_btn(i['value'] + '-btn')
-                                        for i in ssclu_list
-                                    ],
-                                    addon_type="append"
-                                ),
+                                *([
+                                    get_cog_btn(
+                                        i['value'] + '-btn')
+                                    for i in ssclu_list
+                                ]),
                                 *ssclu_settings
                             ]
                         )
@@ -251,7 +231,7 @@ lbt_block = dbc.Card(
     [
         dbc.CardBody(
             [
-                dbc.FormGroup(
+                dbc.Form(
                     [
                         dbc.Label("Method to use"),
                         dbc.InputGroup(
@@ -266,13 +246,11 @@ lbt_block = dbc.Card(
                                     id="lbt-methods-select",
                                     value=lbt_list[0]['value']
                                 ),
-                                dbc.InputGroupAddon(
-                                    [
-                                        get_cog_btn(i['value'] + '-btn')
-                                        for i in lbt_list
-                                    ],
-                                    addon_type="append"
-                                ),
+                                *([
+                                    get_cog_btn(
+                                        i['value'] + '-btn')
+                                    for i in lbt_list
+                                ]),
                                 *lbt_settings
                             ]
                         )
@@ -294,20 +272,14 @@ label_tabs = dbc.Tabs(
 
 label_block = dbc.Card(
     [
-        dbc.Button(
-            dbc.Row(
-                [
-                    html.Span("Clustering"),
-                    html.Span(style={'width': '5px'}),
-                    html.I(className="fas fa-chevron-down"),
-                ],
-                align='baseline',
-                justify='center',
-                no_gutters=True
-            ),
+        dbc.Button([
+            html.Span("Clustering"),
+            html.I(className="fas fa-chevron-down ms-2"),
+        ],
             id="clustering-collapse-btn",
             color='light',
-            outline=False
+            outline=False,
+            className="text-nowrap"
         ),
         dbc.Collapse(
             [
@@ -316,13 +288,12 @@ label_block = dbc.Card(
                         label_tabs,
                         dbc.Button(
                             "Run",
-                            block=True,
                             id="label-run-btn",
                             color='primary',
                             outline=False
                         )
                     ],
-                    className="mt-2"
+                    className="mt-2 d-grid gap-2"
                 )
             ],
             is_open=True,
@@ -334,20 +305,14 @@ label_block = dbc.Card(
 
 annotations_block = dbc.Card(
     [
-        dbc.Button(
-            dbc.Row(
-                [
-                    html.Span("Annotations"),
-                    html.Span(style={'width': '5px'}),
-                    html.I(className="fas fa-chevron-down"),
-                ],
-                align='baseline',
-                justify='center',
-                no_gutters=True
-            ),
+        dbc.Button([
+            html.Span("Annotations"),
+            html.I(className="fas fa-chevron-down ms-2"),
+        ],
             id="annotation-collapse-btn",
             color='light',
-            outline=False
+            outline=False,
+            className="text-nowrap"
         ),
         dbc.Collapse(
             [
@@ -357,22 +322,22 @@ annotations_block = dbc.Card(
                             dbc.Row(
                                 dbc.InputGroup(
                                     [
-                                        dbc.InputGroupAddon(
+                                        dbc.InputGroupText(
                                             dbc.Select(
                                                 options=[],
                                                 id="main-annotation-select"
                                             ),
-                                            id="main-annotation-addon",
-                                            addon_type='prepend'
+                                            style={'padding': '0'},
+                                            id="main-annotation-addon"
                                         ),
-                                        dbc.InputGroupAddon(
+                                        dbc.InputGroupText(
                                             dbc.Select(
                                                 options=[],
                                                 id="side-annotation-select"
                                             ),
+                                            style={'padding': '0'},
                                             id="side-annotation-addon",
                                             className="no-display",
-                                            addon_type='prepend'
                                         ),
                                         dbc.Input(
                                             value="",
@@ -384,20 +349,14 @@ annotations_block = dbc.Card(
                                             "Annotate the selected cluster",
                                             target="annotation-input"
                                         ),
-                                        dbc.InputGroupAddon(
-                                            [
-                                                dbc.Button(
-                                                    "Store",
-                                                    id="annotation-store-btn",
-                                                    color='primary'
-                                                )
-                                            ],
-                                            addon_type='append'
+                                        dbc.Button(
+                                            "Store",
+                                            id="annotation-store-btn",
+                                            color='primary'
                                         )
                                     ]
                                 ),
-                                className="mb-2",
-                                no_gutters=True
+                                className="mb-2 g-0",
                             ),
                             dbc.Row(
                                 dbc.Col(
@@ -423,8 +382,7 @@ annotations_block = dbc.Card(
                                 ),
                                 justify='center',
                                 id="main-annotation-table-row",
-                                no_gutters=True,
-                                className="mb-2"
+                                className="mb-2 g-0"
                             ),
                             dbc.Row(
                                 dbc.Col(
@@ -450,8 +408,7 @@ annotations_block = dbc.Card(
                                 ),
                                 justify='center',
                                 id="side-annotation-table-row",
-                                no_gutters=True,
-                                className="no-display mb-2"
+                                className="no-display mb-2 g-0"
                             )
                         ]
                     )
@@ -466,20 +423,14 @@ annotations_block = dbc.Card(
 
 tools_block = dbc.Card(
     [
-        dbc.Button(
-            dbc.Row(
-                [
-                    html.Span("Tools"),
-                    html.Span(style={'width': '5px'}),
-                    html.I(className="fas fa-chevron-down"),
-                ],
-                align='baseline',
-                justify='center',
-                no_gutters=True
-            ),
+        dbc.Button([
+            html.Span("Tools"),
+            html.I(className="fas fa-chevron-down ms-2"),
+        ],
             id="tools-collapse-btn",
             color='light',
-            outline=False
+            outline=False,
+            className="text-nowrap"
         ),
         dbc.Collapse(
             dcc.Loading(dbc.CardBody(
@@ -501,19 +452,15 @@ tools_block = dbc.Card(
                                         "on the plot using the lasso tool.",
                                         target="subset-name-input"
                                     ),
-                                    dbc.InputGroupAddon(
-                                        dbc.Button(
-                                            "Store",
-                                            id="subset-name-store-btn",
-                                            color='primary'
-                                        ),
-                                        addon_type='append'
-                                    )
+                                    dbc.Button(
+                                        "Store",
+                                        id="subset-name-store-btn",
+                                        color='primary'
+                                    ),
                                 ]
                             )
                         ],
-                        className="mb-2",
-                        no_gutters=True
+                        className="mb-2 g-0",
                     ),
                     dbc.Row(
                         [
@@ -545,25 +492,22 @@ tools_block = dbc.Card(
                                             "for user defined subsets.",
                                             target="side-subset-select"
                                         ),
-                                        dbc.InputGroupAddon(
-                                            dbc.Button(
-                                                "Merge",
-                                                id="merge-subset-btn",
-                                                color='primary'
-                                            ),
-                                            addon_type='append'
+                                        dbc.Button(
+                                            "Merge",
+                                            id="merge-subset-btn",
+                                            color='primary'
                                         )
                                     ])
                                 )
                             )
                         ],
-                        no_gutters=True
+                        className="g-0",
                     ),
-                    dbc.FormGroup([
+                    dbc.Form([
                         dbc.InputGroup([
-                            dbc.InputGroupAddon([
+                            dbc.InputGroupText([
                                 "Integrate"
-                            ], addon_type="prepend"),
+                            ]),
                             dbc.Select(
                                 options=[
                                     {
@@ -574,16 +518,14 @@ tools_block = dbc.Card(
                                 id="intg-methods-select",
                                 value=intg_list[0]['value']
                             ),
-                            dbc.InputGroupAddon([
+                            *([
                                 get_cog_btn(
                                     i['value'] + '-btn')
                                 for i in intg_list
-                            ], addon_type="append"),
-                            dbc.InputGroupAddon([
-                                dbc.Button(
-                                    "Run", id="run-integrate-btn",
-                                    color="primary"),
                             ]),
+                            dbc.Button(
+                                "Run", id="run-integrate-btn",
+                                color="primary"),
                             html.Span(id="main-buf-integrate"),
                             html.Span(id="side-buf-integrate"),
                             *intg_settings
@@ -600,44 +542,36 @@ tools_block = dbc.Card(
 
 session_block = dbc.Card(
     [
-        dbc.Button(
-            dbc.Row(
-                [
-                    html.Span("Session"),
-                    html.Span(style={'width': '5px'}),
-                    html.I(className="fas fa-chevron-down"),
-                ],
-                align='baseline',
-                justify='center',
-                no_gutters=True
-            ),
+        dbc.Button([
+            html.Span("Session"),
+            html.I(className="fas fa-chevron-down ms-2"),
+        ],
             id="session-collapse-btn",
             color='light',
-            outline=False
+            outline=False,
+            className="text-nowrap"
         ),
         dbc.Collapse(
             [
                 dbc.CardBody(
                     [
-                        dbc.Button(
+                        html.Div(dbc.Button(
                             "Export Session",
                             id='export-session-btn',
-                            block=True,
                             color='primary',
                             outline=False
-                        ),
+                        ), className="d-grid gap-2 mb-2"),
                         dbc.Tooltip(
                             "Export the dataset and the analysis as an " +
                             ".h5ad file. This make take a few seconds.",
                             target="export-session-btn"
                         ),
-                        dbc.Button(
+                        html.Div(dbc.Button(
                             "Export Annotations",
                             id='export-annotations-btn',
-                            block=True,
                             color='primary',
                             outline=False
-                        ),
+                        ), className="d-grid gap-2"),
                         dbc.Tooltip(
                             "Export the cell IDs and their annotations as " +
                             "a .csv file.",

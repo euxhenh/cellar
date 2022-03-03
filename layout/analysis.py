@@ -1,9 +1,7 @@
 import os
 
 import dash_bootstrap_components as dbc
-import dash_core_components as dcc
-import dash_html_components as html
-import dash_table
+from dash import html, dash_table, dcc
 
 from .misc import (empty_analysis_figure, empty_colocalization_figure,
                    empty_spatial_figure)
@@ -46,7 +44,7 @@ def get_de_card(prefix):
                         dbc.Popover([
                             dbc.PopoverHeader("DE Settings"),
                             dbc.PopoverBody([
-                                dbc.FormGroup([
+                                dbc.Form([
                                     dbc.Label("Alpha"),
                                     dbc.Input(
                                         id=prefix + "-de-analysis-alpha",
@@ -59,7 +57,7 @@ def get_de_card(prefix):
                                         delay=500
                                     )
                                 ]),
-                                dbc.FormGroup([
+                                dbc.Form([
                                     dbc.Label("FoldChange Threshold"),
                                     dbc.Input(
                                         id=prefix + "-de-analysis-fc",
@@ -73,7 +71,7 @@ def get_de_card(prefix):
                                         delay=500
                                     )
                                 ]),
-                                dbc.FormGroup([
+                                dbc.Form([
                                     dbc.Label("Is Data Logged?"),
                                     dbc.RadioItems(
                                         options=[
@@ -98,17 +96,13 @@ def get_de_card(prefix):
                             target=prefix + "-de-analysis-btn",
                             trigger="legacy"
                         ),
-                        dbc.InputGroupAddon(
-                            dbc.Button(
-                                "Find DE Genes",
-                                id=prefix+"-find-de-genes-btn",
-                                color='primary'
-                            ),
-                            addon_type="append"
+                        dbc.Button(
+                            "Find DE Genes",
+                            id=prefix+"-find-de-genes-btn",
+                            color='primary'
                         )
                     ]),
-                    className="mb-2",
-                    no_gutters=True
+                    className="mb-2 g-0",
                 ),
                 dbc.Row(
                     dbc.Col([
@@ -127,7 +121,7 @@ def get_de_card(prefix):
                             ),
                         ], type="circle")
                     ], width=12),
-                    no_gutters=True
+                    className="g-0",
                 )
             ])
         ])
@@ -142,7 +136,7 @@ def get_feature_body(prefix):
                 dbc.Button(
                     dbc.Row([
                         html.Span("DE")
-                    ], align='baseline', justify='center', no_gutters=True),
+                    ], align='baseline', justify='center', className="g-0"),
                     id=prefix + "-paste-de-genes",
                     color='secondary'
                 ),
@@ -195,18 +189,19 @@ def get_feature_body(prefix):
                     delay=500
                 )
             ], width=2)
-        ], justify='between', no_gutters=True, className="mb-2"),
+        ], justify='between', className="mb-2 g-0"),
         dbc.Row([
             dbc.Col([
                 dbc.Row([
-                    dbc.Checkbox(
+                    dbc.Col(dbc.Checkbox(
                         id=prefix + "-auto-scale-expression",
-                        checked=True
-                    ),
-                    html.Span("auto-scale", className="ml-1",
+                        value=True
+                    ), width='auto'),
+                    dbc.Col(html.Span("auto-scale", className="ml-1",
                               id=prefix + "-tooltip-auto-scale"),
-                    dbc.Tooltip("Clips outlier values.",
-                                target=prefix + "-tooltip-auto-scale")
+                              width='auto', style={'font-size': '12px'}),
+                    dbc.Col(dbc.Tooltip("Clips outlier values.",
+                                target=prefix + "-tooltip-auto-scale"))
                 ], justify='center')
             ], width=2),
             dbc.Col([
@@ -219,7 +214,7 @@ def get_feature_body(prefix):
                 ),
             ], id=prefix + "-feature-rangeslider-col")],
             justify='between',
-            no_gutters=True,
+            className="g-0",
             align='start'
         ),
         dbc.Tooltip(
@@ -245,7 +240,7 @@ def get_feature_body(prefix):
 
 
 def get_features_carddeck(prefix):
-    features = dbc.CardDeck(
+    features = dbc.CardGroup(
         [
             get_de_card(prefix),
             dbc.Card(dbc.CardBody([
@@ -346,13 +341,13 @@ def get_enrich_card(prefix):
                                 dbc.Button(
                                     "Run",
                                     id=prefix + "-run-enrich-btn",
-                                    block=True,
                                     color='primary'
                                 ),
+                                className="d-grid gap-2",
                                 width=2
                             )
                         ],
-                        no_gutters=True
+                        className="g-0",
                     ),
                     dbc.Col(
                         dcc.Loading(
@@ -366,7 +361,7 @@ def get_enrich_card(prefix):
                                         ),
                                         width=12
                                     ),
-                                    no_gutters=True
+                                    className="g-0",
                                 ),
                                 dbc.Row(
                                     dbc.Col(
@@ -385,7 +380,7 @@ def get_enrich_card(prefix):
                                         ),
                                         width=12
                                     ),
-                                    no_gutters=True
+                                    className="g-0",
                                 )
                             ],
                             type="circle"
@@ -415,7 +410,7 @@ def get_spatial_card(prefix):
                                         id=prefix + "-buf-load",
                                         fullscreen=True
                                     ),
-                                    dcc.Dropdown(
+                                    dbc.Col(dcc.Dropdown(
                                         options=[
                                             {'label': 'CODEX',
                                              'value': 'spatial-codex'},
@@ -425,20 +420,18 @@ def get_spatial_card(prefix):
                                         className="mw-300",
                                         placeholder="Select spatial data type",
                                         id=prefix + '-spatial-type-dropdown'
-                                    ),
-                                    # dbc.Tooltip(
-                                    #     "Please check the documentation " +
-                                    #     "for file format details.",
-                                    #     target=prefix + '-spatial-type-dropdown'
-                                    # ),
-                                    dcc.Upload(
+                                    )),
+                                    dbc.Col(dcc.Upload(
                                         id=prefix + "-upload-spatial",
                                         children=[
-                                            dbc.Button("Upload")
+                                            dbc.Button(
+                                                "Upload",
+                                                color="secondary"
+                                            )
                                         ],
                                         className="mr-2",
                                         max_size=150*1024*1024  # 150 MB
-                                    ),
+                                    )),
                                     dbc.Col(
                                         dcc.Loading(
                                             dcc.Dropdown(
@@ -452,39 +445,40 @@ def get_spatial_card(prefix):
                                         width=4,
                                         id=prefix + "-feature-list-spatial-col"
                                     ),
-                                    dbc.Button(
+                                    dbc.Col([dbc.Button(
                                         "Generate Tile",
                                         color='primary',
                                         className="mr-2",
-                                        id=prefix + "-generate-tile-btn"
+                                        id=prefix + "-generate-tile-btn"),
+                                        dbc.Tooltip(
+                                            "Generate a spatial tile using " +
+                                            "the uploaded file. Note: there is " +
+                                            "no need to upload any supplementary " +
+                                            "files for server datasets and " +
+                                            "hitting this button will generate " +
+                                            "the tile automatically.",
+                                            target=prefix + "-generate-tile-btn",
+                                            delay=500
+                                        ),
+                                        dcc.Loading(
+                                            dcc.Download(
+                                                id=prefix + "-download-tile-buf")
+                                        )]
                                     ),
-                                    dbc.Tooltip(
-                                        "Generate a spatial tile using " +
-                                        "the uploaded file. Note: there is " +
-                                        "no need to upload any supplementary " +
-                                        "files for server datasets and " +
-                                        "hitting this button will generate " +
-                                        "the tile automatically.",
-                                        target=prefix + "-generate-tile-btn",
-                                        delay=500
-                                    ),
-                                    dcc.Loading(
-                                        dcc.Download(
-                                            id=prefix + "-download-tile-buf")
-                                    ),
-                                    dbc.Button(
+                                    dbc.Col([dbc.Button(
                                         "Download Tile",
                                         color='primary',
                                         id=prefix + "-download-tile-btn"
+                                        ),
+                                        dbc.Tooltip(
+                                            "This will download the tile as a " +
+                                            "high resolution .png image file.",
+                                            target=prefix + "-download-tile-btn",
+                                            delay=500
+                                        )]
                                     ),
-                                    dbc.Tooltip(
-                                        "This will download the tile as a " +
-                                        "high resolution .png image file.",
-                                        target=prefix + "-download-tile-btn",
-                                        delay=500
-                                    )
                                 ],
-                                no_gutters=True
+                                className="g-0",
                             ),
                             dbc.Row([
                                 dbc.Col(
@@ -511,7 +505,7 @@ def get_spatial_card(prefix):
                                     ),
                                     align='center'
                                 )
-                            ], align='center', no_gutters=True)
+                            ], align='center', className="g-0")
                         ],
                         width=12
                     )
@@ -531,7 +525,7 @@ def get_spatial_cluster_score_card(prefix):
                 dbc.Button(
                     "Compute Scores",
                     color='light',
-                    className="mr-2 ml-4",
+                    className="mr-2 ms-4",
                     size='sm',
                     outline=False,
                     id=prefix + "-generate-cluster-scores-btn"
@@ -540,13 +534,14 @@ def get_spatial_cluster_score_card(prefix):
                     html.I(className="fas fa-cog"),
                     id=prefix + "-spatial-cluster-scores-cog",
                     color='light',
+                    className="ms-1"
                     # outline=True
                 ),
                 dbc.Popover(
                     [
                         dbc.PopoverHeader("Settings"),
                         dbc.PopoverBody([
-                            dbc.FormGroup([
+                            dbc.Form([
                                 dbc.Label("# Neighbors"),
                                 dcc.Slider(
                                     id=prefix + "-spatial-cluster-scores-nneigh",
@@ -590,7 +585,7 @@ def get_spatial_protein_score_card(prefix):
                 dbc.Button(
                     "Compute Scores",
                     color='light',
-                    className="mr-2 ml-4",
+                    className="mr-2 ms-4",
                     size='sm',
                     outline=False,
                     id=prefix + "-generate-protein-scores-btn"
@@ -598,13 +593,14 @@ def get_spatial_protein_score_card(prefix):
                 dbc.Button(
                     html.I(className="fas fa-cog"),
                     id=prefix + "-spatial-protein-scores-cog",
-                    color='light'
+                    color='light',
+                    className="ms-1"
                 ),
                 dbc.Popover(
                     [
                         dbc.PopoverHeader("Settings"),
                         dbc.PopoverBody([
-                            dbc.FormGroup([
+                            dbc.Form([
                                 dbc.Label("# Neighbors"),
                                 dcc.Slider(
                                     id=prefix + "-spatial-protein-scores-nneigh",
@@ -641,7 +637,7 @@ def get_spatial_protein_score_card(prefix):
 
 
 def get_spatial_scores_carddeck(prefix):
-    scores = dbc.CardDeck(
+    scores = dbc.CardGroup(
         [
             get_spatial_cluster_score_card(prefix),
             get_spatial_protein_score_card(prefix)
@@ -699,10 +695,10 @@ def get_analysis_tabs(prefix):
                 dbc.Col([
                         dbc.Row(dbc.Col(
                             get_features_carddeck(prefix), width=12),
-                            no_gutters=True),
+                            className="g-0"),
                         dbc.Row(dbc.Col(
                             get_enrich_card(prefix), width=12),
-                            no_gutters=True)
+                            className="g-0")
                         ],
                         className="p-0",
                         width=12
@@ -713,10 +709,10 @@ def get_analysis_tabs(prefix):
                 dbc.Col([
                     dbc.Row(dbc.Col(
                         get_spatial_card(prefix), width=12),
-                        no_gutters=True),
+                        className="g-0"),
                     dbc.Row(dbc.Col(
                         get_spatial_scores_carddeck(prefix), width=12),
-                        no_gutters=True)
+                        className="g-0")
                 ],
                     className="p-0",
                     width=12
