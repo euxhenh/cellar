@@ -1,3 +1,5 @@
+#!/bin/bash
+
 conda install -c r rpy2 r-cluster
 conda install -c conda-forge r-devtools \
 	r-ggplot2 \
@@ -16,8 +18,6 @@ conda install -c bioconda bioconductor-biocinstaller \
 	bioconductor-rcistarget \
 	bioconductor-rtracklayer \
 	bioconductor-aucell
-
-python install_Rdeps.py
 
 conda install -c conda-forge dash dash-bootstrap-components dash-bio
 conda install -c conda-forge scikit-learn
