@@ -20,7 +20,6 @@ cellar_bar = dbc.Nav([
             color='secondary',
             outline=False,
             className="d-flex align-items-center text-nowrap",
-            style={'font-size': '11px'},
         ),
         className="me-2"
     ),
@@ -34,7 +33,6 @@ cellar_bar = dbc.Nav([
             color='secondary',
             outline=False,
             className="d-flex align-items-center text-nowrap",
-            style={'font-size': '11px'},
         ),
         className="me-2"
     ),
@@ -70,9 +68,8 @@ cellar_bar = dbc.Nav([
             dismissable=True,
             style={
                 "position": "fixed",
-                "top": 70, "right": 20, "width": 600
-            },
-            duration=5000
+                "top": 70, "right": 20
+            }
         ),
         *create_multiplexer('push-notification', 'data', 120),
         *create_multiplexer('notifications-toast', 'children', 2),
@@ -125,6 +122,7 @@ navbar = dbc.Navbar(
                 className="g-0 text-nowrap",
             ),
             href=PAPER_URL,
+            target="_blank",
             style={"textDecoration": "none"},
         ),
         cellar_bar

@@ -77,45 +77,9 @@ Manual Installation
 A manual installation involves cloning the Cellar repository and installing
 the necessary Python and R packages. To run Cellar you will need at least
 **Python 3.7** and **R 4.0**. We recommend using a ``Conda`` environment
-for installing the dependencies.
-
-Cellar's source code can be downloaded using::
-
-    git clone https://github.com/euxhenh/cellar
-
-Dependencies
-++++++++++++
-
-Cellar requires the following Python packages:
-
-- dash (== 1.21.0), dash-bootstrap-components (== 0.13.0), dash-bio (>= 0.7.1)
-- numpy (>= 1.21.1), scipy (>= 1.6.3)
-- scikit-learn (>= 0.24.2), scikit-learn-extra (>= 0.2.0), scikit-image (>= 0.18.1)
-- pandas (>= 1.3.1), anndata (>= 0.7.6), scanpy (>= 1.8.1)
-- matplotlib (>= 3.4.2), plotly (>= 5.1.0), python-kaleido (>= 0.2.1)
-- tifffile (>= 2019.7.26.2)
-- igraph (>= 0.9.4), leidenalg (>= 0.8.7)
-- umap-learn (>= 0.5.1)
-- faiss-cpu (>= 1.7.1)
-- joblib (>= 1.0.1)
-- zodb (>= 5.6.0)
-- r-base (>= 4.1.0), r-stringi (>= 1.7.3), rpy2 (>= 3.4.5), anndata2ri (>= 1.0.6)
-- pydiffmap (>= 0.2.0.1)
-- diffxpy (>= 0.7.4), gseapy (>= 0.10.5), pyensembl (>=1.9.4), bintogene (>= 1.23)
-- kneed (>= 0.7.0)
-
-and the following R packages
-
-- SingleR (>= 1.6.1)
-- aertslab/cisTopic (>= 0.3.0)
-- STvEA (>= 0.2.0)
-
-These R packages can be installed using the provided python script
-``install_Rdeps.py``.
-
-The entry point of the application is ``main.py`` and can be run with::
-
-    python main.py
+for installing the dependencies. For a full list of dependencies and
+installation instructions please refer to the
+`documentation <https://euxhenh.github.io/cellar/>`__.
 
 Contributing
 ____________

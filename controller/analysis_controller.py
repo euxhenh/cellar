@@ -2,14 +2,13 @@ import dash
 import os
 import pandas as pd
 import numpy as np
-from zope.interface.declarations import ProvidesClass
 from app import app, dbroot, logger
 from dash.dependencies import Input, Output, State
 from dash.exceptions import PreventUpdate
 
 from .cellar.core import ttest, enrich, get_heatmap, get_violin_plot
 from .cellar.core._tools import _collect_x_from_vars, _collect_x_from_other
-from .cellar.utils.exceptions import InternalError, UserError
+from .cellar.utils.exceptions import UserError
 from .multiplexer import MultiplexerOutput
 from .notifications import _prep_notification
 from layout.misc import empty_analysis_figure
@@ -452,6 +451,7 @@ for prefix, an in zip(['main', 'side'], ['a1', 'a2']):
         Input(prefix + "-heatmap", "n_clicks"),
         Input(prefix + "-violin-plot", "n_clicks"),
         Input(prefix + "-data-load-clean", "data"),
+
         State(prefix + "-feature-list", "value"),
         State(prefix + "-feature-rangeslider", "value"),
         State(prefix + "-auto-scale-expression", "value"),
@@ -467,6 +467,7 @@ for prefix, an in zip(['main-other', 'side-other'], ['a1', 'a2']):
         Input(prefix + "-heatmap", "n_clicks"),
         Input(prefix + "-violin-plot", "n_clicks"),
         Input(prefix[:4] + "-data-load-clean", "data"),
+
         State(prefix + "-feature-list", "value"),
         State(prefix + "-feature-rangeslider", "value"),
         State(prefix + "-auto-scale-expression", "value"),

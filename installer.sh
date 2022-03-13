@@ -1,6 +1,3 @@
-conda create -n cellar python=3.8
-conda activate cellar
-
 conda install -c r rpy2 r-cluster
 conda install -c conda-forge r-devtools \
 	r-ggplot2 \

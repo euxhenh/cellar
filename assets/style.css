@@ -148,6 +148,10 @@
     color: var(--bs-primary);
 }
 
+.popover form {
+    margin-bottom: 10px;
+}
+
 button.export {
     font-size: 11px;
     line-height: 22px;

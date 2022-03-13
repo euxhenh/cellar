@@ -53,10 +53,6 @@ dataset_shape = dbc.Row(
                     color="info",
                     outline=True
                 ),
-                dbc.Tooltip(
-                    "Runtime Estimates",
-                    target="run-time-btn",
-                ),
                 dbc.Popover(
                     [
                         dbc.PopoverHeader("Run-Time Estimates"),
@@ -66,7 +62,7 @@ dataset_shape = dbc.Row(
                     ],
                     id="run-time-popover",
                     target="run-time-btn",
-                    trigger="legacy"
+                    trigger="hover"
                 )
             ],
             width=1

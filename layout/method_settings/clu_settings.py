@@ -201,7 +201,7 @@ clu_leiden_settings = dbc.Popover(
     ],
     id="clu-Leiden-settings",
     target="clu-Leiden-btn",
-    trigger="legacy"
+    trigger="legacy",
 )
 
 clu_leiden_settings_keys = {

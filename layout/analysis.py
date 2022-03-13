@@ -190,41 +190,61 @@ def get_feature_body(prefix):
                 )
             ], width=2)
         ], justify='between', className="mb-2 g-0"),
-        dbc.Row([
-            dbc.Col([
-                dbc.Row([
-                    dbc.Col(dbc.Checkbox(
-                        id=prefix + "-auto-scale-expression",
-                        value=True
-                    ), width='auto'),
-                    dbc.Col(html.Span("auto-scale", className="ml-1",
-                              id=prefix + "-tooltip-auto-scale"),
-                              width='auto', style={'font-size': '12px'}),
-                    dbc.Col(dbc.Tooltip("Clips outlier values.",
-                                target=prefix + "-tooltip-auto-scale"))
-                ], justify='center')
-            ], width=2),
-            dbc.Col([
-                dcc.RangeSlider(
-                    min=0,
-                    max=0,
-                    step=None,
-                    id=prefix + "-feature-rangeslider",
-                    marks={}
+        dbc.Form([
+            dbc.Row([
+                dbc.Col(
+                    dbc.InputGroup([
+                        dbc.InputGroupText([
+                            dbc.Checkbox(
+                                id=prefix + "-auto-scale-expression",
+                                value=True
+                            ),
+                            html.Span(
+                                "auto-scale",
+                                className="ml-1",
+                                id=prefix + "-tooltip-auto-scale",
+                                # style={'font-size': '10px'},
+                            ),
+                            dbc.Tooltip(
+                                "Clips outlier values.",
+                                target=prefix + "-tooltip-auto-scale",
+                            )
+                        ]),
+                    ]),
+                    width=2
                 ),
-            ], id=prefix + "-feature-rangeslider-col")],
-            justify='between',
-            className="g-0",
-            align='start'
-        ),
-        dbc.Tooltip(
-            "Clip expression values to this range. " +
-            "Can be useful to filter outliers or modify " +
-            "the colorbar scale. Only works for a " +
-            "single feature.",
-            target=prefix + "-feature-rangeslider-col",
-            delay=500
-        ),
+                dbc.Col(
+                    dcc.RangeSlider(
+                        min=0,
+                        max=0,
+                        step=None,
+                        id=prefix + "-feature-rangeslider",
+                        marks={}
+                    ),
+                    width=10),
+            ], align='end')
+        ]),
+
+        # dbc.Row([
+        #     dbc.Col(
+
+        #         width='auto',
+        #     ),
+        #     dbc.Col([
+
+        #     ], width='auto', id=prefix + "-feature-rangeslider-col")],
+        #     justify='between',
+        #     className="g-0",
+        #     align='start'
+        # ),
+        # dbc.Tooltip(
+        #     "Clip expression values to this range. " +
+        #     "Can be useful to filter outliers or modify " +
+        #     "the colorbar scale. Only works for a " +
+        #     "single feature.",
+        #     target=prefix + "-feature-rangeslider-col",
+        #     delay=500
+        # ),
         dcc.Loading(
             dcc.Graph(
                 id=prefix + '-analysis-plot',

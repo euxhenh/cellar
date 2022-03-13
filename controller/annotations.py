@@ -81,16 +81,16 @@ def get_update_annotation_table(prefix, an):
         obs['labels'] and obs['annotations']. Only the clusters
         for which annotations exist (i.e., != "") will be displayed.
         """
+        ctx = dash.callback_context
+        if not ctx.triggered:
+            raise PreventUpdate
+
         data = [
             {
                 "cluster_id": "N/A",
                 "annotation": "N/A"
             }
         ]
-
-        ctx = dash.callback_context
-        if not ctx.triggered:
-            raise PreventUpdate
         if an not in dbroot.adatas:
             return data
         if 'adata' not in dbroot.adatas[an]:

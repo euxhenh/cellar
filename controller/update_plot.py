@@ -111,9 +111,11 @@ def signal_plot(
         else:
             raise InternalError(f"No tab with name {actt} found.")
     elif button_id == "main-expression" or button_id == "side-expression":
+        index = 0 if button_id.startswith('main') else 1
         to_return[index] = Signal.FEATURE_EXP
     elif button_id == "main-other-expression" or \
             button_id == "side-other-expression":
+        index = 0 if button_id.startswith('main') else 1
         to_return[index] = Signal.OTHER_FEATURE_EXP
     elif button_id.endswith('-clear-expression-btn'):
         to_return[index] = Signal.RESET
@@ -130,6 +132,7 @@ def signal_plot(
             to_return[index] = Signal.DATA_LOAD
     elif button_id == "main-apply-palette-signal" or \
             button_id == "side-apply-palette-signal":
+        index = 0 if button_id.startswith('main') else 1
         to_return[index] = Signal.PALETTE
     elif button_id == "singler-runtime-yes":
         to_return[2] = False

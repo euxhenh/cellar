@@ -144,7 +144,7 @@ def cl_STvEA(
     indptr = np.array(transfer_mat_r.slots['p'])
     transfer_mat = csc_matrix((data, indices, indptr),
                               (codex_mat.shape[0], cite_mat.shape[0]))
-    # This is how STvEA does it, but it does not give good results
+    # This is how STvEA does it
     # cite_exp_mat = adata_ref.X / np.sum(adata_ref.X, axis=1, keepdims=True)
     # cite_exp_mat[np.isnan(cite_exp_mat)] = 0
     # We normalize by number of neighbors instead
