@@ -164,7 +164,6 @@ def cl_cisTopic(adata, key, x_to_use, topics=40, iterations=150, **kwargs):
         addModels=False,
         returnType='selectedModel')
 
-    print("passed")
     cellassign = cisTopic.modelMatSelection(cc, 'cell', 'Probability')
     # Transpose back and convert to float32
     cellassign = np.array(cellassign).T.copy().astype(np.float32)
