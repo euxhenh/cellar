@@ -19,23 +19,23 @@ explicitly.
 
 ## Python Dependencies
 
-- [dash](https://plotly.com/dash/) (1.21.0), [dash-bootstrap-components](https://dash-bootstrap-components.opensource.faculty.ai/) (0.13.0), [dash-bio](https://dash.plotly.com/dash-bio) (0.7.1)
-- [numpy](https://numpy.org/) (1.21.1), [scipy](https://scipy.org/) (1.6.3)
-- [scikit-learn](https://scikit-learn.org/) (0.24.2), [scikit-learn-extra](https://scikit-learn-extra.readthedocs.io/en/stable/) (0.2.0), [scikit-image](https://scikit-image.org/) (0.18.1)
-- [pandas](https://pandas.pydata.org/) (1.3.1), [anndata](https://anndata.readthedocs.io/en/latest/) (0.7.6), [scanpy](https://scanpy.readthedocs.io/en/stable/) (1.8.1)
-- [matplotlib](https://matplotlib.org/) (3.4.2), [plotly](https://plotly.com/) (5.1.0), [python-kaleido](https://pypi.org/project/kaleido/) (0.2.1), [tifffile](https://pypi.org/project/tifffile/) (2019.7.26.2)
-- [igraph](https://igraph.org/) (0.9.4), [leidenalg](https://leidenalg.readthedocs.io/en/latest/) (0.8.7)
-- [umap-learn](https://umap-learn.readthedocs.io/en/latest/) (0.5.1), [pydiffmap](https://pydiffmap.readthedocs.io/en/master/) (0.2.0.1)
-- [faiss-cpu](https://github.com/facebookresearch/faiss) (1.7.1), [joblib](https://joblib.readthedocs.io/en/latest/) (1.0.1)
-- [zodb](https://zodb.org/en/latest/) (5.6.0)
-- [r-base](https://www.r-project.org/) (4.1.0), [r-stringi](https://cran.r-project.org/web/packages/stringi/index.html) (1.7.3), [rpy2](https://rpy2.github.io/) (3.4.5), [anndata2ri](https://github.com/theislab/anndata2ri) (1.0.6)
-- [diffxpy](https://diffxpy.readthedocs.io/en/latest/) (0.7.4), [gseapy](https://gseapy.readthedocs.io/en/latest/introduction.html) (0.10.5), [pyensembl](https://readthedocs.org/projects/pyensembl/downloads/pdf/latest/) (1.9.4), [bintogene](https://github.com/euxhenh/BinToGene) (1.23)
+- [dash](https://plotly.com/dash/), [dash-bootstrap-components](https://dash-bootstrap-components.opensource.faculty.ai/), [dash-bio](https://dash.plotly.com/dash-bio)
+- [numpy](https://numpy.org/), [scipy](https://scipy.org/)
+- [scikit-learn](https://scikit-learn.org/), [scikit-learn-extra](https://scikit-learn-extra.readthedocs.io/en/stable/), [scikit-image](https://scikit-image.org/)
+- [pandas](https://pandas.pydata.org/), [anndata](https://anndata.readthedocs.io/en/latest/), [scanpy](https://scanpy.readthedocs.io/en/stable/)
+- [matplotlib](https://matplotlib.org/), [plotly](https://plotly.com/), [python-kaleido](https://pypi.org/project/kaleido/), [tifffile](https://pypi.org/project/tifffile/)
+- [igraph](https://igraph.org/), [leidenalg](https://leidenalg.readthedocs.io/en/latest/)
+- [umap-learn](https://umap-learn.readthedocs.io/en/latest/), [pydiffmap](https://pydiffmap.readthedocs.io/en/master/)
+- [faiss-cpu](https://github.com/facebookresearch/faiss), [joblib](https://joblib.readthedocs.io/en/latest/)
+- [zodb](https://zodb.org/en/latest/)
+- [r-base](https://www.r-project.org/), [r-stringi](https://cran.r-project.org/web/packages/stringi/index.html), [rpy2](https://rpy2.github.io/), [anndata2ri](https://github.com/theislab/anndata2ri)
+- [diffxpy](https://diffxpy.readthedocs.io/en/latest/), [gseapy](https://gseapy.readthedocs.io/en/latest/introduction.html), [pyensembl](https://readthedocs.org/projects/pyensembl/downloads/pdf/latest/), [bintogene](https://github.com/euxhenh/BinToGene)
 
 ## R Dependencies
 
-- [SingleR](https://github.com/dviraran/SingleR) (1.6.1)
-- [cisTopic](https://github.com/aertslab/cisTopic) (0.3.0)
-- [STvEA](https://github.com/CamaraLab/STvEA) (0.2.0)
+- [SingleR](https://github.com/dviraran/SingleR)
+- [cisTopic](https://github.com/aertslab/cisTopic)
+- [STvEA](https://github.com/CamaraLab/STvEA)
 
 NOTE: We prefer to install R (r-base) via conda as seen above.
 The few remaining R libraries can be installed
