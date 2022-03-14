@@ -33,26 +33,6 @@ app.layout = dbc.Container(
     fluid=True
 )
 
-"""
-Dash requires the knowledge of the path used to access the app.
-ShinyProxy makes this path available as an environment variable,
-which we expose to dash below.
-"""
-app.config.supress_callback_exceptions = True
-app.config.update({
-    # remove the default of '/'
-    'routes_pathname_prefix': '',
-
-    # remove the default of '/'
-    'requests_pathname_prefix': ''
-})
-
-# if 'SHINYPROXY_PUBLIC_PATH' in os.environ:
-#     app.config.update({
-#         'routes_pathname_prefix': os.environ['SHINYPROXY_PUBLIC_PATH'],
-#         'requests_pathname_prefix': os.environ['SHINYPROXY_PUBLIC_PATH']
-#     })
-
 if __name__ == "__main__":
     dev = False  # Set to True if in development
     app.run_server(debug=dev, use_reloader=dev, host='0.0.0.0')
