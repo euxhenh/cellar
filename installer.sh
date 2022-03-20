@@ -37,6 +37,7 @@ conda install -c conda-forge -c plotly -c bioconda dash=2.2.0 \
 	plotly \
 	anndata2ri \
 	gseapy \
-	pyensembl
+	pyensembl \
+	gunicorn
 
 pip install pydiffmap diffxpy bintogene

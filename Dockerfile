@@ -7,4 +7,4 @@ RUN git clone https://github.com/euxhenh/cellar /home/nonroot/cellar
 
 WORKDIR /home/nonroot/cellar
 EXPOSE 8050
-ENTRYPOINT ["conda", "run", "--no-capture-output", "-n", "cellar", "python", "main.py"]
+ENTRYPOINT ["conda", "run", "--no-capture-output", "-n", "cellar", "gunicorn", "-b", "0.0.0.0:8050", "main:server"]
