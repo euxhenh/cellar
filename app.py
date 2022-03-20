@@ -46,6 +46,7 @@ else:
     requests_pathname_prefix = None
 
 app = dash.Dash(
+    __name__,
     external_stylesheets=external_stylesheets,
     title="Cellar",
     suppress_callback_exceptions=True,
