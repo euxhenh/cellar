@@ -3,6 +3,7 @@ import io
 import tarfile
 import shutil
 import gc
+import glob
 
 import anndata
 import dash
@@ -13,6 +14,7 @@ from dash.dependencies import Input, Output, State
 from app import app, logger
 from gvars import DATA_PATH
 from .cellar.utils.misc import get_server_dataset_dict
+from .cellar.utils.exceptions import UserError
 from .multiplexer import MultiplexerOutput
 from .notifications import _prep_notification
 
@@ -67,9 +69,20 @@ def upload_data(contents, filename, actp):
             return dash.no_update, _prep_notification(error_msg, "danger")
 
         try:
-            
-            adata = sc.read_10x_mtx(extract_path+'/filtered_feature_bc_matrix', var_names='gene_symbols')
+            barcodes = glob.glob(f'tmp/{an}/d10x/**/barcodes.tsv', recursive=True)
+            if len(barcodes) > 1:
+                raise UserError("More than one barcode file found.")
+            if len(barcodes) == 0:
+                raise UserError("No barcodes.tsv file found.")
+            barcodes = barcodes[0]
+            folder_name = os.path.dirname(barcodes)
+            print(folder_name)
+            adata = sc.read_10x_mtx(folder_name, var_names='gene_symbols')
             adata.write(os.path.join(DATA_PATH, 'uploaded', filename))
+        except UserError as e:
+            logger.error(str(e))
+            error_msg = str(e)
+            return dash.no_update, _prep_notification(error_msg, "danger")
         except Exception as e:
             logger.error(str(e))
             error_msg = "Couldn't read Feature-Barcode-Matrix."
