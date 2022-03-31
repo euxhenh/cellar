@@ -52,7 +52,7 @@ An alternative to a Docker installation is to create a local
 [conda](https://docs.conda.io/en/latest/) virtual environment
 with all the required dependencies. If you do not have conda installed, please
 follow these [instructions](https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html) first. Assuming conda is now available, follow the steps below.
-1. Download Cellar's [installer script](https://github.com/euxhenh/cellar/blob/main/installer.sh) yml file
+1. Download Cellar's [installer script](https://github.com/euxhenh/cellar/blob/main/installer.sh)
 ```bash
 $ wget https://raw.githubusercontent.com/euxhenh/cellar/main/installer.sh
 ```
