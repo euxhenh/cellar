@@ -57,7 +57,8 @@ clu_leiden_settings = dbc.Popover(
                             id="clu-Leiden-resolution",
                             min=0.01, max=10, step=0.01,
                             value=1,
-                            tooltip={'always_visible': True}
+                            tooltip={'always_visible': True},
+                            marks=None,
                         )
                     ]
                 ),
@@ -113,7 +114,8 @@ clu_leiden_settings = dbc.Popover(
                             id="clu-Leiden-nneigh",
                             min=1, max=100, step=1,
                             value=15,
-                            tooltip={'always_visible': True}
+                            tooltip={'always_visible': True},
+                            marks=None,
                         )
                     ]
                 ),

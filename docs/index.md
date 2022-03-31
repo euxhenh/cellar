@@ -52,37 +52,41 @@ An alternative to a Docker installation is to create a local
 [conda](https://docs.conda.io/en/latest/) virtual environment
 with all the required dependencies. If you do not have conda installed, please
 follow these [instructions](https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html) first. Assuming conda is now available, follow the steps below.
-1. Download Cellar's [conda environment](https://github.com/euxhenh/cellar/blob/main/env.yml) yml file
+1. Download Cellar's [installer script](https://github.com/euxhenh/cellar/blob/main/installer.sh) yml file
 ```bash
-$ wget https://raw.githubusercontent.com/euxhenh/cellar/main/env.yml
+$ wget https://raw.githubusercontent.com/euxhenh/cellar/main/installer.sh
 ```
-2. Install the conda environment
+2. Create a conda environment running python 3.8
 ```bash
-$ conda env create -f env.yml
+$ conda create -n cellar python=3.8
 ```
-This will create an environment named `cellar`.
 3. Activate the environment
 ```bash
 $ conda activate cellar
 ```
-4. Download the [install_Rdeps.py](https://github.com/euxhenh/cellar/blob/main/install_Rdeps.py) script
+This will create an environment named `cellar`.
+4. Install packages
+```bash
+$ bash installer.sh
+```
+5. Download the [install_Rdeps.py](https://github.com/euxhenh/cellar/blob/main/install_Rdeps.py) script
 ```bash
 $ wget https://raw.githubusercontent.com/euxhenh/cellar/main/install_Rdeps.py
 ```
-5. Install R dependencies
+6. Install R dependencies
 ```bash
 $ python install_Rdeps.py
 ```
-6. Download Cellar's source code
+7. Download Cellar's source code
 ```bash
 $ git clone https://github.com/euxhenh/cellar
 ```
-7. Run Cellar
+8. Run Cellar
 ```bash
 $ cd cellar
 $ python main.py
 ```
-8. Visit [localhost:8050](localhost:8050) on your web browser.
+9. Wait for about 10 seconds and visit [localhost:8050](localhost:8050) on your web browser.
 
 ---
 
