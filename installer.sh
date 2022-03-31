@@ -21,8 +21,8 @@ conda install -c conda-forge -c bioconda r-base=4.1.2 \
 	bioconductor-rtracklayer \
 	bioconductor-aucell
 
-conda install -c conda-forge -c plotly -c bioconda dash=2.2.0 \
-	dash-bootstrap-components=1.0.3 \
+conda install -c conda-forge -c plotly -c bioconda dash \
+	dash-bootstrap-components \
 	dash-bio \
 	scikit-learn \
 	scikit-learn-extra \
@@ -41,3 +41,5 @@ conda install -c conda-forge -c plotly -c bioconda dash=2.2.0 \
 	gunicorn
 
 pip install pydiffmap diffxpy bintogene
+
+conda clean -afy
