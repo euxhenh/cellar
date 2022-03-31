@@ -2,3 +2,5 @@ data
 experiments
 tmp
 PaperImages
+__pycache__
+docs
