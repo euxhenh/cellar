@@ -76,7 +76,6 @@ def upload_data(contents, filename, actp):
                 raise UserError("No barcodes.tsv file found.")
             barcodes = barcodes[0]
             folder_name = os.path.dirname(barcodes)
-            print(folder_name)
             adata = sc.read_10x_mtx(folder_name, var_names='gene_symbols')
             adata.write(os.path.join(DATA_PATH, 'uploaded', filename))
         except UserError as e:
