@@ -685,8 +685,14 @@ def get_asct_tables(prefix):
 
     asct_table = dbc.Card([
         dbc.CardBody([
-            html.H5("Anatomical Structures, Cell Types, and Biomarkers Tables",
-                    className="card-title"),
+            html.H5([
+                "Anatomical Structures, Cell Types, and Biomarkers Tables ",
+                html.A(
+                    "(ASCT-B)",
+                    href="https://www.nature.com/articles/s41556-021-00788-6",
+                    target="_blank",
+                ),
+            ], className="card-title"),
             dbc.Select(
                 id=prefix + "-asct-select",
                 options=[{
