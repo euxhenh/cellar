@@ -18,7 +18,7 @@ For details on the file format, see [Spatial Tile](../ui-components/spatial/tile
 ---
 
 We will be analyzing a lymph node dataset, courtesy of the University of Florida and
-[HuBMAP](https://portal.hubmapconsortium.org/browse/dataset/077f7862f6306055899374c7807a30c3).
+[HuBMAP](https://portal.hubmapconsortium.org/browse/dataset/800f1703d81373c58ca5ca0b76e52d79).
 This dataset can be found on Cellar under the name *CODEX_Florida_19-003-lymph-node-R2*.
 
 <div class="code-example step" markdown="1">

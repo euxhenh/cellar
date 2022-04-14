@@ -28,8 +28,8 @@ running Cellar can be accessed
 `here <https://cellar.cmu.hubmapconsortium.org/app/cellar>`__. See below
 for a local installation.
 
-An accompanying preprint and supplementary files can be accessed through
-`bioRxiv <https://www.biorxiv.org/content/10.1101/2021.03.19.436162v1?rss=1>`__.
+An accompanying paper and supplementary files can be accessed via
+`Nature Communications <https://www.nature.com/articles/s41467-022-29744-0>`__.
 
 The `documentation <https://euxhenh.github.io/cellar/>`__
 includes details on how to use Cellar and the data types
@@ -51,7 +51,7 @@ _____
 - Documentation & Tutorials: https://euxhenh.github.io/cellar/
 - Video Tutorials: https://www.youtube.com/playlist?list=PL5sLSLkTYpWgfBQ0M8ObfBIqDMAzx0-D2
 - Issue Tracker: https://github.com/euxhenh/cellar/issues
-- Preprint: https://www.biorxiv.org/content/10.1101/2021.03.19.436162v1?rss=1
+- Paper: https://www.nature.com/articles/s41467-022-29744-0
 - DOI: https://zenodo.org/badge/latestdoi/372980254
 
 Local Installation
@@ -80,6 +80,25 @@ the necessary Python and R packages. To run Cellar you will need at least
 for installing the dependencies. For a full list of dependencies and
 installation instructions please refer to the
 `documentation <https://euxhenh.github.io/cellar/>`__.
+
+Citation
+________
+If you use Cellar in your work, we would appreciate citations to Cellar's paper
+
+.. code-block::
+
+    @article{Hasanaj2022,
+        author = {Euxhen Hasanaj and Jingtao Wang and Arjun Sarathi and Jun Ding and Ziv Bar-Joseph},
+        issn = {2041-1723},
+        issue = {1},
+        journal = {Nature Communications 2022 13:1},
+        month = {4},
+        pages = {1-6},
+        publisher = {Nature Publishing Group},
+        title = {Interactive single-cell data analysis using Cellar},
+        volume = {13},
+        year = {2022},
+    }
 
 Contributing
 ____________

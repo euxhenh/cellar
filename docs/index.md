@@ -60,11 +60,11 @@ $ wget https://raw.githubusercontent.com/euxhenh/cellar/main/installer.sh
 ```bash
 $ conda create -n cellar python=3.8
 ```
+This will create an environment named `cellar`.
 3. Activate the environment
 ```bash
 $ conda activate cellar
 ```
-This will create an environment named `cellar`.
 4. Install packages
 ```bash
 $ bash installer.sh
@@ -100,7 +100,24 @@ modalities by using a simple and intuitive interface. Cellar is meant to
 be a one-stop solution to the single cell analysis pipeline by offering a
 wide selection of tools that follow best practices agreed upon in the community.
 
-A preprint is available on [bioRxiv](https://www.biorxiv.org/content/10.1101/2021.03.19.436162v1?rss=1).
+An accompanying paper is available via [Nature Communications](https://www.nature.com/articles/s41467-022-29744-0).
+
+If you use Cellar in your work, we would appreciate citations to Cellar's paper
+
+```
+@article{Hasanaj2022,
+    author = {Euxhen Hasanaj and Jingtao Wang and Arjun Sarathi and Jun Ding and Ziv Bar-Joseph},
+    issn = {2041-1723},
+    issue = {1},
+    journal = {Nature Communications 2022 13:1},
+    month = {4},
+    pages = {1-6},
+    publisher = {Nature Publishing Group},
+    title = {Interactive single-cell data analysis using Cellar},
+    volume = {13},
+    year = {2022},
+}
+```
 
 ### License
 

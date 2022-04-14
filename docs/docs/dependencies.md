@@ -13,7 +13,7 @@ in a conda environment.
 
 ---
 
-View Cellar's [conda environment](https://github.com/euxhenh/cellar/blob/main/env.yml) for a full list of libraries and their
+View Cellar's [conda environment](https://github.com/euxhenh/cellar/blob/main/env.linux.yml) for a full list of libraries and their
 versions. Below we describe only the libraries that Cellar depends on
 explicitly.
 
