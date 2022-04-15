@@ -40,7 +40,7 @@ of the CODEX dataset.
 
 <div class="code-example step" markdown="1">
 - Load the two datasets in Dual Mode just as described in the
-  [Joint Analysis & Label Transfer](/docs/tutorials/tutorial3) tutorial
+  [Joint Analysis & Label Transfer](./tutorial3) tutorial
   (for CITE-seq load `Govek_Troisi_CITE-seq`, and for CODEX load
   `BALBc1_Goltsev_CODEX_3k`).
 </div>

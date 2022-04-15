@@ -34,7 +34,7 @@ assignments are present in the file. In this case, we have already
 reduced (UMAP + UMAP) and clustered (Leiden) the lymph node dataset.
 If you wish to recluster or run different dimensionality reduction methods,
 you can follow the same steps as in the
-[Basic Analysis Pipeline](/docs/tutorials/tutorial1) tutorial. We will head
+[Basic Analysis Pipeline](./tutorial1) tutorial. We will head
 straight for the spatial tile.
 
 <div class="code-example step" markdown="1">
@@ -46,7 +46,7 @@ straight for the spatial tile.
 
 For your own uploaded CODEX data you may need to upload additional
 files containing spatial coordinates for every cell. For details,
-check the section on [Spatial Tiles](/docs/ui-components/spatial/tile).
+check the section on [Spatial Tiles](../ui-components/spatial/tile).
 
 Cellar will now read each cell's coordinates and attempt to color each
 cell by the cluster assignments.

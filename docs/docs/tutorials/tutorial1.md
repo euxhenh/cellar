@@ -51,7 +51,7 @@ that the shape of the data has changed. The number of cells remained the same,
 but we now only have 570 highly variable genes to work with.
 
 Next, we reduce the data. To understand what method to use and when, please
-refer to [Dimensionality Reduction](/docs/ui-components/sidebar/dimensionality-reduction).
+refer to [Dimensionality Reduction](../ui-components/sidebar/dimensionality-reduction).
 Applying PCA, followed by UMAP for 2D embeddings has proven to be a good
 combination when analyzing scRNA-seq data.
 
