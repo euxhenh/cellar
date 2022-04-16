@@ -54,6 +54,10 @@ These use different formats for constructing the spatial image.
     need to be compressed into a `.tar.gz`
     file and uploaded to Cellar in the spatial panel.
 
+    [Here](https://drive.google.com/file/d/1flajE4b11j6gWC03PsOuU7CUUgC45l0p/view?usp=sharing)
+    is an example `tar.gz` file that corresponds to *CODEX_Florida_19-003-lymph-node-R2*
+    in Cellar.
+
     Generating the tile will color each cell by its cluster.
 
     <img src="../../../images/codex-spatial-image.png" width="500" class="center"/>
