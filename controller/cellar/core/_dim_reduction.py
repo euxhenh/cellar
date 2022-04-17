@@ -81,7 +81,9 @@ def get_func(func_name):
         if kwargs[comp_key] >= mins:
             raise InvalidArgument(
                 "Number of components is higher than or equal to " +
-                f"min(samples, features) = {mins}.")
+                f"min(samples, features) = {mins}. Please reduce the " +
+                "number of components by clicking the gear-shaped button " +
+                "next to the method's name.")
 
         fitter = func_map[func_name](**kwargs)
         adata.obsm[key] = fitter.fit_transform(x_to_use)
