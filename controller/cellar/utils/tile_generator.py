@@ -316,7 +316,7 @@ def _read_verify_10x_json(path_to_json):
         with open(path_to_json, 'r') as jf:
             json_dict = json.load(jf)
     except:
-        raise UserError("Could not read json file.")
+        raise UserError("Could not read json file `scalefactors_json.json`.")
 
     if any([k not in json_dict
             for k in ['tissue_hires_scalef', 'spot_diameter_fullres']]):
@@ -334,7 +334,7 @@ def _read_verify_10x_image(path_to_img):
     try:
         image = np.array(plt.imread(path_to_img))
     except:
-        raise UserError("Could not read image file.")
+        raise UserError("Could not read image file `detected_tissue_image.jpg`.")
     return image
 
 
@@ -354,7 +354,7 @@ def _read_verify_10x_df(path_to_df, in_tissue=True):
                 continue
             spatial_dict[row[0]] = [row[-2], row[-1]]
     except:
-        raise UserError("Could not read dataframe.")
+        raise UserError("Could not read dataframe `tissue_positions_list.csv`.")
     return spatial_dict
 
 

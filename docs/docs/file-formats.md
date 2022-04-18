@@ -7,7 +7,7 @@ nav_order: 4
 # Accepted File Formats
 {: .no_toc}
 
-Cellar accepts `.h5ad`, `.csv`, and `.gz` files.
+Cellar accepts `.h5ad`, `.csv`, `.h5`, and `.tar.gz` files.
 {: .fs-6 .fw-300}
 
 ---
@@ -15,9 +15,10 @@ Cellar accepts `.h5ad`, `.csv`, and `.gz` files.
 Internally, Cellar uses the [AnnData](https://anndata.readthedocs.io/en/latest/)
 data structure. These objects can be
 uploaded to Cellar as `.h5ad` files. We also accept
-`.csv` files or feature barcode sequences in
+`.csv` or `.h5` files or feature barcode sequences in
 [cellranger](https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/output/matrices) or
-[spaceranger](https://support.10xgenomics.com/spatial-gene-expression/software/pipelines/latest/output/matrices) format as `.gz` files.
+[spaceranger](https://support.10xgenomics.com/spatial-gene-expression/software/pipelines/latest/output/matrices) format as `.tar.gz` files.
+The archive must contain `barcodes.tsv`, `genes.tsv`, and `matrix.mtx` files (possibly gzipped).
 In the case of `.h5ad` or `.csv` files,
 please make sure the data follows the *cell* x *feature*
 format, i.e., rows of the matrix correspond to cells and columns

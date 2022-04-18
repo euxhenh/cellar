@@ -292,11 +292,13 @@ def get_features_carddeck(prefix):
 
 to_show = [
     "Cell Type",
+    "HuBMAP_ASCTplusB_augmented_2022",
     "GO_Biological_Process_2018",
     "GO_Cellular_Component_2018",
     "GO_Molecular_Function_2018",
     "KEGG_2021_Human",
     "KEGG_2019_Mouse",
+    "CellMarker_Augmented_2021",
     "MSigDB_Computational",
     "MSigDB_Hallmark_2020",
     "WikiPathway_2021_Human",
@@ -437,6 +439,7 @@ def get_spatial_card(prefix):
                                             {'label': 'Visium 10x',
                                              'value': 'spatial-10x'}
                                         ],
+                                        value="spatial-codex",
                                         className="mw-300",
                                         placeholder="Select spatial data type",
                                         id=prefix + '-spatial-type-dropdown'

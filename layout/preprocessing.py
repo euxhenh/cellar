@@ -517,8 +517,9 @@ atac_row = dbc.Row([
                                         )
                                     ]
                                 ), width=6)
-                            ]
-                        )
+                            ], className="mb-2"
+                        ),
+                        html.P("Note: This process may take a long time (10-30 mins).")
                     ]
                 )
             ],

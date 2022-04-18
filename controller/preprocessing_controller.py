@@ -12,7 +12,7 @@ from dash.exceptions import PreventUpdate
 from anndata import AnnData
 
 from .cellar.core import read_adata
-from .cellar.utils.exceptions import InvalidArgument
+from .cellar.utils.exceptions import InvalidArgument, UserError
 from .multiplexer import MultiplexerOutput
 from .notifications import _prep_notification
 
@@ -122,29 +122,40 @@ def run_prep(
     try:
         # Copy first
         # In case of error, nothing is updated
-        if dbroot.adatas[an]['adata'].raw is not None:
-            adata = dbroot.adatas[an]['adata'].to_memory(
-            ).raw.to_adata().copy()
-            logger.info("Found raw key for preprocessing.")
-        else:
-            adata = dbroot.adatas[an]['adata'].to_memory().copy()
-            logger.info("No raw key found for preprocessing.")
+        # Loading to memory might be problematic for very large datasets
+        adata = dbroot.adatas[an]['adata'].to_memory().copy()
+        # Check this first
+        if clog is not None and clog:
+            if adata.X.min() < 0:
+                raise UserError(
+                    "Data contains negative values. Is the data logged already?")
 
-        # copy old adata into raw
-        adata.raw = adata
+        n_samples, n_features = adata.shape
 
         if cfcc is not None and cfcc:
             sc.pp.filter_cells(adata, min_counts=sfcc[0])
             sc.pp.filter_cells(adata, max_counts=sfcc[1])
+            if adata.shape[0] < 2:
+                raise UserError(
+                    "Less than 2 cells remained. Try softer constraints.")
         if cfcg is not None and cfcg:
             sc.pp.filter_cells(adata, min_genes=sfcg[0])
             sc.pp.filter_cells(adata, max_genes=sfcg[1])
+            if adata.shape[0] < 2:
+                raise UserError(
+                    "Less than 2 cells remained. Try softer constraints.")
         if cfgc is not None and cfgc:
             sc.pp.filter_genes(adata, min_counts=sfgc[0])
             sc.pp.filter_genes(adata, max_counts=sfgc[1])
+            if adata.shape[1] < 2:
+                raise UserError(
+                    "Less than 2 features remained. Try softer constraints.")
         if cfgc2 is not None and cfgc2:
             sc.pp.filter_genes(adata, min_cells=sfgc2[0])
             sc.pp.filter_genes(adata, max_cells=sfgc2[1])
+            if adata.shape[1] < 2:
+                raise UserError(
+                    "Less than 2 features remained. Try softer constraints.")
 
         if chvar is not None and chvar:
             if hvdmax == 'inf':
@@ -158,6 +169,9 @@ def run_prep(
             )
 
             adata = adata[:, adata.var.highly_variable]
+            if adata.shape[1] < 2:
+                raise UserError(
+                    "Less than 2 features remained. Try softer constraints.")
 
         if cnt is not None and cnt:
             if nt == "":
@@ -165,19 +179,20 @@ def run_prep(
             sc.pp.normalize_total(adata, target_sum=nt, max_fraction=nmax)
         if clog is not None and clog:
             if adata.X.min() < 0:
-                adata = adata.raw
-                return [dash.no_update] * 4 + [
-                    _prep_notification(
-                        "Data contains negative values. Cannot take log.",
-                        "danger")]
+                raise UserError(
+                    "Data contains negative values. Is the data logged already?")
             sc.pp.log1p(adata)
 
         if cscale is not None and cscale:
             if smax == "":
                 smax = None
             sc.pp.scale(adata, zero_center=sz, max_value=smax)
+    except UserError as ue:
+        logger.error(str(ue))
+        error_msg = str(ue)
+        logger.error(error_msg)
+        return [dash.no_update] * 4 + [_prep_notification(error_msg, "danger")]
     except Exception as e:
-        adata = adata.raw
         logger.error(str(e))
         error_msg = "An error occurred in preprocessing."
         logger.error(error_msg)
@@ -196,6 +211,7 @@ def run_prep(
     if os.path.exists(filename):
         os.remove(filename)
 
+    # Need to write and read back in backed mode
     adata.write(filename)
 
     del adata
@@ -203,8 +219,14 @@ def run_prep(
     gc.collect()
 
     dbroot.adatas[an]['adata'] = read_adata(filename)
+    n_samples_new, n_features_new = dbroot.adatas[an]['adata'].shape
 
-    return 1, 1, "", 1, _prep_notification("Finished preprocessing.", "info")
+    msg = (
+        f"Finished preprocessing. Kept {n_samples_new}/{n_samples} samples "
+        f"and {n_features_new}/{n_features} features. "
+    )
+
+    return 1, 1, "", 1, _prep_notification(msg, "info")
 
 
 @app.callback(

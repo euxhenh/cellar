@@ -26,19 +26,19 @@ from layout.misc import empty_spatial_figure, empty_colocalization_figure
 
 def get_parse_tar_gz_func(an):
     def _func(contents, filename, data_type):
-        content_type, content_string = contents.split(',')
-        decoded = b64decode(content_string)
-
+        print(data_type)
         if data_type == 'spatial-10x':
             extract_path = f'tmp/{an}/s10x'
         elif data_type == 'spatial-codex':
             extract_path = f'tmp/{an}/codex'
         else:
-            raise PreventUpdate
+            return dash.no_update, _prep_notification("Please select a data type.", "info")
 
         if filename.endswith('tar.gz'):
             logger.info(f"Extracting tar.gz file at {extract_path}.")
             try:
+                content_type, content_string = contents.split(',')
+                decoded = b64decode(content_string)
                 tar = tarfile.open(fileobj=io.BytesIO(decoded))
                 if os.path.isdir(extract_path):
                     shutil.rmtree(extract_path)

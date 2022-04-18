@@ -34,10 +34,10 @@ def upload_data(contents, filename, actp):
 
     an = "a1" if actp == 1 else 'a2'
 
-    if filename in os.listdir(os.path.join(DATA_PATH, 'uploaded')):
-        error_msg = f"Dataset {filename} already exists. Skipping..."
-        logger.warn(error_msg)
-        return dash.no_update, _prep_notification(error_msg, "warning")
+    # if filename in os.listdir(os.path.join(DATA_PATH, 'uploaded')):
+    #     error_msg = f"Dataset {filename} already exists. Skipping..."
+    #     logger.warn(error_msg)
+    #     return dash.no_update, _prep_notification(error_msg, "warning")
 
     content_type, content_string = contents.split(',')
     decoded = b64decode(content_string)
@@ -70,11 +70,13 @@ def upload_data(contents, filename, actp):
 
         try:
             barcodes = glob.glob(f'tmp/{an}/d10x/**/barcodes.tsv', recursive=True)
-            if len(barcodes) > 1:
+            barcodes_gz = glob.glob(f'tmp/{an}/d10x/**/barcodes.tsv.gz', recursive=True)
+
+            if len(barcodes) > 1 or len(barcodes_gz) > 1:
                 raise UserError("More than one barcode file found.")
-            if len(barcodes) == 0:
+            if len(barcodes) == 0 and len(barcodes_gz) == 0:
                 raise UserError("No barcodes.tsv file found.")
-            barcodes = barcodes[0]
+            barcodes = barcodes_gz[0] if len(barcodes) == 0 else barcodes[0]
             folder_name = os.path.dirname(barcodes)
             adata = sc.read_10x_mtx(folder_name, var_names='gene_symbols')
             adata.write(os.path.join(DATA_PATH, 'uploaded', filename))
@@ -91,7 +93,7 @@ def upload_data(contents, filename, actp):
 
         del adata
         gc.collect()
-    elif filename.endswith('.csv'):
+    elif filename.endswith('.csv') or filename.endswith('.h5'):
         fpath = os.path.join(DATA_PATH, 'uploaded', filename)
         with open(fpath, "wb") as f:
             logger.info(f"Writing {filename} into uploaded directory.")
@@ -99,22 +101,25 @@ def upload_data(contents, filename, actp):
                 f.write(io.BytesIO(decoded).read())
             except Exception as e:
                 logger.error(str(e))
-                error_msg = "Couldn't write csv file."
+                error_msg = "Couldn't write file."
                 return dash.no_update, _prep_notification(error_msg, "danger")
 
         try:
-            adata = anndata.read_csv(fpath)
+            if filename.endswith('.csv'):
+                adata = sc.read_csv(fpath)
+            else:
+                adata = sc.read_10x_h5(fpath)
             adata.write_h5ad(
                 os.path.join(DATA_PATH, 'uploaded', filename[:-4] + '.h5ad'))
         except Exception as e:
             logger.error(str(e))
-            error_msg = "Couldn't read csv file from anndata."
+            error_msg = "Couldn't read file."
             return dash.no_update, _prep_notification(error_msg, "danger")
 
         del adata
         gc.collect()
     else:
-        error_msg = f"File format {filename} not implemented."
+        error_msg = f"File format .{filename.split('.')[-1]} not implemented."
         logger.warn(error_msg)
         return dash.no_update, _prep_notification(error_msg, "warning")
 

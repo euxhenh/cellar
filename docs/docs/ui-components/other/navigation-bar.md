@@ -128,12 +128,7 @@ dual mode can also be activated from here.
 
 Running any preprocessing
 will replace the raw data matrix with the preprocessed one.
-If you wish to run preprocessing with different options, you need
+If you wish to run preprocessing with different configs, you need
 to reload the dataset from the Dataset menu.
-In case you export the session as an `.h5ad`
-file from the Import/Export menu, you can still find the raw data under
-`adata.raw`.
-
-
 
 <!-- <img src="/images/enrich.png" class="center"/> -->
