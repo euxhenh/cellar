@@ -236,6 +236,7 @@ def generate_tile(
 
     if adata is not None and key in adata.uns:
         owner = adata.uns[key].astype(int).copy()
+        logger.info("Using cached tile.")
     else:
         if 'x' in adata.obs and 'y' in adata.obs:
             logger.info("Reading x and y coordinates from adata.")
@@ -243,6 +244,7 @@ def generate_tile(
             y = adata.obs['y'].to_numpy().astype(float)
             owner = get_owner_from_coordinates(x, y)
         else:
+            logger.info("Reading tile information from tiff files.")
             owner = get_owner_from_paths(
                 path_to_tiff, path_to_df, NO_OWNER, OUTLINE)
         if adata is not None:

@@ -166,8 +166,10 @@ def get_update_plot_func(an, prefix):
                 clear_x_emb_dependends(dbroot.adatas[an]['adata'])
                 vis_filter(
                     dbroot.adatas[an]['adata'], vis_method, settings)
-                return get_dim_figure(dbroot.adatas[an]['adata'], title),\
-                    dash.no_update, dash.no_update
+                return (
+                    get_dim_figure(dbroot.adatas[an]['adata'], title),
+                    1, dash.no_update
+                )
             elif s_code == Signal.CLUSTER:
                 # Cluster and prepare figure
                 clu_filter(dbroot.adatas[an]['adata'], clu_method, settings)
@@ -248,7 +250,7 @@ def get_update_plot_func(an, prefix):
                 raise InternalError(f"No signal with id {s_code} found.")
         except ArpackNoConvergence as anc:
             logger.error(str(anc))
-            error_msg = "No eigenvectors converged. Try a different method."
+            error_msg = "No eigenvectors converged for Diffmap. Try a different method."
             logger.warn(error_msg)
             return [dash.no_update] * 2 + [_prep_notification(
                 error_msg, "warning")]

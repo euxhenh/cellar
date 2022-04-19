@@ -130,7 +130,7 @@ def get_generate_tile_func(an, prefix):
                 datapath = f'data/codex_tile/{fname}/data.csv'
             # In case no necessary spatial tile information has been uploaded
             elif not os.path.isdir(f'tmp/{an}/codex'):
-                if 'x' not in adata.obs or 'y' not in adata.obs:
+                if 'x' not in adata.obs or 'y' not in adata.obs or 'spatial_idx' not in adata.obs:
                     error_msg = "No spatial files have been uploaded."
                     logger.error(error_msg)
                     return dash.no_update, _prep_notification(error_msg, "warn")
