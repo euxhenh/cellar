@@ -3,7 +3,7 @@ layout: default
 title: Data Shape
 nav_order: 2
 parent: Other
-grand_parent: UI Components
+grand_parent: Components
 ---
 
 # Data Shape

@@ -3,7 +3,7 @@ layout: default
 title: Navigation Bar
 nav_order: 1
 parent: Other
-grand_parent: UI Components
+grand_parent: Components
 ---
 
 # Navigation bar

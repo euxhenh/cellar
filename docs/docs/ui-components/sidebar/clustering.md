@@ -4,7 +4,7 @@ title: Clustering
 nav_order: 2
 parent: Sidebar
 usemathjax: true
-grand_parent: UI Components
+grand_parent: Components
 ---
 
 # Clustering

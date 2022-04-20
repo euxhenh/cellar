@@ -3,7 +3,7 @@ layout: default
 title: Enrichment Analysis
 nav_order: 3
 parent: Analysis
-grand_parent: UI Components
+grand_parent: Components
 ---
 
 # Enrichment Analysis

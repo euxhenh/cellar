@@ -3,7 +3,7 @@ layout: default
 title: Plot
 nav_order: 3
 parent: Other
-grand_parent: UI Components
+grand_parent: Components
 ---
 
 # Plot

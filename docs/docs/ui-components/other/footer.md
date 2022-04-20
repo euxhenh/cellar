@@ -3,7 +3,7 @@ layout: default
 title: Footer
 nav_order: 4
 parent: Other
-grand_parent: UI Components
+grand_parent: Components
 ---
 
 # Footer

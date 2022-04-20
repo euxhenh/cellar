@@ -3,7 +3,7 @@ layout: default
 title: DE Analysis
 nav_order: 1
 parent: Analysis
-grand_parent: UI Components
+grand_parent: Components
 ---
 
 # DE Analysis

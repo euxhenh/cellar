@@ -3,7 +3,7 @@ layout: default
 title: Dimensionality Reduction
 nav_order: 1
 parent: Sidebar
-grand_parent: UI Components
+grand_parent: Components
 ---
 
 # Dimensionality Reduction

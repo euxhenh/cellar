@@ -3,7 +3,7 @@ layout: default
 title: Other
 nav_order: 4
 has_children: true
-parent: UI Components
+parent: Components
 ---
 
 # Other

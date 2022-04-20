@@ -4,7 +4,7 @@ title: Co-Localization Scores
 nav_order: 2
 parent: Spatial
 usemathjax: true
-grand_parent: UI Components
+grand_parent: Components
 ---
 
 # Co-Localization Scores

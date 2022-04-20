@@ -4,7 +4,7 @@ title: Session
 nav_order: 5
 parent: Sidebar
 usemathjax: true
-grand_parent: UI Components
+grand_parent: Components
 ---
 
 # Session

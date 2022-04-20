@@ -4,7 +4,7 @@ title: Annotations
 nav_order: 3
 parent: Sidebar
 usemathjax: true
-grand_parent: UI Components
+grand_parent: Components
 ---
 
 # Annotations

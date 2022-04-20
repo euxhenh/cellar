@@ -3,7 +3,7 @@ layout: default
 title: Feature Visualization
 nav_order: 2
 parent: Analysis
-grand_parent: UI Components
+grand_parent: Components
 ---
 
 # Feature Visualization

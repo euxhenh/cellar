@@ -3,7 +3,7 @@ layout: default
 title: Sidebar
 nav_order: 2
 has_children: true
-parent: UI Components
+parent: Components
 ---
 
 # Sidebar

@@ -4,7 +4,7 @@ title: Tools
 nav_order: 4
 parent: Sidebar
 usemathjax: true
-grand_parent: UI Components
+grand_parent: Components
 ---
 
 # Tools

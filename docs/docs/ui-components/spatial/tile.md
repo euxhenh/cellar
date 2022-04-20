@@ -4,7 +4,7 @@ title: Spatial Tile
 nav_order: 1
 parent: Spatial
 usemathjax: true
-grand_parent: UI Components
+grand_parent: Components
 ---
 
 # Spatial Tile

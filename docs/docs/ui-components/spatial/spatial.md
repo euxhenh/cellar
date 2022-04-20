@@ -3,7 +3,7 @@ layout: default
 title: Spatial
 nav_order: 5
 has_children: true
-parent: UI Components
+parent: Components
 ---
 
 # Spatial
