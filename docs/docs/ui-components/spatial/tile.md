@@ -10,53 +10,73 @@ grand_parent: UI Components
 # Spatial Tile
 {: .no_toc }
 
-This panel was originally built to support
-[CODEX](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6086938/) data and was
-later expanded to include
-[Visium 10x](https://www.10xgenomics.com/products/spatial-gene-expression).
-These use different formats for constructing the spatial image.
+Currently we support CODEX and Visium 10x spatial technologies.
 
 <div class="code-example" markdown="1">
 
 1. *CODEX*
 
-    For CODEX we accept image data produced by
-    [cytokit](https://github.com/hammerlab/cytokit). You will need the following:
+    For CODEX we accept image data in three different ways.
 
-    1. **Segmented images**
+    1. **x, y coordinates**
 
-        These are `.tif` files named
-        `R001_X00\*_Y00\*.tif` where the asterix
-        character specifies the x and y coordinates of the tile
-        (starting from 1). These images should have shape
-        (z-planes, 4, height, width) where the 4 axis show:
+        The simplest representation consists of $$x$$ and $$y$$ coordinates
+        corresponding to cell centers. This info should be provided in the
+        anndata file under `adata.obs['x']` and `adata.obs['y']`. The cells
+        will be visualized as dots.
 
-        1. the cell segmentations filled,
-        2. nucleus segmentation filled,
-        3. cell segmentation outlines,
-        4. nucleus segmentation outlines
+        See an [example file](https://drive.google.com/file/d/17DaPpa4AJOaXPyoQtGl2ufYtbbiJZq8C/view?usp=sharing).
 
-        Each pixel in these segmented images
-        will either have value 0, denoting no cell,
-        or the value of the cell ID.
+    2. **Spatial tile**
 
-    2. **A `data.csv` file**
+        A single channel image with pixel values representing cell membership
+        can also be provided under `adata.uns['spatial_idx']`. The tile can
+        have any shape (width, height). Pixel $$(i, j)$$ should be set to
+        the index of a cell in adata (from 0 to the number of cells minus 1).
+        A pixel value of -1 implies an empty location,
+        and a value of -2 implies cell boundary (optional).
 
-        This file contains information output from Cytokit. Each row
-        represents a cell, and the column `rid` gives the cell index
-        in the `.h5ad` file.
-        The column `id` gives the cell ID for that specific tile. The column `z`
-        gives which z-plane in which that particular tile has the best focus,
-        and columns `'tile_x'` and `'tile_y'` give the coordinates of the tile
-        for that cell.
+        [Example file](https://drive.google.com/file/d/1i6Td4WSjnuqG7ByYuyGG6Rv7qHtqYj64/view?usp=sharing).
 
-    A folder named `images` containing the tiff files and the `data.csv` file
-    need to be compressed into a `.tar.gz`
-    file and uploaded to Cellar in the spatial panel.
+    3. **cytokit**
 
-    [Here](https://drive.google.com/file/d/1flajE4b11j6gWC03PsOuU7CUUgC45l0p/view?usp=sharing)
-    is an example `tar.gz` file that corresponds to *CODEX_Florida_19-003-lymph-node-R2*
-    in Cellar.
+        Lastly, we accept output produced by [cytokit](https://github.com/hammerlab/cytokit).
+        You will need the following:
+
+        * **Segmented images**
+
+            These are `.tif` files named
+            `R001_X00\*_Y00\*.tif` where the asterix
+            character specifies the x and y coordinates of the tile
+            (starting from 1). These images should have shape
+            (z-planes, 4, height, width) where the 4 axis show:
+
+            1. the cell segmentations filled,
+            2. nucleus segmentation filled,
+            3. cell segmentation outlines,
+            4. nucleus segmentation outlines
+
+            Each pixel in these segmented images
+            will either have value 0, denoting no cell,
+            or the value of the cell ID.
+
+        * **A `data.csv` file**
+
+            This file contains information output from Cytokit. Each row
+            represents a cell, and the column `rid` gives the cell index
+            in the `.h5ad` file.
+            The column `id` gives the cell ID for that specific tile. The column `z`
+            gives which z-plane in which that particular tile has the best focus,
+            and columns `'tile_x'` and `'tile_y'` give the coordinates of the tile
+            for that cell.
+
+            A folder named `images` containing the tiff files and the `data.csv` file
+            need to be compressed into a `.tar.gz`
+            file and uploaded to Cellar in the spatial panel.
+
+            [Here](https://drive.google.com/file/d/1flajE4b11j6gWC03PsOuU7CUUgC45l0p/view?usp=sharing)
+            is an example `tar.gz` file that corresponds to *CODEX_Florida_19-003-lymph-node-R2*
+            in Cellar.
 
     Generating the tile will color each cell by its cluster.
 
