@@ -49,7 +49,7 @@ def load_dataset(n1, dname, actp):
 
     try:
         adata = read_adata(dname)
-        if not adata.var.index.is_unique():
+        if not adata.var.index.is_unique:
             adata.var_names_make_unique()
         if adata.shape[0] <= 2:
             raise UserError("Dataset contains less than 3 points.")
