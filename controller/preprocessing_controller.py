@@ -1,5 +1,6 @@
 import gc
 import os
+import traceback
 from ast import literal_eval
 
 import dash
@@ -162,16 +163,24 @@ def run_prep(
                 hvdmax = np.Inf
             if hvtg == "":
                 hvtg = None
+            elif hvtg is not None:
+                hvtg = int(hvtg)
+                if hvtg < 2:
+                    raise UserError("No. Top Genes should be greater than 1.")
+            if hvf == 'seurat_v3' and hvtg is None:
+                raise UserError(
+                    "You must specify `No. Top Genes` with flavor='seurat_v3'."
+                )
             sc.pp.highly_variable_genes(
                 adata, flavor=hvf, n_top_genes=hvtg,
                 min_mean=hvmmin, max_mean=hvmmax,
                 min_disp=hvdmin, max_disp=hvdmax
             )
 
-            adata = adata[:, adata.var.highly_variable]
-            if adata.shape[1] < 2:
+            if adata.var.highly_variable.sum() < 2:
                 raise UserError(
                     "Less than 2 features remained. Try softer constraints.")
+            adata = adata[:, adata.var.highly_variable]
 
         if cnt is not None and cnt:
             if nt == "":
@@ -190,11 +199,13 @@ def run_prep(
     except UserError as ue:
         logger.error(str(ue))
         error_msg = str(ue)
+        logger.error(traceback.format_exc())
         logger.error(error_msg)
         return [dash.no_update] * 4 + [_prep_notification(error_msg, "danger")]
     except Exception as e:
         logger.error(str(e))
         error_msg = "An error occurred in preprocessing."
+        logger.error(traceback.format_exc())
         logger.error(error_msg)
         return [dash.no_update] * 4 + [_prep_notification(error_msg, "danger")]
 
