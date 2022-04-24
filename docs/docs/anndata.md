@@ -21,6 +21,7 @@ For an overview of the AnnData parameters check the AnnData
 
 * `adata.obs['labels']`: Cluster IDs, integer
 * `adata.obs['annotations']`: Cluster annotations (cell types), strings
+* `adata.obs['x']`, `adata.obs['y']`: x, y coordinates corresponding to cell centers for spatial data
 
 * `adata.var['gene_symbols']`: HGNC gene symbols, strings
 
@@ -28,6 +29,7 @@ For an overview of the AnnData parameters check the AnnData
 * `adata.uns['x_emb']`: Dimensionality reduction settings, dictionary
 * `adata.uns['x_emb_2d']`: 2D dimensionality reduction settings, dictionary
 * `adata.uns['neighs']`: Neighbors graph settings, dictionary
+* `adata.uns['spatial_idx']`: 2D tile mapping each pixel to the corresponding cell (see [spatial tile](ui-components/spatial/tile))
 
 * `adata.obsm['x_emb']`: Reduced representation of the data, array
 * `adata.obsm['x_emb_2d']`: 2D embeddings of the data, array

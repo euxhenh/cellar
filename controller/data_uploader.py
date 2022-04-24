@@ -79,6 +79,8 @@ def upload_data(contents, filename, actp):
             barcodes = barcodes_gz[0] if len(barcodes) == 0 else barcodes[0]
             folder_name = os.path.dirname(barcodes)
             adata = sc.read_10x_mtx(folder_name, var_names='gene_symbols')
+            if not adata.var.index.is_unique:
+                adata.var_names_make_unique()
             adata.write(os.path.join(DATA_PATH, 'uploaded', filename))
         except UserError as e:
             logger.error(str(e))
@@ -109,6 +111,8 @@ def upload_data(contents, filename, actp):
                 adata = sc.read_csv(fpath)
             else:
                 adata = sc.read_10x_h5(fpath)
+            if not adata.var.index.is_unique:
+                adata.var_names_make_unique()
             adata.write_h5ad(
                 os.path.join(DATA_PATH, 'uploaded', filename[:-4] + '.h5ad'))
         except Exception as e:
