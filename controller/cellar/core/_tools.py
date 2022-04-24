@@ -1,10 +1,8 @@
 import anndata
 import numpy as np
-from numpy.core.fromnumeric import var
 import pandas as pd
 from app import logger
-from pyensembl import EnsemblRelease
-from controller.cellar.utils.exceptions import InternalError, InvalidArgument
+from controller.cellar.utils.exceptions import InternalError
 from controller.cellar.utils.exceptions import IncorrectFileFormat
 from controller.cellar.utils.misc import is_sparse
 
@@ -80,22 +78,17 @@ def cl_add_gene_symbol(adata, spliton='.'):
     var_names_trimmed = np.char.upper(var_names_trimmed)
     # determine format
     if var_names_trimmed[0][:4] == 'ENSG':
-        data = EnsemblRelease(104)
+        data = pd.read_csv('data/geneIdsNamesHuman.csv', index_col=0)
     elif var_names_trimmed[0][:4] == 'ENSM':
-        data = EnsemblRelease(104, species='mouse')
+        data = pd.read_csv('data/geneIdsNamesMouse.csv', index_col=0)
     else:
         adata.var['gene_symbols'] = var_names_trimmed
         return
 
     gene_symbols = []
-    for i in var_names_trimmed:
-        try:
-            gene_name = data.gene_name_of_gene_id(i)
-            if len(gene_name) > 0:
-                gene_symbols.append(gene_name)
-            else:
-                gene_symbols.append(i)
-        except ValueError:
-            gene_symbols.append(i)
+    data = data.to_dict('index')
+    for sym in var_names_trimmed:
+        name = data.get(sym, {'name': sym})['name']
+        gene_symbols.append(name)
 
     adata.var['gene_symbols'] = np.char.upper(gene_symbols)
