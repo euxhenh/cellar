@@ -158,6 +158,30 @@ def run_prep(
                 raise UserError(
                     "Less than 2 features remained. Try softer constraints.")
 
+        # if chvar is not None and chvar:
+        #     if hvf != 'seurat_v3' and (clog is None or not clog):
+        #         raise UserError(
+        #             "For all flavors other than `seurat_v3` data must be "
+        #             "log-transformed. Please check `Log1p`."
+        #         )
+
+        def _normalize_and_log(adata):
+            nonlocal nt
+            if cnt is not None and cnt:
+                if nt == "":
+                    nt = None
+                sc.pp.normalize_total(adata, target_sum=nt, max_fraction=nmax)
+            if clog is not None and clog:
+                if adata.X.min() < 0:
+                    raise UserError(
+                        "Data contains negative values. "
+                        "Is the data logged already?")
+                sc.pp.log1p(adata)
+
+        # If not seurat_v3, log-transform the data before finding high var genes
+        if hvf != 'seurat_v3':
+            _normalize_and_log(adata)
+
         if chvar is not None and chvar:
             if hvdmax == 'inf':
                 hvdmax = np.Inf
@@ -182,15 +206,9 @@ def run_prep(
                     "Less than 2 features remained. Try softer constraints.")
             adata = adata[:, adata.var.highly_variable]
 
-        if cnt is not None and cnt:
-            if nt == "":
-                nt = None
-            sc.pp.normalize_total(adata, target_sum=nt, max_fraction=nmax)
-        if clog is not None and clog:
-            if adata.X.min() < 0:
-                raise UserError(
-                    "Data contains negative values. Is the data logged already?")
-            sc.pp.log1p(adata)
+        # If seurat_v3, log-transform the data after finding high var genes
+        if hvf == 'seurat_v3':
+            _normalize_and_log(adata)
 
         if cscale is not None and cscale:
             if smax == "":
