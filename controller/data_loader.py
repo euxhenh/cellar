@@ -220,8 +220,7 @@ def update_feature_list(s1, s2, s3, actp):
             _prep_notification(error_msg, "warning")]
 
     try:
-        if 'gene_symbols' not in adata.var:
-            cl_add_gene_symbol(adata)
+        cl_add_gene_symbol(adata)
     except Exception as e:
         logger.error(str(e))
         error_msg = "Error occurred when adding gene names."
