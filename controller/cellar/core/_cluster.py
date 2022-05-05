@@ -2,7 +2,6 @@ import igraph as ig
 import leidenalg as la
 import numpy as np
 from app import logger
-from faiss.swigfaiss_avx2 import compute_PQ_dis_tables_dsub2
 from scipy.sparse import csr_matrix, issparse
 from sklearn.cluster import AgglomerativeClustering, KMeans, SpectralClustering
 from sklearn_extra.cluster import KMedoids
