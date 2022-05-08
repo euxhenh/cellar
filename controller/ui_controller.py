@@ -33,8 +33,10 @@ for collapsible_id, button_id in [
 
 
 @app.callback(
-    Output("main-plot-col", "width"),
-    Output("side-plot-col", "width"),
+    Output("main-plot-col", "md"),
+    Output("side-plot-col", "md"),
+    Output("main-plot-col", "lg"),
+    Output("side-plot-col", "lg"),
     Output("main-plot-col", "className"),
     Output("side-plot-col", "className"),
 
@@ -52,6 +54,7 @@ for collapsible_id, button_id in [
 )
 def toggle_dual_mode(n1, is_dual, actp):
     w1, w2 = 12, 0
+    wlg1, wlg2 = 12, 0
     d1, d2 = "block-display", "no-display"
 
     dm_label = [
@@ -65,7 +68,8 @@ def toggle_dual_mode(n1, is_dual, actp):
         raise PreventUpdate
 
     if is_dual is None or not is_dual:
-        w1, w2 = 6, 6
+        w1, w2 = 12, 12
+        wlg1, wlg2 = 6, 6
         d1, d2 = "block-display", "block-display"
         dm_label = [
             html.I(className="fas fa-square me-2"),
@@ -75,9 +79,10 @@ def toggle_dual_mode(n1, is_dual, actp):
     elif is_dual:
         if actp == 2:
             w1, w2 = 0, 12
+            wlg1, wlg2 = 0, 12
             d1, d2 = "no-display", "block-display"
 
-    return w1, w2, d1, d2, not is_dual, dm_label, a1, a2
+    return w1, w2, wlg1, wlg2, d1, d2, not is_dual, dm_label, a1, a2
 
 
 @app.callback(

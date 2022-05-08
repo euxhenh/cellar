@@ -21,56 +21,40 @@ def get_cog_btn(id, display='none'):
     )
 
 
-dataset_shape = dbc.Row(
-    [
-        dbc.Col(
-            [
-                dbc.InputGroup(
-                    [
-                        dbc.InputGroupText("No. Samples"),
-                        dbc.InputGroupText(
-                            "N/A", className="shape-text", id="no-samples"),
-                    ]
-                )
-            ]
+dataset_shape = dbc.Row([
+    dbc.Col([
+        dbc.InputGroup([
+            dbc.InputGroupText("No. Samples"),
+            dbc.InputGroupText("N/A", className="shape-text", id="no-samples"),
+        ], size='sm'),
+    ], width=5,),
+    dbc.Col([
+        dbc.InputGroup([
+            dbc.InputGroupText("No. Features"),
+            dbc.InputGroupText("N/A", className="shape-text", id="no-features"),
+        ], size='sm'),
+    ], width=5,),
+    dbc.Col([
+        dbc.Button(
+            html.I(className="far fa-lightbulb"),
+            id="run-time-btn",
+            color="info",
+            outline=True,
+            size='sm',
         ),
-        dbc.Col(
+        dbc.Popover(
             [
-                dbc.InputGroup(
-                    [
-                        dbc.InputGroupText("No. Features"),
-                        dbc.InputGroupText(
-                            "N/A", className="shape-text", id="no-features"),
-                    ]
-                )
-            ]
-        ),
-        dbc.Col(
-            [
-                dbc.Button(
-                    html.I(className="far fa-lightbulb"),
-                    id="run-time-btn",
-                    color="info",
-                    outline=True
-                ),
-                dbc.Popover(
-                    [
-                        dbc.PopoverHeader("Run-Time Estimates"),
-                        dbc.PopoverBody([
-                            "No dataset loaded."
-                        ], id="run-time-popover-body")
-                    ],
-                    id="run-time-popover",
-                    target="run-time-btn",
-                    trigger="hover"
-                )
+                dbc.PopoverHeader("Run-Time Estimates"),
+                dbc.PopoverBody([
+                    "No dataset loaded."
+                ], id="run-time-popover-body")
             ],
-            width=1
+            id="run-time-popover",
+            target="run-time-btn",
+            trigger="hover"
         )
-    ],
-    justify='between',
-    className="mb-2 g-0"
-)
+    ], width=1,)
+], justify='between', className="mb-2 g-0")
 
 dim_block = dbc.Card(
     [

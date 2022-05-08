@@ -27,17 +27,16 @@ row_1 = dbc.Row([
                         dcc.RangeSlider(
                             id="prep-filter-cells-counts-slider",
                             min=0,
-                            max=5000,
+                            max=10000,
                             step=50,
                             value=[100, 3000],
-                            marks={i: str(i) for i in
-                                   range(0, 5001, 500)},
+                            marks={i: str(i) for i in range(0, 10001, 2000)},
                             tooltip={
                                 'always_visible': True,
                                 'placement': 'bottom'
                             }
                         )
-                    ])
+                   ])
                 ], className="g-0 mb-2"),
                 dbc.Row([
                     dbc.Col([
@@ -52,33 +51,20 @@ row_1 = dbc.Row([
                         dcc.RangeSlider(
                             id="prep-filter-cells-genes-slider",
                             min=0,
-                            max=5000,
+                            max=10000,
                             step=50,
                             value=[100, 3000],
-                            marks={i: str(i) for i in range(0, 5001, 500)},
+                            marks={i: str(i) for i in range(0, 10001, 2000)},
                             tooltip={
                                 'always_visible': True,
                                 'placement': 'bottom'
                             }
                         )
                     ])
-                ], className="g-0"),
-                # html.P(
-                #     [
-                #         "Details: ",
-                #         html.A("scanpy.readthedocs.io/en/stable/api/"
-                #                "scanpy.pp.filter_cells.html#scanpy.pp."
-                #                "filter_cells",
-                #                href="https://scanpy.readthedocs.io/en/"
-                #                "stable/api/scanpy.pp.filter_cells."
-                #                "html#scanpy.pp.filter_cells",
-                #                target="_blank")
-                #     ],
-                #     className="small"
-                # )
+                ], className="g-0 mb-2"),
             ])
         ], className="prep-card-long"),
-        width=3, xs=12, sm=12, md=3, lg=3
+        sm=12, md=6, lg=3
     ),
     dbc.Col(
         dbc.Card([
@@ -96,10 +82,10 @@ row_1 = dbc.Row([
                         dcc.RangeSlider(
                             id="prep-filter-genes-counts-slider",
                             min=0,
-                            max=5000,
+                            max=10000,
                             step=50,
                             value=[100, 3000],
-                            marks={i: str(i) for i in range(0, 5001, 500)},
+                            marks={i: str(i) for i in range(0, 10001, 2000)},
                             tooltip={
                                 'always_visible': True,
                                 'placement': 'bottom'
@@ -120,11 +106,10 @@ row_1 = dbc.Row([
                         dcc.RangeSlider(
                             id="prep-filter-genes-cells-slider",
                             min=0,
-                            max=5000,
+                            max=10000,
                             step=50,
                             value=[100, 3000],
-                            marks={i: str(i) for i in
-                                   range(0, 5001, 500)},
+                            marks={i: str(i) for i in range(0, 10001, 2000)},
                             tooltip={
                                 'always_visible': True,
                                 'placement': 'bottom'
@@ -133,24 +118,10 @@ row_1 = dbc.Row([
                     ]
                     )
                 ], className="g-0"),
-                # html.P(
-                #     [
-                #         "Details: ",
-                #         html.A("scanpy.readthedocs.io/en/stable/api/"
-                #                "scanpy.pp.filter_genes.html#scanpy.pp."
-                #                "filter_genes",
-                #                href="https://scanpy.readthedocs.io/en/"
-                #                "stable/api/scanpy.pp.filter_genes."
-                #                "html#scanpy.pp.filter_genes",
-                #                target="_blank")
-                #     ],
-                #     className="small"
-                # )
             ])
-        ],
-            className="prep-card-long"
+        ], className="prep-card-long"
         ),
-        width=3, xs=12, sm=12, md=3, lg=3
+        sm=12, md=6, lg=3
     ),
     dbc.Col(
         dbc.Card([
@@ -260,26 +231,12 @@ row_1 = dbc.Row([
                         )
                     ]
                 ),
-                # html.P(
-                #     [
-                #         "Details: ",
-                #         html.A("scanpy.readthedocs.io/en/stable/api/"
-                #                "scanpy.pp.highly_variable_genes.html#"
-                #                "scanpy.pp.highly_variable_genes",
-                #                href="https://scanpy.readthedocs.io/en/"
-                #                "stable/api/scanpy.pp.highly_"
-                #                "variable_genes.html#scanpy.pp."
-                #                "highly_variable_genes",
-                #                target="_blank")
-                #     ],
-                #     className="small"
-                # )
             ]
             )
         ],
             className="prep-card-long"
         ),
-        width=3, xs=12, sm=12, md=3, lg=3
+        sm=12, md=6, lg=3
     ),
     dbc.Col(
         dbc.Card(
@@ -424,7 +381,7 @@ row_1 = dbc.Row([
             ],
             className="prep-card-long"
         ),
-        width=3, xs=12, sm=12, md=3, lg=3
+        sm=12, md=6, lg=3
     )
 ], className="g-0")
 

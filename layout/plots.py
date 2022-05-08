@@ -255,12 +255,12 @@ plots = dbc.Row(
     [
         dbc.Col(
             get_plot("main"),
-            width=12,
+            md=12, lg=12,
             id="main-plot-col"
         ),
         dbc.Col(
             get_plot("side"),
-            width=0,
+            md=0, lg=0,
             id="side-plot-col",
             className="no-display"
         )

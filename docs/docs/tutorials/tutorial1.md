@@ -48,7 +48,7 @@ variance.
 
 A notification saying "Finished preprocessing" should appear. We can now see
 that the shape of the data has changed. The number of cells remained the same,
-but we now only have 570 highly variable genes to work with.
+but we now only have 439 highly variable genes to work with.
 
 Next, we reduce the data. To understand what method to use and when, please
 refer to [Dimensionality Reduction](../ui-components/sidebar/dimensionality-reduction).

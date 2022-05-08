@@ -37,3 +37,7 @@
 .mw-900>* {
     min-width: 900px;
 }
+
+.mh-400>* {
+    min-height: 400px;
+}

@@ -11,7 +11,7 @@ main_body = dbc.Row(
         dbc.Col(
             sidebar,
             className="p-0 sidebar pe-2",
-            width=3, xs=12, sm=12, md=3, lg=3
+            sm=12, md=12, lg=3
         ),
         dbc.Col(
             [
@@ -34,7 +34,7 @@ main_body = dbc.Row(
                 )
             ],
             className="main-body mb-2",
-            width=9, xs=12, sm=12, md=9, lg=9
+            sm=12, md=12, lg=9
         ),
     ],
     className="g-0",

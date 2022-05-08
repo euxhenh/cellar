@@ -125,7 +125,7 @@ def get_de_card(prefix):
                 )
             ])
         ])
-    ])
+    ], style={'height': '100%'})
     return de_card
 
 
@@ -154,8 +154,7 @@ def get_feature_body(prefix):
                         id=prefix + '-feature-list',
                         placeholder="Search features",
                     ), type="circle")
-            ], width=7 + prefix.endswith('other'),
-                id=prefix + "-feature-list-col"),
+            ], width=6 + prefix.endswith('other'), id=prefix + "-feature-list-col"),
             dbc.Col(
                 dbc.DropdownMenu(
                     [
@@ -199,17 +198,17 @@ def get_feature_body(prefix):
                                 id=prefix + "-auto-scale-expression",
                                 value=True
                             ),
-                            html.Span(
-                                "auto-scale",
-                                className="ml-1",
-                                id=prefix + "-tooltip-auto-scale",
-                                # style={'font-size': '10px'},
-                            ),
-                            dbc.Tooltip(
-                                "Clips outlier values.",
-                                target=prefix + "-tooltip-auto-scale",
-                            )
                         ]),
+                        html.Span(
+                            "auto-scale",
+                            className="ml-1",
+                            id=prefix + "-tooltip-auto-scale",
+                            # style={'font-size': '10px'},
+                        ),
+                        dbc.Tooltip(
+                            "Clips outlier values.",
+                            target=prefix + "-tooltip-auto-scale",
+                        )
                     ]),
                     width=2
                 ),
@@ -262,8 +261,8 @@ def get_feature_body(prefix):
 def get_features_carddeck(prefix):
     features = dbc.CardGroup(
         [
-            get_de_card(prefix),
-            dbc.Card(dbc.CardBody([
+            dbc.Col(get_de_card(prefix), md=12, lg=6),
+            dbc.Col(dbc.Card(dbc.CardBody([
                 dbc.Tabs([
                     dbc.Tab(
                         get_feature_body(prefix),
@@ -272,17 +271,7 @@ def get_features_carddeck(prefix):
                         get_feature_body(prefix + '-other'),
                         label="Other")
                 ], className="mb-2"),
-                # dbc.Tooltip(
-                #     "Select one or multiple features " +
-                #     "for visualization purposes. This input " +
-                #     "will automatically parse any selected " +
-                #     "feature from the DE table. To understand " +
-                #     "what is shown when multiple features are " +
-                #     "selected, please check the documentation.",
-                #     target=prefix + "-feat-title",
-                #     delay=500
-                # ),
-            ]), style={'overflow': 'auto'})
+            ]), style={'overflow': 'auto', 'height': '100%'}), md=12, lg=6)
         ],
         className="mb-2 analysis-container"
     )
@@ -333,7 +322,7 @@ def get_enrich_card(prefix):
                                     id=prefix + '-gene-set-dropdown',
                                     className="mr-2",
                                 ),
-                                width=6
+                                class_name="mb-2", md=12, lg=6,
                             ),
                             dbc.Col(
                                 dbc.InputGroup(
@@ -357,16 +346,17 @@ def get_enrich_card(prefix):
                                     ],
                                     className="mr-2",
                                 ),
-                                width=4
+                                class_name="mb-2", md=12, lg=4,
                             ),
                             dbc.Col(
                                 dbc.Button(
                                     "Run",
                                     id=prefix + "-run-enrich-btn",
-                                    color='primary'
+                                    color='primary',
+                                    class_name="d-grid gap-2",
                                 ),
-                                className="d-grid gap-2",
-                                width=2
+                                className="d-grid gap-2 mb-2",
+                                md=12, lg=2,
                             )
                         ],
                         className="g-0",
@@ -412,7 +402,7 @@ def get_enrich_card(prefix):
                 className="overflow-auto"
             )
         ],
-        className="mb-2 analysis-container"
+        className="mb-2 analysis-container mh-400"
     )
 
     return enrich
@@ -432,47 +422,48 @@ def get_spatial_card(prefix):
                                         id=prefix + "-buf-load",
                                         fullscreen=True
                                     ),
-                                    dbc.Col(dcc.Dropdown(
-                                        options=[
-                                            {'label': 'CODEX',
-                                             'value': 'spatial-codex'},
-                                            {'label': 'Visium 10x',
-                                             'value': 'spatial-10x'}
-                                        ],
-                                        value="spatial-codex",
-                                        className="mw-300",
-                                        placeholder="Select spatial data type",
-                                        id=prefix + '-spatial-type-dropdown'
-                                    )),
-                                    dbc.Col(dcc.Upload(
-                                        id=prefix + "-upload-spatial",
-                                        children=[
-                                            dbc.Button(
-                                                "Upload",
-                                                color="secondary"
-                                            )
-                                        ],
-                                        className="mr-2",
-                                        max_size=150*1024*1024  # 150 MB
-                                    )),
-                                    dbc.Col(
+                                    dbc.Col(dbc.InputGroup([
+                                        dcc.Dropdown(
+                                            options=[
+                                                {'label': 'CODEX',
+                                                'value': 'spatial-codex'},
+                                                {'label': 'Visium 10x',
+                                                'value': 'spatial-10x'}
+                                            ],
+                                            value="spatial-codex",
+                                            className="mw-150",
+                                            placeholder="Select spatial data type",
+                                            id=prefix + '-spatial-type-dropdown'
+                                        ),
+                                        dcc.Upload(
+                                            id=prefix + "-upload-spatial",
+                                            children=[
+                                                dbc.Button(
+                                                    "Upload",
+                                                    color="secondary"
+                                                )
+                                            ],
+                                            className="mr-2",
+                                            max_size=150*1024*1024  # 150 MB
+                                        )
+                                    ]), md=12, lg=3, className="mb-2"),
+                                    # dbc.Col(),
+                                    dbc.Col(dbc.InputGroup([
                                         dcc.Loading(
                                             dcc.Dropdown(
                                                 options=[],
                                                 multi=True,
                                                 id=prefix + '-feature-list-spatial',
                                                 placeholder="Leave empty for cluster view",
+                                                className="mw-400",
                                             ),
                                             type="circle"
                                         ),
-                                        width=4,
-                                        id=prefix + "-feature-list-spatial-col"
-                                    ),
-                                    dbc.Col([dbc.Button(
-                                        "Generate Tile",
-                                        color='primary',
-                                        className="mr-2",
-                                        id=prefix + "-generate-tile-btn"),
+                                        dbc.Button(
+                                            "Generate Tile",
+                                            color='primary',
+                                            className="mr-2",
+                                            id=prefix + "-generate-tile-btn"),
                                         dbc.Tooltip(
                                             "Generate a spatial tile using " +
                                             "the uploaded file. Note: there is " +
@@ -486,19 +477,21 @@ def get_spatial_card(prefix):
                                         dcc.Loading(
                                             dcc.Download(
                                                 id=prefix + "-download-tile-buf")
-                                        )]
+                                        )
+                                    ]), md=12, lg=7, className="mb-2", id=prefix + "-feature-list-spatial-col"
                                     ),
+                                    # dbc.Col([]),
                                     dbc.Col([dbc.Button(
-                                        "Download Tile",
-                                        color='primary',
-                                        id=prefix + "-download-tile-btn"
+                                            "Download Tile",
+                                            color='primary',
+                                            id=prefix + "-download-tile-btn"
                                         ),
                                         dbc.Tooltip(
                                             "This will download the tile as a " +
                                             "high resolution .png image file.",
                                             target=prefix + "-download-tile-btn",
                                             delay=500
-                                        )]
+                                        )], md=12, lg=2, className="mb-2",
                                     ),
                                 ],
                                 className="g-0",
@@ -662,8 +655,8 @@ def get_spatial_protein_score_card(prefix):
 def get_spatial_scores_carddeck(prefix):
     scores = dbc.CardGroup(
         [
-            get_spatial_cluster_score_card(prefix),
-            get_spatial_protein_score_card(prefix)
+            dbc.Col(get_spatial_cluster_score_card(prefix), md=12, lg=6),
+            dbc.Col(get_spatial_protein_score_card(prefix), md=12, lg=6),
         ],
         className="mb-2 analysis-container"
     )
@@ -722,16 +715,16 @@ def get_analysis_tabs(prefix):
         [
             dbc.Tab(
                 dbc.Col([
-                        dbc.Row(dbc.Col(
-                            get_features_carddeck(prefix), width=12),
-                            className="g-0"),
-                        dbc.Row(dbc.Col(
-                            get_enrich_card(prefix), width=12),
-                            className="g-0")
-                        ],
-                        className="p-0",
-                        width=12
-                        ),
+                    dbc.Row(dbc.Col(
+                        get_features_carddeck(prefix), width=12),
+                        className="g-0"),
+                    dbc.Row(dbc.Col(
+                        get_enrich_card(prefix), width=12),
+                        className="g-0")
+                    ],
+                    className="p-0",
+                    width=12
+                    ),
                 label="Analysis"
             ),
             dbc.Tab(
