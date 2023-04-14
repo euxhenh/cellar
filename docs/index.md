@@ -43,7 +43,7 @@ $ docker run --rm -p 8050:8050 euxhen/cellar
 ```
 ```bash
 # You can also bind mount a local directory of `.h5ad` files to be read by Cellar
-$ docker run --rm -p 8050:8050 -v /path/to/directory:/home/nonroot/cellar/data euxhen/cellar
+$ docker run --rm -p 8050:8050 -v /path/to/directory:/home/nonroot/cellar/data/server euxhen/cellar
 ```
 3. Wait for a few seconds and point your web browser to [localhost:8050](localhost:8050)
 
